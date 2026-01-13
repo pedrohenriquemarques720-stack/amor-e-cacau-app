@@ -111,10 +111,33 @@
             cursor: pointer;
             font-size: 0.95rem;
             transition: 0.2s;
+            position: relative; /* Necessário para o selo esgotado */
         }
 
         .btn-sabor:hover { background: var(--bege-claro); }
         .btn-sabor:active { transform: scale(0.98); }
+
+        /* Estilo para Botão Esgotado */
+        .btn-sabor.esgotado {
+            opacity: 0.5;
+            pointer-events: none;
+            filter: grayscale(80%);
+            border-color: #ccc;
+        }
+
+        .btn-sabor.esgotado::after {
+            content: "ESGOTADO";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #ff4d4d;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.6rem;
+            font-weight: bold;
+        }
 
         /* Botão Adicionar ao Carrinho */
         .btn-add-carrinho {
@@ -205,7 +228,6 @@
             pointer-events: auto;
             box-shadow: 0 4px 6px rgba(37, 211, 102, 0.4);
         }
-
     </style>
 </head>
 <body>
@@ -219,13 +241,11 @@
     
     <div class="box-display">
         <span class="box-title" id="contador-texto">1. Monte sua caixinha (0/4):</span>
-        <div class="slots-container" id="slots-area">
-            </div>
+        <div class="slots-container" id="slots-area"></div>
         <p class="aviso-remover">Clique no doce para remover</p>
     </div>
 
-    <div class="lista-sabores" id="botoes-sabores">
-        </div>
+    <div class="lista-sabores" id="botoes-sabores"></div>
 
     <button id="btn-add-carrinho" class="btn-add-carrinho" onclick="adicionarAoCarrinho()">
         Preencha a caixa para adicionar
@@ -233,8 +253,7 @@
 
     <div class="carrinho-area" id="carrinho-area" style="display:none;">
         <h3 class="carrinho-titulo">🛒 Seu Carrinho</h3>
-        <div id="lista-itens-carrinho">
-            </div>
+        <div id="lista-itens-carrinho"></div>
 
         <div class="resumo-final">
             <span class="total-texto" id="total-carrinho">Total: R$ 0,00</span>
@@ -246,31 +265,43 @@
 </div>
 
 <script>
+    // --- LISTA DE SABORES ---
+    // DICA: Para esgotar um sabor, adicione [ESGOTADO] ao nome dele abaixo.
     const saboresDisponiveis = [
         "Tradicional",
         "Beijinho",
         "Ferrero",
         "Limão",
         "Café",
-	"Maracujá"
+        "Maracujá"
     ];
 
     const MAX_SLOTS = 4;
     const PRECO_CAIXA = 10.00;
     
-    let caixaAtual = []; // Sabores sendo escolhidos agora
-    let carrinho = [];   // Lista de caixinhas finalizadas
+    let caixaAtual = []; 
+    let carrinho = [];   
 
-    // --- INICIALIZAÇÃO ---
+    // --- INICIALIZAÇÃO DOS BOTÕES ---
     const divBotoes = document.getElementById('botoes-sabores');
-    saboresDisponiveis.forEach(sabor => {
-        const btn = document.createElement('button');
-        btn.className = 'btn-sabor';
-        btn.innerText = `+ ${sabor}`;
-        btn.onclick = () => selecionarSabor(sabor);
-        divBotoes.appendChild(btn);
-    });
-    atualizarSlots();
+    
+    function renderizarBotoesSabores() {
+        divBotoes.innerHTML = '';
+        saboresDisponiveis.forEach(sabor => {
+            const estaEsgotado = sabor.includes('[ESGOTADO]');
+            const nomeLimpo = sabor.replace('[ESGOTADO]', '').trim();
+            
+            const btn = document.createElement('button');
+            btn.className = estaEsgotado ? 'btn-sabor esgotado' : 'btn-sabor';
+            btn.innerText = `+ ${nomeLimpo}`;
+            
+            if (!estaEsgotado) {
+                btn.onclick = () => selecionarSabor(nomeLimpo);
+            }
+            
+            divBotoes.appendChild(btn);
+        });
+    }
 
     // --- LÓGICA DE MONTAGEM ---
     function selecionarSabor(sabor) {
@@ -303,7 +334,6 @@
             slotsArea.appendChild(divSlot);
         }
 
-        // Atualiza textos e botão de adicionar
         const btnAdd = document.getElementById('btn-add-carrinho');
         const contador = document.getElementById('contador-texto');
 
@@ -326,16 +356,10 @@
     // --- LÓGICA DO CARRINHO ---
     function adicionarAoCarrinho() {
         if (caixaAtual.length !== MAX_SLOTS) return;
-
-        // Salva a caixa no carrinho
         carrinho.push([...caixaAtual]);
-        
-        // Limpa a caixa atual para a próxima
         caixaAtual = [];
         atualizarSlots();
         renderizarCarrinho();
-        
-        // Rola a tela para baixo para ver o carrinho
         document.getElementById('carrinho-area').scrollIntoView({behavior: "smooth"});
     }
 
@@ -350,7 +374,6 @@
         const totalTexto = document.getElementById('total-carrinho');
         const btnFinalizar = document.getElementById('btn-finalizar');
 
-        // Mostra ou esconde a área do carrinho
         if (carrinho.length > 0) {
             areaCarrinho.style.display = 'block';
         } else {
@@ -359,17 +382,13 @@
         }
 
         lista.innerHTML = '';
-        
         carrinho.forEach((caixa, index) => {
             const div = document.createElement('div');
             div.className = 'item-carrinho';
-            
-            // Conta quantas vezes cada sabor aparece na caixa
             const resumoSabores = caixa.reduce((acc, sabor) => {
                 acc[sabor] = (acc[sabor] || 0) + 1;
                 return acc;
             }, {});
-
             const textoSabores = Object.entries(resumoSabores)
                 .map(([nome, qtd]) => `${qtd}x ${nome}`)
                 .join(', ');
@@ -382,41 +401,34 @@
             lista.appendChild(div);
         });
 
-        // Atualiza Totais
         const totalValor = carrinho.length * PRECO_CAIXA;
-        totalTexto.innerText = `Total (${carrinho.length} caixas): R$ ${totalValor.toFixed(2)}`;
-        
-        // Atualiza Link WhatsApp
+        totalTexto.innerText = `Total (${carrinho.length} caixas): R$ ${totalValor.toFixed(2).replace('.', ',')}`;
         btnFinalizar.classList.add('liberado');
         atualizarLinkWhatsApp(totalValor);
     }
 
     function atualizarLinkWhatsApp(total) {
         let msg = "*Olá! Gostaria de fazer um pedido no Amor e Cacau:* 🎁%0A%0A";
-        
         carrinho.forEach((caixa, index) => {
             msg += `*📦 Caixinha ${index + 1}:*%0A`;
-            
             const resumoSabores = caixa.reduce((acc, sabor) => {
                 acc[sabor] = (acc[sabor] || 0) + 1;
                 return acc;
             }, {});
-
             Object.entries(resumoSabores).forEach(([nome, qtd]) => {
                 msg += `- ${qtd}x ${nome}%0A`;
             });
             msg += "%0A";
         });
-
-        msg += `*💰 Valor Total: R$ ${total.toFixed(2)}*`;
-
-        // --- ATENÇÃO: SEU NÚMERO AQUI ---
+        msg += `*💰 Valor Total: R$ ${total.toFixed(2).replace('.', ',')}*`;
         const telefone = "5519992483488"; 
-        
         document.getElementById('btn-finalizar').href = `https://wa.me/${telefone}?text=${msg}`;
     }
 
-</script>
+    // Inicializa os botões na tela
+    renderizarBotoesSabores();
+    atualizarSlots();
 
+</script>
 </body>
 </html>
