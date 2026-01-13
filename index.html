@@ -41,7 +41,6 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
-        /* Botão Sugestão */
         .btn-sugestao {
             width: 100%;
             background: white;
@@ -55,7 +54,6 @@
             transition: 0.3s;
         }
 
-        /* Área da Caixinha */
         .box-display {
             background: #fdf0f3;
             padding: 15px;
@@ -87,7 +85,6 @@
             color: white; font-weight: bold;
         }
 
-        /* Lista de Sabores */
         .lista-sabores {
             display: grid; grid-template-columns: 1fr 1fr;
             gap: 8px; margin-bottom: 20px;
@@ -109,7 +106,6 @@
             border-radius: 3px; font-size: 0.5rem;
         }
 
-        /* Formulário no Carrinho */
         .campo-grupo { margin-bottom: 15px; text-align: left; }
         .campo-grupo label { display: block; font-size: 0.9rem; font-weight: bold; margin-bottom: 5px; }
         .campo-grupo input, .campo-grupo select {
@@ -134,7 +130,7 @@
         .btn-whatsapp {
             display: block; width: 100%; background: var(--verde-wpp);
             color: white; text-decoration: none; padding: 15px;
-            border-radius: 8px; font-weight: bold; opacity: 0.5; pointer-events: none;
+            border-radius: 8px; font-weight: bold; opacity: 0.5; pointer-events: none; text-align: center;
         }
 
         .btn-whatsapp.liberado { opacity: 1; pointer-events: auto; }
@@ -163,7 +159,7 @@
     </button>
 
     <div class="carrinho-area" id="carrinho-area" style="display:none;">
-        <h3 style="border-top: 1px solid #eee; pt: 15px;">🛒 Seu Pedido</h3>
+        <h3 style="border-top: 1px solid #eee; padding-top: 15px;">🛒 Seu Pedido</h3>
         
         <div class="campo-grupo">
             <label>Seu Nome:</label>
@@ -172,11 +168,16 @@
 
         <div class="campo-grupo">
             <label>Como deseja receber?</label>
-            <select id="metodo-entrega" onchange="validarFinalizacao()">
+            <select id="metodo-entrega" onchange="toggleEndereco()">
                 <option value="">Selecione uma opção...</option>
                 <option value="Retirada no Local">Vou retirar no local</option>
-                <option value="Uber Moto">Entrega via Uber Moto (Cotar valor)</option>
+                <option value="Uber Moto">Entrega via Uber Moto (Vou cotar o valor)</option>
             </select>
+        </div>
+
+        <div class="campo-grupo" id="div-endereco" style="display:none;">
+            <label>Endereço de Entrega:</label>
+            <input type="text" id="endereco-cliente" placeholder="Rua, número e bairro" oninput="validarFinalizacao()">
         </div>
 
         <div id="lista-itens-carrinho"></div>
@@ -244,6 +245,13 @@
 
     function removerDoCarrinho(i) { carrinho.splice(i, 1); renderizarCarrinho(); }
 
+    function toggleEndereco() {
+        const metodo = document.getElementById('metodo-entrega').value;
+        const divEnd = document.getElementById('div-endereco');
+        divEnd.style.display = (metodo === "Uber Moto") ? "block" : "none";
+        validarFinalizacao();
+    }
+
     function renderizarCarrinho() {
         const lista = document.getElementById('lista-itens-carrinho');
         lista.innerHTML = '';
@@ -259,11 +267,20 @@
     function validarFinalizacao() {
         const nome = document.getElementById('nome-cliente').value;
         const metodo = document.getElementById('metodo-entrega').value;
+        const endereco = document.getElementById('endereco-cliente').value;
         const btn = document.getElementById('btn-finalizar');
         
-        if(nome.length > 2 && metodo !== "" && carrinho.length > 0) {
+        let pronto = (nome.length > 2 && metodo !== "" && carrinho.length > 0);
+        
+        // Se for Uber Moto, também precisa do endereço
+        if (metodo === "Uber Moto" && endereco.length < 5) pronto = false;
+
+        if(pronto) {
             btn.classList.add('liberado');
-            let msg = `*Pedido Amor e Cacau*%0A*Cliente:* ${nome}%0A*Entrega:* ${metodo}%0A%0A`;
+            let msg = `*Pedido Amor e Cacau*%0A*Cliente:* ${nome}%0A*Entrega:* ${metodo}%0A`;
+            if(metodo === "Uber Moto") msg += `*Endereço:* ${endereco}%0A`;
+            msg += `%0A`;
+            
             carrinho.forEach((c, i) => {
                 msg += `*Caixa ${i+1}:* `;
                 const resumo = c.reduce((acc, s) => { acc[s] = (acc[s] || 0) + 1; return acc; }, {});
