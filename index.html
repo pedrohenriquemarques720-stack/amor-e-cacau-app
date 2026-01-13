@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amor e Cacau | Encomendas</title>
+    <style>
+        :root {
+            --rosa-principal: #ff85a2;
+            --rosa-escuro: #e06b85;
+            --marrom-chocolate: #4b2e2e;
+            --bege-claro: #fff5f7;
+            --verde-wpp: #25d366;
+            --azul-botao: #4a90e2;
+            --cinza-inativo: #ccc;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bege-claro);
+            color: var(--marrom-chocolate);
+            margin: 0;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 10px 0 20px;
+        }
+
+        h1 { margin: 0; color: var(--marrom-chocolate); }
+        .subtitulo { color: var(--rosa-principal); font-weight: bold; margin-top: 5px; }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Área da Caixinha (Slots) */
+        .box-display {
+            background: #fdf0f3;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            border: 1px solid #ffeef2;
+        }
+
+        .box-title {
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            display: block;
+            color: #666;
+            font-weight: bold;
+        }
+
+        .slots-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .slot {
+            width: 55px;
+            height: 55px;
+            border: 2px dashed var(--rosa-principal);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            text-align: center;
+            background: white;
+            cursor: pointer;
+            overflow: hidden;
+            transition: 0.2s;
+        }
+
+        .slot.filled {
+            border: 2px solid var(--marrom-chocolate);
+            background: var(--marrom-chocolate);
+            color: white;
+            font-weight: bold;
+        }
+
+        .aviso-remover {
+            font-size: 0.75rem;
+            color: #888;
+            margin-top: 5px;
+        }
+
+        /* Lista de Sabores */
+        .lista-sabores {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .btn-sabor {
+            background: white;
+            border: 1px solid var(--rosa-principal);
+            color: var(--marrom-chocolate);
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: 0.2s;
+        }
+
+        .btn-sabor:hover { background: var(--bege-claro); }
+        .btn-sabor:active { transform: scale(0.98); }
+
+        /* Botão Adicionar ao Carrinho */
+        .btn-add-carrinho {
+            display: block;
+            width: 100%;
+            background: var(--cinza-inativo);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: not-allowed;
+            margin-bottom: 30px;
+        }
+
+        .btn-add-carrinho.ativo {
+            background: var(--azul-botao);
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(74, 144, 226, 0.3);
+        }
+
+        /* Área do Carrinho */
+        .carrinho-area {
+            border-top: 2px dashed #eee;
+            padding-top: 20px;
+        }
+
+        .carrinho-titulo {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: var(--marrom-chocolate);
+        }
+
+        .item-carrinho {
+            background: #f9f9f9;
+            border: 1px solid #eee;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .item-carrinho h4 { margin: 0 0 5px 0; font-size: 0.9rem; color: var(--rosa-escuro); }
+        .item-carrinho p { margin: 0; font-size: 0.85rem; color: #555; }
+        
+        .btn-remover-item {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: transparent;
+            border: none;
+            color: #d00;
+            font-size: 0.8rem;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* Finalização */
+        .resumo-final {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .total-texto {
+            font-size: 1.3rem;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .btn-whatsapp {
+            display: block;
+            width: 100%;
+            background: var(--verde-wpp);
+            color: white;
+            text-decoration: none;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1rem;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .btn-whatsapp.liberado {
+            opacity: 1;
+            pointer-events: auto;
+            box-shadow: 0 4px 6px rgba(37, 211, 102, 0.4);
+        }
+
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>💖 Amor e Cacau - Brigadeiros Gourmet</h1>
+    <p class="subtitulo">Caixinha com 4 doces = R$ 10,00</p>
+</header>
+
+<div class="container">
+    
+    <div class="box-display">
+        <span class="box-title" id="contador-texto">1. Monte sua caixinha (0/4):</span>
+        <div class="slots-container" id="slots-area">
+            </div>
+        <p class="aviso-remover">Clique no doce para remover</p>
+    </div>
+
+    <div class="lista-sabores" id="botoes-sabores">
+        </div>
+
+    <button id="btn-add-carrinho" class="btn-add-carrinho" onclick="adicionarAoCarrinho()">
+        Preencha a caixa para adicionar
+    </button>
+
+    <div class="carrinho-area" id="carrinho-area" style="display:none;">
+        <h3 class="carrinho-titulo">🛒 Seu Carrinho</h3>
+        <div id="lista-itens-carrinho">
+            </div>
+
+        <div class="resumo-final">
+            <span class="total-texto" id="total-carrinho">Total: R$ 0,00</span>
+            <a href="#" id="btn-finalizar" class="btn-whatsapp">
+                Finalizar Pedido no WhatsApp
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    const saboresDisponiveis = [
+        "Tradicional",
+        "Beijinho",
+        "Ferrero",
+        "Limão",
+        "Café",
+	"Maracujá"
+    ];
+
+    const MAX_SLOTS = 4;
+    const PRECO_CAIXA = 10.00;
+    
+    let caixaAtual = []; // Sabores sendo escolhidos agora
+    let carrinho = [];   // Lista de caixinhas finalizadas
+
+    // --- INICIALIZAÇÃO ---
+    const divBotoes = document.getElementById('botoes-sabores');
+    saboresDisponiveis.forEach(sabor => {
+        const btn = document.createElement('button');
+        btn.className = 'btn-sabor';
+        btn.innerText = `+ ${sabor}`;
+        btn.onclick = () => selecionarSabor(sabor);
+        divBotoes.appendChild(btn);
+    });
+    atualizarSlots();
+
+    // --- LÓGICA DE MONTAGEM ---
+    function selecionarSabor(sabor) {
+        if (caixaAtual.length < MAX_SLOTS) {
+            caixaAtual.push(sabor);
+            atualizarSlots();
+        } else {
+            alert("Caixinha cheia! Adicione ao carrinho ou remova um item.");
+        }
+    }
+
+    function removerSaborCaixa(index) {
+        caixaAtual.splice(index, 1);
+        atualizarSlots();
+    }
+
+    function atualizarSlots() {
+        const slotsArea = document.getElementById('slots-area');
+        slotsArea.innerHTML = ''; 
+
+        for (let i = 0; i < MAX_SLOTS; i++) {
+            const divSlot = document.createElement('div');
+            if (caixaAtual[i]) {
+                divSlot.className = 'slot filled';
+                divSlot.innerHTML = `<span>${caixaAtual[i]}</span>`;
+                divSlot.onclick = () => removerSaborCaixa(i);
+            } else {
+                divSlot.className = 'slot';
+            }
+            slotsArea.appendChild(divSlot);
+        }
+
+        // Atualiza textos e botão de adicionar
+        const btnAdd = document.getElementById('btn-add-carrinho');
+        const contador = document.getElementById('contador-texto');
+
+        if (caixaAtual.length === MAX_SLOTS) {
+            contador.innerText = "Caixa pronta! Adicione ao carrinho:";
+            contador.style.color = "var(--azul-botao)";
+            btnAdd.classList.add('ativo');
+            btnAdd.innerText = "Adicionar Caixinha ao Pedido";
+            btnAdd.disabled = false;
+        } else {
+            const faltam = MAX_SLOTS - caixaAtual.length;
+            contador.innerText = `1. Monte sua caixinha (${caixaAtual.length}/4):`;
+            contador.style.color = "#666";
+            btnAdd.classList.remove('ativo');
+            btnAdd.innerText = `Escolha mais ${faltam} item(ns)`;
+            btnAdd.disabled = true;
+        }
+    }
+
+    // --- LÓGICA DO CARRINHO ---
+    function adicionarAoCarrinho() {
+        if (caixaAtual.length !== MAX_SLOTS) return;
+
+        // Salva a caixa no carrinho
+        carrinho.push([...caixaAtual]);
+        
+        // Limpa a caixa atual para a próxima
+        caixaAtual = [];
+        atualizarSlots();
+        renderizarCarrinho();
+        
+        // Rola a tela para baixo para ver o carrinho
+        document.getElementById('carrinho-area').scrollIntoView({behavior: "smooth"});
+    }
+
+    function removerDoCarrinho(index) {
+        carrinho.splice(index, 1);
+        renderizarCarrinho();
+    }
+
+    function renderizarCarrinho() {
+        const areaCarrinho = document.getElementById('carrinho-area');
+        const lista = document.getElementById('lista-itens-carrinho');
+        const totalTexto = document.getElementById('total-carrinho');
+        const btnFinalizar = document.getElementById('btn-finalizar');
+
+        // Mostra ou esconde a área do carrinho
+        if (carrinho.length > 0) {
+            areaCarrinho.style.display = 'block';
+        } else {
+            areaCarrinho.style.display = 'none';
+            return;
+        }
+
+        lista.innerHTML = '';
+        
+        carrinho.forEach((caixa, index) => {
+            const div = document.createElement('div');
+            div.className = 'item-carrinho';
+            
+            // Conta quantas vezes cada sabor aparece na caixa
+            const resumoSabores = caixa.reduce((acc, sabor) => {
+                acc[sabor] = (acc[sabor] || 0) + 1;
+                return acc;
+            }, {});
+
+            const textoSabores = Object.entries(resumoSabores)
+                .map(([nome, qtd]) => `${qtd}x ${nome}`)
+                .join(', ');
+
+            div.innerHTML = `
+                <h4>Caixinha #${index + 1}</h4>
+                <p>${textoSabores}</p>
+                <button class="btn-remover-item" onclick="removerDoCarrinho(${index})">Remover</button>
+            `;
+            lista.appendChild(div);
+        });
+
+        // Atualiza Totais
+        const totalValor = carrinho.length * PRECO_CAIXA;
+        totalTexto.innerText = `Total (${carrinho.length} caixas): R$ ${totalValor.toFixed(2)}`;
+        
+        // Atualiza Link WhatsApp
+        btnFinalizar.classList.add('liberado');
+        atualizarLinkWhatsApp(totalValor);
+    }
+
+    function atualizarLinkWhatsApp(total) {
+        let msg = "*Olá! Gostaria de fazer um pedido no Amor e Cacau:* 🎁%0A%0A";
+        
+        carrinho.forEach((caixa, index) => {
+            msg += `*📦 Caixinha ${index + 1}:*%0A`;
+            
+            const resumoSabores = caixa.reduce((acc, sabor) => {
+                acc[sabor] = (acc[sabor] || 0) + 1;
+                return acc;
+            }, {});
+
+            Object.entries(resumoSabores).forEach(([nome, qtd]) => {
+                msg += `- ${qtd}x ${nome}%0A`;
+            });
+            msg += "%0A";
+        });
+
+        msg += `*💰 Valor Total: R$ ${total.toFixed(2)}*`;
+
+        // --- ATENÇÃO: SEU NÚMERO AQUI ---
+        const telefone = "5519992483488"; 
+        
+        document.getElementById('btn-finalizar').href = `https://wa.me/${telefone}?text=${msg}`;
+    }
+
+</script>
+
+</body>
+</html>
