@@ -106,36 +106,39 @@
             background: white;
             border: 1px solid var(--rosa-principal);
             color: var(--marrom-chocolate);
-            padding: 10px;
+            padding: 15px 10px; /* Mais espaço interno */
             border-radius: 8px;
             cursor: pointer;
             font-size: 0.95rem;
             transition: 0.2s;
-            position: relative; /* Necessário para o selo esgotado */
+            position: relative; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .btn-sabor:hover { background: var(--bege-claro); }
         .btn-sabor:active { transform: scale(0.98); }
 
-        /* Estilo para Botão Esgotado */
+        /* ESTILO CORRIGIDO PARA ESGOTADO */
         .btn-sabor.esgotado {
-            opacity: 0.5;
+            opacity: 0.7; /* Nome um pouco mais visível */
             pointer-events: none;
-            filter: grayscale(80%);
+            filter: grayscale(100%);
             border-color: #ccc;
+            color: #999;
         }
 
         .btn-sabor.esgotado::after {
             content: "ESGOTADO";
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            top: 4px;      /* Distância do topo */
+            right: 4px;    /* Distância da direita */
             background: #ff4d4d;
             color: white;
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-size: 0.6rem;
+            padding: 1px 5px;
+            border-radius: 3px;
+            font-size: 0.5rem; /* Letra bem pequena */
             font-weight: bold;
         }
 
@@ -238,7 +241,6 @@
 </header>
 
 <div class="container">
-    
     <div class="box-display">
         <span class="box-title" id="contador-texto">1. Monte sua caixinha (0/4):</span>
         <div class="slots-container" id="slots-area"></div>
@@ -282,7 +284,6 @@
     let caixaAtual = []; 
     let carrinho = [];   
 
-    // --- INICIALIZAÇÃO DOS BOTÕES ---
     const divBotoes = document.getElementById('botoes-sabores');
     
     function renderizarBotoesSabores() {
@@ -303,7 +304,6 @@
         });
     }
 
-    // --- LÓGICA DE MONTAGEM ---
     function selecionarSabor(sabor) {
         if (caixaAtual.length < MAX_SLOTS) {
             caixaAtual.push(sabor);
@@ -353,7 +353,6 @@
         }
     }
 
-    // --- LÓGICA DO CARRINHO ---
     function adicionarAoCarrinho() {
         if (caixaAtual.length !== MAX_SLOTS) return;
         carrinho.push([...caixaAtual]);
@@ -425,11 +424,8 @@
         document.getElementById('btn-finalizar').href = `https://wa.me/${telefone}?text=${msg}`;
     }
 
-    // Inicializa os botões na tela
     renderizarBotoesSabores();
     atualizarSlots();
-
 </script>
 </body>
 </html>
-
