@@ -13,6 +13,7 @@
             --verde-wpp: #25d366;
             --azul-botao: #4a90e2;
             --cinza-inativo: #ccc;
+            --dourado-sugestao: #f39c12;
         }
 
         body {
@@ -40,7 +41,21 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
-        /* Área da Caixinha (Slots) */
+        /* Botão Sugestão */
+        .btn-sugestao {
+            width: 100%;
+            background: white;
+            border: 2px solid var(--dourado-sugestao);
+            color: var(--dourado-sugestao);
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        /* Área da Caixinha */
         .box-display {
             background: #fdf0f3;
             padding: 15px;
@@ -48,14 +63,6 @@
             margin-bottom: 20px;
             text-align: center;
             border: 1px solid #ffeef2;
-        }
-
-        .box-title {
-            font-size: 0.9rem;
-            margin-bottom: 10px;
-            display: block;
-            color: #666;
-            font-weight: bold;
         }
 
         .slots-container {
@@ -66,362 +73,207 @@
         }
 
         .slot {
-            width: 55px;
-            height: 55px;
+            width: 55px; height: 55px;
             border: 2px dashed var(--rosa-principal);
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.65rem;
-            text-align: center;
-            background: white;
-            cursor: pointer;
-            overflow: hidden;
-            transition: 0.2s;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.65rem; text-align: center;
+            background: white; cursor: pointer; overflow: hidden;
         }
 
         .slot.filled {
             border: 2px solid var(--marrom-chocolate);
             background: var(--marrom-chocolate);
-            color: white;
-            font-weight: bold;
-        }
-
-        .aviso-remover {
-            font-size: 0.75rem;
-            color: #888;
-            margin-top: 5px;
+            color: white; font-weight: bold;
         }
 
         /* Lista de Sabores */
         .lista-sabores {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin-bottom: 20px;
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 8px; margin-bottom: 20px;
         }
 
         .btn-sabor {
-            background: white;
-            border: 1px solid var(--rosa-principal);
-            color: var(--marrom-chocolate);
-            padding: 15px 10px; /* Mais espaço interno */
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.95rem;
-            transition: 0.2s;
-            position: relative; 
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            background: white; border: 1px solid var(--rosa-principal);
+            color: var(--marrom-chocolate); padding: 15px 10px;
+            border-radius: 8px; cursor: pointer; position: relative;
         }
 
-        .btn-sabor:hover { background: var(--bege-claro); }
-        .btn-sabor:active { transform: scale(0.98); }
-
-        /* ESTILO CORRIGIDO PARA ESGOTADO */
         .btn-sabor.esgotado {
-            opacity: 0.7; /* Nome um pouco mais visível */
-            pointer-events: none;
-            filter: grayscale(100%);
-            border-color: #ccc;
-            color: #999;
+            opacity: 0.6; pointer-events: none; filter: grayscale(100%);
         }
 
         .btn-sabor.esgotado::after {
-            content: "ESGOTADO";
-            position: absolute;
-            top: 4px;      /* Distância do topo */
-            right: 4px;    /* Distância da direita */
-            background: #ff4d4d;
-            color: white;
-            padding: 1px 5px;
-            border-radius: 3px;
-            font-size: 0.5rem; /* Letra bem pequena */
-            font-weight: bold;
+            content: "ESGOTADO"; position: absolute; top: 2px; right: 2px;
+            background: #ff4d4d; color: white; padding: 1px 4px;
+            border-radius: 3px; font-size: 0.5rem;
         }
 
-        /* Botão Adicionar ao Carrinho */
+        /* Formulário no Carrinho */
+        .campo-grupo { margin-bottom: 15px; text-align: left; }
+        .campo-grupo label { display: block; font-size: 0.9rem; font-weight: bold; margin-bottom: 5px; }
+        .campo-grupo input, .campo-grupo select {
+            width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box;
+        }
+
         .btn-add-carrinho {
-            display: block;
-            width: 100%;
-            background: var(--cinza-inativo);
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 1rem;
-            cursor: not-allowed;
-            margin-bottom: 30px;
+            display: block; width: 100%; background: var(--cinza-inativo);
+            color: white; border: none; padding: 12px; border-radius: 8px;
+            font-weight: bold; cursor: not-allowed; margin-bottom: 20px;
         }
 
-        .btn-add-carrinho.ativo {
-            background: var(--azul-botao);
-            cursor: pointer;
-            box-shadow: 0 4px 6px rgba(74, 144, 226, 0.3);
-        }
-
-        /* Área do Carrinho */
-        .carrinho-area {
-            border-top: 2px dashed #eee;
-            padding-top: 20px;
-        }
-
-        .carrinho-titulo {
-            font-size: 1.1rem;
-            margin-bottom: 15px;
-            color: var(--marrom-chocolate);
-        }
+        .btn-add-carrinho.ativo { background: var(--azul-botao); cursor: pointer; }
 
         .item-carrinho {
-            background: #f9f9f9;
-            border: 1px solid #eee;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            position: relative;
+            background: #f9f9f9; padding: 10px; border-radius: 8px;
+            margin-bottom: 10px; position: relative; border: 1px solid #eee;
         }
 
-        .item-carrinho h4 { margin: 0 0 5px 0; font-size: 0.9rem; color: var(--rosa-escuro); }
-        .item-carrinho p { margin: 0; font-size: 0.85rem; color: #555; }
-        
-        .btn-remover-item {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: transparent;
-            border: none;
-            color: #d00;
-            font-size: 0.8rem;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        /* Finalização */
-        .resumo-final {
-            margin-top: 20px;
-            text-align: center;
-        }
-
-        .total-texto {
-            font-size: 1.3rem;
-            font-weight: bold;
-            display: block;
-            margin-bottom: 10px;
-        }
+        .btn-remover-item { position: absolute; top: 10px; right: 10px; color: #d00; cursor: pointer; border: none; background: none; font-weight: bold; }
 
         .btn-whatsapp {
-            display: block;
-            width: 100%;
-            background: var(--verde-wpp);
-            color: white;
-            text-decoration: none;
-            padding: 15px;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 1rem;
-            opacity: 0.5;
-            pointer-events: none;
+            display: block; width: 100%; background: var(--verde-wpp);
+            color: white; text-decoration: none; padding: 15px;
+            border-radius: 8px; font-weight: bold; opacity: 0.5; pointer-events: none;
         }
 
-        .btn-whatsapp.liberado {
-            opacity: 1;
-            pointer-events: auto;
-            box-shadow: 0 4px 6px rgba(37, 211, 102, 0.4);
-        }
+        .btn-whatsapp.liberado { opacity: 1; pointer-events: auto; }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>💖 Amor e Cacau - Brigadeiros Gourmet</h1>
+    <h1>💖 Amor e Cacau</h1>
     <p class="subtitulo">Caixinha com 4 doces = R$ 10,00</p>
 </header>
 
 <div class="container">
+    <button class="btn-sugestao" onclick="sugestaoDoDia()">✨ Sugestão do Dia (Mix da Casa)</button>
+
     <div class="box-display">
         <span class="box-title" id="contador-texto">1. Monte sua caixinha (0/4):</span>
         <div class="slots-container" id="slots-area"></div>
-        <p class="aviso-remover">Clique no doce para remover</p>
+        <p style="font-size:0.7rem; color:#888;">Toque no doce para remover</p>
     </div>
 
     <div class="lista-sabores" id="botoes-sabores"></div>
 
     <button id="btn-add-carrinho" class="btn-add-carrinho" onclick="adicionarAoCarrinho()">
-        Preencha a caixa para adicionar
+        Preencha a caixa
     </button>
 
     <div class="carrinho-area" id="carrinho-area" style="display:none;">
-        <h3 class="carrinho-titulo">🛒 Seu Carrinho</h3>
+        <h3 style="border-top: 1px solid #eee; pt: 15px;">🛒 Seu Pedido</h3>
+        
+        <div class="campo-grupo">
+            <label>Seu Nome:</label>
+            <input type="text" id="nome-cliente" placeholder="Digite seu nome" oninput="validarFinalizacao()">
+        </div>
+
+        <div class="campo-grupo">
+            <label>Como deseja receber?</label>
+            <select id="metodo-entrega" onchange="validarFinalizacao()">
+                <option value="">Selecione uma opção...</option>
+                <option value="Retirada no Local">Vou retirar no local</option>
+                <option value="Uber Moto">Entrega via Uber Moto (Cotar valor)</option>
+            </select>
+        </div>
+
         <div id="lista-itens-carrinho"></div>
 
-        <div class="resumo-final">
-            <span class="total-texto" id="total-carrinho">Total: R$ 0,00</span>
-            <a href="#" id="btn-finalizar" class="btn-whatsapp">
-                Finalizar Pedido no WhatsApp
-            </a>
+        <div style="text-align:center; margin-top:20px;">
+            <span id="total-carrinho" style="font-size:1.2rem; font-weight:bold; display:block; margin-bottom:10px;">Total: R$ 0,00</span>
+            <a href="#" id="btn-finalizar" class="btn-whatsapp">Finalizar no WhatsApp</a>
         </div>
     </div>
 </div>
 
 <script>
-    // --- LISTA DE SABORES ---
-    // DICA: Para esgotar um sabor, adicione [ESGOTADO] ao nome dele abaixo.
-    const saboresDisponiveis = [
-        "Tradicional [ESGOTADO]",
-        "Beijinho",
-        "Ferrero",
-        "Limão",
-        "Café",
-        "Maracujá"
-    ];
-
+    const saboresDisponiveis = ["Tradicional [ESGOTADO]", "Beijinho", "Ferrero", "Limão", "Café", "Maracujá"];
     const MAX_SLOTS = 4;
     const PRECO_CAIXA = 10.00;
-    
-    let caixaAtual = []; 
-    let carrinho = [];   
+    let caixaAtual = [];
+    let carrinho = [];
 
-    const divBotoes = document.getElementById('botoes-sabores');
-    
     function renderizarBotoesSabores() {
-        divBotoes.innerHTML = '';
-        saboresDisponiveis.forEach(sabor => {
-            const estaEsgotado = sabor.includes('[ESGOTADO]');
-            const nomeLimpo = sabor.replace('[ESGOTADO]', '').trim();
-            
+        const div = document.getElementById('botoes-sabores');
+        div.innerHTML = '';
+        saboresDisponiveis.forEach(s => {
+            const esgotado = s.includes('[ESGOTADO]');
+            const nome = s.replace('[ESGOTADO]', '').trim();
             const btn = document.createElement('button');
-            btn.className = estaEsgotado ? 'btn-sabor esgotado' : 'btn-sabor';
-            btn.innerText = `+ ${nomeLimpo}`;
-            
-            if (!estaEsgotado) {
-                btn.onclick = () => selecionarSabor(nomeLimpo);
-            }
-            
-            divBotoes.appendChild(btn);
+            btn.className = esgotado ? 'btn-sabor esgotado' : 'btn-sabor';
+            btn.innerText = `+ ${nome}`;
+            if (!esgotado) btn.onclick = () => {
+                if(caixaAtual.length < MAX_SLOTS) { caixaAtual.push(nome); atualizarSlots(); }
+            };
+            div.appendChild(btn);
         });
     }
 
-    function selecionarSabor(sabor) {
-        if (caixaAtual.length < MAX_SLOTS) {
-            caixaAtual.push(sabor);
-            atualizarSlots();
-        } else {
-            alert("Caixinha cheia! Adicione ao carrinho ou remova um item.");
-        }
-    }
-
-    function removerSaborCaixa(index) {
-        caixaAtual.splice(index, 1);
+    function sugestaoDoDia() {
+        const ativos = saboresDisponiveis.filter(s => !s.includes('[ESGOTADO]')).map(s => s.replace('[ESGOTADO]', '').trim());
+        caixaAtual = [];
+        for(let i=0; i<MAX_SLOTS; i++) caixaAtual.push(ativos[Math.floor(Math.random()*ativos.length)]);
         atualizarSlots();
     }
 
     function atualizarSlots() {
-        const slotsArea = document.getElementById('slots-area');
-        slotsArea.innerHTML = ''; 
-
-        for (let i = 0; i < MAX_SLOTS; i++) {
-            const divSlot = document.createElement('div');
-            if (caixaAtual[i]) {
-                divSlot.className = 'slot filled';
-                divSlot.innerHTML = `<span>${caixaAtual[i]}</span>`;
-                divSlot.onclick = () => removerSaborCaixa(i);
-            } else {
-                divSlot.className = 'slot';
-            }
-            slotsArea.appendChild(divSlot);
+        const area = document.getElementById('slots-area');
+        area.innerHTML = '';
+        for(let i=0; i<MAX_SLOTS; i++) {
+            const slot = document.createElement('div');
+            slot.className = caixaAtual[i] ? 'slot filled' : 'slot';
+            slot.innerHTML = caixaAtual[i] ? `<span>${caixaAtual[i]}</span>` : '';
+            slot.onclick = () => { caixaAtual.splice(i, 1); atualizarSlots(); };
+            area.appendChild(slot);
         }
-
-        const btnAdd = document.getElementById('btn-add-carrinho');
-        const contador = document.getElementById('contador-texto');
-
-        if (caixaAtual.length === MAX_SLOTS) {
-            contador.innerText = "Caixa pronta! Adicione ao carrinho:";
-            contador.style.color = "var(--azul-botao)";
-            btnAdd.classList.add('ativo');
-            btnAdd.innerText = "Adicionar Caixinha ao Pedido";
-            btnAdd.disabled = false;
-        } else {
-            const faltam = MAX_SLOTS - caixaAtual.length;
-            contador.innerText = `1. Monte sua caixinha (${caixaAtual.length}/4):`;
-            contador.style.color = "#666";
-            btnAdd.classList.remove('ativo');
-            btnAdd.innerText = `Escolha mais ${faltam} item(ns)`;
-            btnAdd.disabled = true;
-        }
+        const btn = document.getElementById('btn-add-carrinho');
+        btn.disabled = caixaAtual.length !== MAX_SLOTS;
+        btn.className = btn.disabled ? 'btn-add-carrinho' : 'btn-add-carrinho ativo';
+        btn.innerText = btn.disabled ? `Faltam ${MAX_SLOTS - caixaAtual.length} doces` : "Adicionar Caixinha";
     }
 
     function adicionarAoCarrinho() {
-        if (caixaAtual.length !== MAX_SLOTS) return;
         carrinho.push([...caixaAtual]);
         caixaAtual = [];
         atualizarSlots();
         renderizarCarrinho();
-        document.getElementById('carrinho-area').scrollIntoView({behavior: "smooth"});
+        document.getElementById('carrinho-area').style.display = 'block';
     }
 
-    function removerDoCarrinho(index) {
-        carrinho.splice(index, 1);
-        renderizarCarrinho();
-    }
+    function removerDoCarrinho(i) { carrinho.splice(i, 1); renderizarCarrinho(); }
 
     function renderizarCarrinho() {
-        const areaCarrinho = document.getElementById('carrinho-area');
         const lista = document.getElementById('lista-itens-carrinho');
-        const totalTexto = document.getElementById('total-carrinho');
-        const btnFinalizar = document.getElementById('btn-finalizar');
-
-        if (carrinho.length > 0) {
-            areaCarrinho.style.display = 'block';
-        } else {
-            areaCarrinho.style.display = 'none';
-            return;
-        }
-
         lista.innerHTML = '';
-        carrinho.forEach((caixa, index) => {
-            const div = document.createElement('div');
-            div.className = 'item-carrinho';
-            const resumoSabores = caixa.reduce((acc, sabor) => {
-                acc[sabor] = (acc[sabor] || 0) + 1;
-                return acc;
-            }, {});
-            const textoSabores = Object.entries(resumoSabores)
-                .map(([nome, qtd]) => `${qtd}x ${nome}`)
-                .join(', ');
-
-            div.innerHTML = `
-                <h4>Caixinha #${index + 1}</h4>
-                <p>${textoSabores}</p>
-                <button class="btn-remover-item" onclick="removerDoCarrinho(${index})">Remover</button>
-            `;
-            lista.appendChild(div);
+        carrinho.forEach((caixa, i) => {
+            const resumo = caixa.reduce((acc, s) => { acc[s] = (acc[s] || 0) + 1; return acc; }, {});
+            const texto = Object.entries(resumo).map(([n, q]) => `${q}x ${n}`).join(', ');
+            lista.innerHTML += `<div class="item-carrinho"><h4>Caixa #${i+1}</h4><p>${texto}</p><button class="btn-remover-item" onclick="removerDoCarrinho(${i})">X</button></div>`;
         });
-
-        const totalValor = carrinho.length * PRECO_CAIXA;
-        totalTexto.innerText = `Total (${carrinho.length} caixas): R$ ${totalValor.toFixed(2).replace('.', ',')}`;
-        btnFinalizar.classList.add('liberado');
-        atualizarLinkWhatsApp(totalValor);
+        document.getElementById('total-carrinho').innerText = `Total: R$ ${(carrinho.length * PRECO_CAIXA).toFixed(2).replace('.', ',')}`;
+        validarFinalizacao();
     }
 
-    function atualizarLinkWhatsApp(total) {
-        let msg = "*Olá! Gostaria de fazer um pedido no Amor e Cacau:* 🎁%0A%0A";
-        carrinho.forEach((caixa, index) => {
-            msg += `*📦 Caixinha ${index + 1}:*%0A`;
-            const resumoSabores = caixa.reduce((acc, sabor) => {
-                acc[sabor] = (acc[sabor] || 0) + 1;
-                return acc;
-            }, {});
-            Object.entries(resumoSabores).forEach(([nome, qtd]) => {
-                msg += `- ${qtd}x ${nome}%0A`;
+    function validarFinalizacao() {
+        const nome = document.getElementById('nome-cliente').value;
+        const metodo = document.getElementById('metodo-entrega').value;
+        const btn = document.getElementById('btn-finalizar');
+        
+        if(nome.length > 2 && metodo !== "" && carrinho.length > 0) {
+            btn.classList.add('liberado');
+            let msg = `*Pedido Amor e Cacau*%0A*Cliente:* ${nome}%0A*Entrega:* ${metodo}%0A%0A`;
+            carrinho.forEach((c, i) => {
+                msg += `*Caixa ${i+1}:* `;
+                const resumo = c.reduce((acc, s) => { acc[s] = (acc[s] || 0) + 1; return acc; }, {});
+                msg += Object.entries(resumo).map(([n, q]) => `${q}x ${n}`).join(', ') + `%0A`;
             });
-            msg += "%0A";
-        });
-        msg += `*💰 Valor Total: R$ ${total.toFixed(2).replace('.', ',')}*`;
-        const telefone = "5519992483488"; 
-        document.getElementById('btn-finalizar').href = `https://wa.me/${telefone}?text=${msg}`;
+            msg += `%0A*Total: R$ ${(carrinho.length * PRECO_CAIXA).toFixed(2)}*`;
+            btn.href = `https://wa.me/5519992483488?text=${msg}`;
+        } else {
+            btn.classList.remove('liberado');
+        }
     }
 
     renderizarBotoesSabores();
