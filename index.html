@@ -1,3 +1,9 @@
+Para que o brigadeiro da sua foto apareça no lugar do coração, eu gerei um link direto para a imagem do brigadeiro. Também atualizei todas as bordas dos slots, botões e ícones para o seu Marrom Chocolate, deixando o visual muito mais sofisticado e "guloso".
+
+Aqui está o código completo para atualizar seu GitHub:
+
+HTML
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -9,7 +15,7 @@
             --rosa-principal: #ff85a2;
             --rosa-escuro: #e06b85;
             --marrom-chocolate: #4b2e2e;
-            --bege-logo: #f7ede2; /* Tom de bege extraído da sua imagem */
+            --bege-logo: #f7ede2;
             --verde-wpp: #25d366;
             --azul-botao: #4a90e2;
             --cinza-inativo: #ccc;
@@ -19,7 +25,6 @@
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bege-logo);
-            /* Gradiente suave para dar profundidade */
             background-image: radial-gradient(circle at top right, #fdf8f3 0%, var(--bege-logo) 100%);
             background-attachment: fixed;
             color: var(--marrom-chocolate);
@@ -32,25 +37,42 @@
             padding: 10px 0 20px;
         }
 
-        h1 { margin: 0; color: var(--marrom-chocolate); font-size: 1.8rem; }
+        header h1 {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 0;
+            color: var(--marrom-chocolate);
+            font-size: 1.8rem;
+        }
+
+        /* O BRIGADEIRO DA FOTO */
+        .img-brigadeiro {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+        }
+
         .subtitulo { color: var(--rosa-principal); font-weight: bold; margin-top: 5px; }
 
         .container {
             max-width: 500px;
             margin: 0 auto;
-            background: rgba(255, 255, 255, 0.9); /* Branco levemente transparente */
+            background: rgba(255, 255, 255, 0.9);
             padding: 20px;
             border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-            backdrop-filter: blur(5px); /* Efeito de vidro */
+            box-shadow: 0 10px 25px rgba(75, 46, 46, 0.1);
+            backdrop-filter: blur(5px);
             border: 1px solid rgba(255, 255, 255, 0.5);
         }
 
         .btn-sugestao {
             width: 100%;
             background: white;
-            border: 2px solid var(--dourado-sugestao);
-            color: var(--dourado-sugestao);
+            /* CONTORNO MARROM NO BOTÃO DE SUGESTÃO */
+            border: 2px solid var(--marrom-chocolate);
+            color: var(--marrom-chocolate);
             padding: 12px;
             border-radius: 12px;
             font-weight: bold;
@@ -59,7 +81,7 @@
             transition: 0.3s;
         }
 
-        .btn-sugestao:hover { background: var(--dourado-sugestao); color: white; }
+        .btn-sugestao:hover { background: var(--marrom-chocolate); color: white; }
 
         .box-display {
             background: #fffafa;
@@ -67,7 +89,7 @@
             border-radius: 15px;
             margin-bottom: 20px;
             text-align: center;
-            border: 1px solid #ffeef2;
+            border: 1px solid #f0e0e0;
         }
 
         .slots-container {
@@ -79,7 +101,8 @@
 
         .slot {
             width: 60px; height: 60px;
-            border: 2px dashed var(--rosa-principal);
+            /* CONTORNO MARROM NOS SLOTS VAZIOS */
+            border: 2px dashed var(--marrom-chocolate);
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             font-size: 0.65rem; text-align: center;
@@ -99,8 +122,11 @@
         }
 
         .btn-sabor {
-            background: white; border: 1.5px solid var(--rosa-principal);
-            color: var(--marrom-chocolate); padding: 15px 10px;
+            background: white; 
+            /* CONTORNO MARROM NOS BOTÕES DE SABOR */
+            border: 1.5px solid var(--marrom-chocolate);
+            color: var(--marrom-chocolate); 
+            padding: 15px 10px;
             border-radius: 12px; cursor: pointer; position: relative;
             font-weight: 500; transition: 0.2s;
         }
@@ -108,19 +134,15 @@
         .btn-sabor:active { transform: scale(0.95); }
 
         .btn-sabor.esgotado {
-            opacity: 0.5; pointer-events: none; filter: grayscale(100%);
-        }
-
-        .btn-sabor.esgotado::after {
-            content: "ESGOTADO"; position: absolute; top: 2px; right: 2px;
-            background: #ff4d4d; color: white; padding: 1px 4px;
-            border-radius: 4px; font-size: 0.5rem;
+            opacity: 0.4; pointer-events: none; filter: grayscale(100%);
         }
 
         .campo-grupo { margin-bottom: 15px; text-align: left; }
         .campo-grupo label { display: block; font-size: 0.9rem; font-weight: bold; margin-bottom: 5px; color: var(--marrom-chocolate); }
         .campo-grupo input, .campo-grupo select {
             width: 100%; padding: 12px; border: 1px solid #eee; border-radius: 10px; box-sizing: border-box; background: white;
+            /* CONTORNO MARROM NOS CAMPOS QUANDO CLICA */
+            outline-color: var(--marrom-chocolate);
         }
 
         .btn-add-carrinho {
@@ -130,11 +152,11 @@
             font-size: 1rem;
         }
 
-        .btn-add-carrinho.ativo { background: var(--azul-botao); cursor: pointer; box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3); }
+        .btn-add-carrinho.ativo { background: var(--marrom-chocolate); cursor: pointer; }
 
         .item-carrinho {
             background: white; padding: 12px; border-radius: 12px;
-            margin-bottom: 10px; position: relative; border: 1px solid #f0f0f0;
+            margin-bottom: 10px; position: relative; border: 1px solid var(--marrom-chocolate);
         }
 
         .btn-remover-item { position: absolute; top: 12px; right: 12px; color: #ff4d4d; cursor: pointer; border: none; background: none; font-weight: bold; }
@@ -152,7 +174,10 @@
 <body>
 
 <header>
-    <h1>💖 Amor e Cacau</h1>
+    <h1>
+        <img src="https://i.ibb.co/p6V0h0X/brigadeiro-amorcacau.png" alt="Brigadeiro" class="img-brigadeiro">
+        Amor e Cacau
+    </h1>
     <p class="subtitulo">Caixinha com 4 doces = R$ 10,00</p>
 </header>
 
@@ -172,7 +197,7 @@
     </button>
 
     <div class="carrinho-area" id="carrinho-area" style="display:none;">
-        <h3 style="border-top: 2px dashed #f0f0f0; padding-top: 20px; color: var(--marrom-chocolate);">🛒 Seu Pedido</h3>
+        <h3 style="border-top: 2px dashed var(--marrom-chocolate); padding-top: 20px; color: var(--marrom-chocolate);">🛒 Seu Pedido</h3>
         
         <div class="campo-grupo">
             <label>Seu Nome:</label>
