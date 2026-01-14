@@ -9,7 +9,7 @@
             --rosa-principal: #ff85a2;
             --rosa-escuro: #e06b85;
             --marrom-chocolate: #4b2e2e;
-            --bege-claro: #fff5f7;
+            --bege-logo: #f7ede2; /* Tom de bege extraído da sua imagem */
             --verde-wpp: #25d366;
             --azul-botao: #4a90e2;
             --cinza-inativo: #ccc;
@@ -18,7 +18,10 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bege-claro);
+            background-color: var(--bege-logo);
+            /* Gradiente suave para dar profundidade */
+            background-image: radial-gradient(circle at top right, #fdf8f3 0%, var(--bege-logo) 100%);
+            background-attachment: fixed;
             color: var(--marrom-chocolate);
             margin: 0;
             padding: 20px;
@@ -29,16 +32,18 @@
             padding: 10px 0 20px;
         }
 
-        h1 { margin: 0; color: var(--marrom-chocolate); }
+        h1 { margin: 0; color: var(--marrom-chocolate); font-size: 1.8rem; }
         .subtitulo { color: var(--rosa-principal); font-weight: bold; margin-top: 5px; }
 
         .container {
             max-width: 500px;
             margin: 0 auto;
-            background: white;
+            background: rgba(255, 255, 255, 0.9); /* Branco levemente transparente */
             padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            backdrop-filter: blur(5px); /* Efeito de vidro */
+            border: 1px solid rgba(255, 255, 255, 0.5);
         }
 
         .btn-sugestao {
@@ -46,18 +51,20 @@
             background: white;
             border: 2px solid var(--dourado-sugestao);
             color: var(--dourado-sugestao);
-            padding: 10px;
-            border-radius: 8px;
+            padding: 12px;
+            border-radius: 12px;
             font-weight: bold;
             margin-bottom: 20px;
             cursor: pointer;
             transition: 0.3s;
         }
 
+        .btn-sugestao:hover { background: var(--dourado-sugestao); color: white; }
+
         .box-display {
-            background: #fdf0f3;
+            background: #fffafa;
             padding: 15px;
-            border-radius: 10px;
+            border-radius: 15px;
             margin-bottom: 20px;
             text-align: center;
             border: 1px solid #ffeef2;
@@ -71,12 +78,13 @@
         }
 
         .slot {
-            width: 55px; height: 55px;
+            width: 60px; height: 60px;
             border: 2px dashed var(--rosa-principal);
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             font-size: 0.65rem; text-align: center;
             background: white; cursor: pointer; overflow: hidden;
+            transition: 0.2s;
         }
 
         .slot.filled {
@@ -87,53 +95,58 @@
 
         .lista-sabores {
             display: grid; grid-template-columns: 1fr 1fr;
-            gap: 8px; margin-bottom: 20px;
+            gap: 10px; margin-bottom: 20px;
         }
 
         .btn-sabor {
-            background: white; border: 1px solid var(--rosa-principal);
+            background: white; border: 1.5px solid var(--rosa-principal);
             color: var(--marrom-chocolate); padding: 15px 10px;
-            border-radius: 8px; cursor: pointer; position: relative;
+            border-radius: 12px; cursor: pointer; position: relative;
+            font-weight: 500; transition: 0.2s;
         }
 
+        .btn-sabor:active { transform: scale(0.95); }
+
         .btn-sabor.esgotado {
-            opacity: 0.6; pointer-events: none; filter: grayscale(100%);
+            opacity: 0.5; pointer-events: none; filter: grayscale(100%);
         }
 
         .btn-sabor.esgotado::after {
             content: "ESGOTADO"; position: absolute; top: 2px; right: 2px;
             background: #ff4d4d; color: white; padding: 1px 4px;
-            border-radius: 3px; font-size: 0.5rem;
+            border-radius: 4px; font-size: 0.5rem;
         }
 
         .campo-grupo { margin-bottom: 15px; text-align: left; }
-        .campo-grupo label { display: block; font-size: 0.9rem; font-weight: bold; margin-bottom: 5px; }
+        .campo-grupo label { display: block; font-size: 0.9rem; font-weight: bold; margin-bottom: 5px; color: var(--marrom-chocolate); }
         .campo-grupo input, .campo-grupo select {
-            width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box;
+            width: 100%; padding: 12px; border: 1px solid #eee; border-radius: 10px; box-sizing: border-box; background: white;
         }
 
         .btn-add-carrinho {
             display: block; width: 100%; background: var(--cinza-inativo);
-            color: white; border: none; padding: 12px; border-radius: 8px;
+            color: white; border: none; padding: 15px; border-radius: 12px;
             font-weight: bold; cursor: not-allowed; margin-bottom: 20px;
+            font-size: 1rem;
         }
 
-        .btn-add-carrinho.ativo { background: var(--azul-botao); cursor: pointer; }
+        .btn-add-carrinho.ativo { background: var(--azul-botao); cursor: pointer; box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3); }
 
         .item-carrinho {
-            background: #f9f9f9; padding: 10px; border-radius: 8px;
-            margin-bottom: 10px; position: relative; border: 1px solid #eee;
+            background: white; padding: 12px; border-radius: 12px;
+            margin-bottom: 10px; position: relative; border: 1px solid #f0f0f0;
         }
 
-        .btn-remover-item { position: absolute; top: 10px; right: 10px; color: #d00; cursor: pointer; border: none; background: none; font-weight: bold; }
+        .btn-remover-item { position: absolute; top: 12px; right: 12px; color: #ff4d4d; cursor: pointer; border: none; background: none; font-weight: bold; }
 
         .btn-whatsapp {
             display: block; width: 100%; background: var(--verde-wpp);
-            color: white; text-decoration: none; padding: 15px;
-            border-radius: 8px; font-weight: bold; opacity: 0.5; pointer-events: none; text-align: center;
+            color: white; text-decoration: none; padding: 16px;
+            border-radius: 12px; font-weight: bold; opacity: 0.5; pointer-events: none; text-align: center;
+            font-size: 1.1rem;
         }
 
-        .btn-whatsapp.liberado { opacity: 1; pointer-events: auto; }
+        .btn-whatsapp.liberado { opacity: 1; pointer-events: auto; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3); }
     </style>
 </head>
 <body>
@@ -147,9 +160,9 @@
     <button class="btn-sugestao" onclick="sugestaoDoDia()">✨ Sugestão do Dia (Mix da Casa)</button>
 
     <div class="box-display">
-        <span class="box-title" id="contador-texto">1. Monte sua caixinha (0/4):</span>
-        <div class="slots-container" id="slots-area"></div>
-        <p style="font-size:0.7rem; color:#888;">Toque no doce para remover</p>
+        <span class="box-title" id="contador-texto" style="font-weight: bold;">1. Monte sua caixinha (0/4):</span>
+        <div class="slots-container" id="slots-area" style="margin-top: 15px;"></div>
+        <p style="font-size:0.75rem; color:#a38f85; margin-top: 10px;">Toque no doce para remover</p>
     </div>
 
     <div class="lista-sabores" id="botoes-sabores"></div>
@@ -159,31 +172,31 @@
     </button>
 
     <div class="carrinho-area" id="carrinho-area" style="display:none;">
-        <h3 style="border-top: 1px solid #eee; padding-top: 15px;">🛒 Seu Pedido</h3>
+        <h3 style="border-top: 2px dashed #f0f0f0; padding-top: 20px; color: var(--marrom-chocolate);">🛒 Seu Pedido</h3>
         
         <div class="campo-grupo">
             <label>Seu Nome:</label>
-            <input type="text" id="nome-cliente" placeholder="Digite seu nome" oninput="validarFinalizacao()">
+            <input type="text" id="nome-cliente" placeholder="Como podemos te chamar?" oninput="validarFinalizacao()">
         </div>
 
         <div class="campo-grupo">
             <label>Como deseja receber?</label>
             <select id="metodo-entrega" onchange="toggleEndereco()">
-                <option value="">Selecione uma opção...</option>
+                <option value="">Selecione...</option>
                 <option value="Retirada no Local">Vou retirar no local</option>
                 <option value="Uber Moto">Entrega via Uber Moto (Vou cotar o valor)</option>
             </select>
         </div>
 
         <div class="campo-grupo" id="div-endereco" style="display:none;">
-            <label>Endereço de Entrega:</label>
+            <label>Endereço Completo:</label>
             <input type="text" id="endereco-cliente" placeholder="Rua, número e bairro" oninput="validarFinalizacao()">
         </div>
 
         <div id="lista-itens-carrinho"></div>
 
         <div style="text-align:center; margin-top:20px;">
-            <span id="total-carrinho" style="font-size:1.2rem; font-weight:bold; display:block; margin-bottom:10px;">Total: R$ 0,00</span>
+            <span id="total-carrinho" style="font-size:1.4rem; font-weight:bold; display:block; margin-bottom:15px; color: var(--marrom-chocolate);">Total: R$ 0,00</span>
             <a href="#" id="btn-finalizar" class="btn-whatsapp">Finalizar no WhatsApp</a>
         </div>
     </div>
@@ -226,13 +239,16 @@
             const slot = document.createElement('div');
             slot.className = caixaAtual[i] ? 'slot filled' : 'slot';
             slot.innerHTML = caixaAtual[i] ? `<span>${caixaAtual[i]}</span>` : '';
-            slot.onclick = () => { caixaAtual.splice(i, 1); atualizarSlots(); };
+            slot.onclick = () => { if(caixaAtual[i]) { caixaAtual.splice(i, 1); atualizarSlots(); } };
             area.appendChild(slot);
         }
         const btn = document.getElementById('btn-add-carrinho');
         btn.disabled = caixaAtual.length !== MAX_SLOTS;
         btn.className = btn.disabled ? 'btn-add-carrinho' : 'btn-add-carrinho ativo';
-        btn.innerText = btn.disabled ? `Faltam ${MAX_SLOTS - caixaAtual.length} doces` : "Adicionar Caixinha";
+        btn.innerText = btn.disabled ? `Faltam ${MAX_SLOTS - caixaAtual.length} doces` : "Adicionar Caixinha ao Pedido";
+        
+        const contador = document.getElementById('contador-texto');
+        contador.innerText = `1. Monte sua caixinha (${caixaAtual.length}/4):`;
     }
 
     function adicionarAoCarrinho() {
@@ -241,6 +257,7 @@
         atualizarSlots();
         renderizarCarrinho();
         document.getElementById('carrinho-area').style.display = 'block';
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
     }
 
     function removerDoCarrinho(i) { carrinho.splice(i, 1); renderizarCarrinho(); }
@@ -258,7 +275,7 @@
         carrinho.forEach((caixa, i) => {
             const resumo = caixa.reduce((acc, s) => { acc[s] = (acc[s] || 0) + 1; return acc; }, {});
             const texto = Object.entries(resumo).map(([n, q]) => `${q}x ${n}`).join(', ');
-            lista.innerHTML += `<div class="item-carrinho"><h4>Caixa #${i+1}</h4><p>${texto}</p><button class="btn-remover-item" onclick="removerDoCarrinho(${i})">X</button></div>`;
+            lista.innerHTML += `<div class="item-carrinho"><h4>📦 Caixinha #${i+1}</h4><p style="font-size:0.9rem; color:#666;">${texto}</p><button class="btn-remover-item" onclick="removerDoCarrinho(${i})">Remover</button></div>`;
         });
         document.getElementById('total-carrinho').innerText = `Total: R$ ${(carrinho.length * PRECO_CAIXA).toFixed(2).replace('.', ',')}`;
         validarFinalizacao();
@@ -270,23 +287,21 @@
         const endereco = document.getElementById('endereco-cliente').value;
         const btn = document.getElementById('btn-finalizar');
         
-        let pronto = (nome.length > 2 && metodo !== "" && carrinho.length > 0);
-        
-        // Se for Uber Moto, também precisa do endereço
-        if (metodo === "Uber Moto" && endereco.length < 5) pronto = false;
+        let pronto = (nome.trim().length > 2 && metodo !== "" && carrinho.length > 0);
+        if (metodo === "Uber Moto" && endereco.trim().length < 5) pronto = false;
 
         if(pronto) {
             btn.classList.add('liberado');
-            let msg = `*Pedido Amor e Cacau*%0A*Cliente:* ${nome}%0A*Entrega:* ${metodo}%0A`;
+            let msg = `*Novo Pedido - Amor e Cacau*%0A%0A*Cliente:* ${nome}%0A*Entrega:* ${metodo}%0A`;
             if(metodo === "Uber Moto") msg += `*Endereço:* ${endereco}%0A`;
-            msg += `%0A`;
+            msg += `%0A---%0A`;
             
             carrinho.forEach((c, i) => {
                 msg += `*Caixa ${i+1}:* `;
                 const resumo = c.reduce((acc, s) => { acc[s] = (acc[s] || 0) + 1; return acc; }, {});
                 msg += Object.entries(resumo).map(([n, q]) => `${q}x ${n}`).join(', ') + `%0A`;
             });
-            msg += `%0A*Total: R$ ${(carrinho.length * PRECO_CAIXA).toFixed(2)}*`;
+            msg += `---%0A*💰 Total: R$ ${(carrinho.length * PRECO_CAIXA).toFixed(2).replace('.', ',')}*`;
             btn.href = `https://wa.me/5519992483488?text=${msg}`;
         } else {
             btn.classList.remove('liberado');
@@ -298,4 +313,3 @@
 </script>
 </body>
 </html>
-
