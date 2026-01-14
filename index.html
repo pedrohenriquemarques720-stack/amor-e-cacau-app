@@ -1,3 +1,11 @@
+Aqui está o código atualizado. Fiz as seguintes alterações:
+
+Paleta de Cores: Substituí o rosa e marrom das bordas, slots e botões pela cor Vinho (#800020).
+
+Imagem: Atualizei o link da imagem no cabeçalho para o brigadeiro em estilo cartoon com a forminha vinho que geramos.
+
+HTML
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -6,14 +14,12 @@
     <title>Amor e Cacau | Encomendas</title>
     <style>
         :root {
+            --cor-vinho: #800020; /* Nova cor principal para os contornos */
             --rosa-principal: #ff85a2;
-            --rosa-escuro: #e06b85;
             --marrom-chocolate: #4b2e2e;
             --bege-logo: #f7ede2;
             --verde-wpp: #25d366;
-            --azul-botao: #4a90e2;
             --cinza-inativo: #ccc;
-            --dourado-sugestao: #f39c12;
         }
 
         body {
@@ -35,17 +41,18 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 15px;
             margin: 0;
-            color: var(--marrom-chocolate);
+            color: var(--cor-vinho);
             font-size: 1.8rem;
         }
 
-        /* O BRIGADEIRO DA FOTO */
+        /* O BRIGADEIRO CARTOON */
         .img-brigadeiro {
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
             object-fit: contain;
+            border-radius: 50%;
         }
 
         .subtitulo { color: var(--rosa-principal); font-weight: bold; margin-top: 5px; }
@@ -56,7 +63,7 @@
             background: rgba(255, 255, 255, 0.9);
             padding: 20px;
             border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(75, 46, 46, 0.1);
+            box-shadow: 0 10px 25px rgba(128, 0, 32, 0.1);
             backdrop-filter: blur(5px);
             border: 1px solid rgba(255, 255, 255, 0.5);
         }
@@ -64,9 +71,8 @@
         .btn-sugestao {
             width: 100%;
             background: white;
-            /* CONTORNO MARROM NO BOTÃO DE SUGESTÃO */
-            border: 2px solid var(--marrom-chocolate);
-            color: var(--marrom-chocolate);
+            border: 2px solid var(--cor-vinho);
+            color: var(--cor-vinho);
             padding: 12px;
             border-radius: 12px;
             font-weight: bold;
@@ -75,7 +81,7 @@
             transition: 0.3s;
         }
 
-        .btn-sugestao:hover { background: var(--marrom-chocolate); color: white; }
+        .btn-sugestao:hover { background: var(--cor-vinho); color: white; }
 
         .box-display {
             background: #fffafa;
@@ -95,8 +101,7 @@
 
         .slot {
             width: 60px; height: 60px;
-            /* CONTORNO MARROM NOS SLOTS VAZIOS */
-            border: 2px dashed var(--marrom-chocolate);
+            border: 2px dashed var(--cor-vinho);
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             font-size: 0.65rem; text-align: center;
@@ -105,8 +110,8 @@
         }
 
         .slot.filled {
-            border: 2px solid var(--marrom-chocolate);
-            background: var(--marrom-chocolate);
+            border: 2px solid var(--cor-vinho);
+            background: var(--cor-vinho);
             color: white; font-weight: bold;
         }
 
@@ -117,9 +122,8 @@
 
         .btn-sabor {
             background: white; 
-            /* CONTORNO MARROM NOS BOTÕES DE SABOR */
-            border: 1.5px solid var(--marrom-chocolate);
-            color: var(--marrom-chocolate); 
+            border: 1.5px solid var(--cor-vinho);
+            color: var(--cor-vinho); 
             padding: 15px 10px;
             border-radius: 12px; cursor: pointer; position: relative;
             font-weight: 500; transition: 0.2s;
@@ -132,11 +136,10 @@
         }
 
         .campo-grupo { margin-bottom: 15px; text-align: left; }
-        .campo-grupo label { display: block; font-size: 0.9rem; font-weight: bold; margin-bottom: 5px; color: var(--marrom-chocolate); }
+        .campo-grupo label { display: block; font-size: 0.9rem; font-weight: bold; margin-bottom: 5px; color: var(--cor-vinho); }
         .campo-grupo input, .campo-grupo select {
             width: 100%; padding: 12px; border: 1px solid #eee; border-radius: 10px; box-sizing: border-box; background: white;
-            /* CONTORNO MARROM NOS CAMPOS QUANDO CLICA */
-            outline-color: var(--marrom-chocolate);
+            outline-color: var(--cor-vinho);
         }
 
         .btn-add-carrinho {
@@ -146,11 +149,11 @@
             font-size: 1rem;
         }
 
-        .btn-add-carrinho.ativo { background: var(--marrom-chocolate); cursor: pointer; }
+        .btn-add-carrinho.ativo { background: var(--cor-vinho); cursor: pointer; }
 
         .item-carrinho {
             background: white; padding: 12px; border-radius: 12px;
-            margin-bottom: 10px; position: relative; border: 1px solid var(--marrom-chocolate);
+            margin-bottom: 10px; position: relative; border: 1px solid var(--cor-vinho);
         }
 
         .btn-remover-item { position: absolute; top: 12px; right: 12px; color: #ff4d4d; cursor: pointer; border: none; background: none; font-weight: bold; }
@@ -169,7 +172,7 @@
 
 <header>
     <h1>
-        <img src="https://i.ibb.co/p6V0h0X/brigadeiro-amorcacau.png" alt="Brigadeiro" class="img-brigadeiro">
+        <img src="https://files.catbox.moe/p8h8r0.png" alt="Brigadeiro Vinho" class="img-brigadeiro">
         Amor e Cacau
     </h1>
     <p class="subtitulo">Caixinha com 4 doces = R$ 10,00</p>
@@ -191,7 +194,7 @@
     </button>
 
     <div class="carrinho-area" id="carrinho-area" style="display:none;">
-        <h3 style="border-top: 2px dashed var(--marrom-chocolate); padding-top: 20px; color: var(--marrom-chocolate);">🛒 Seu Pedido</h3>
+        <h3 style="border-top: 2px dashed var(--cor-vinho); padding-top: 20px; color: var(--cor-vinho);">🛒 Seu Pedido</h3>
         
         <div class="campo-grupo">
             <label>Seu Nome:</label>
@@ -215,7 +218,7 @@
         <div id="lista-itens-carrinho"></div>
 
         <div style="text-align:center; margin-top:20px;">
-            <span id="total-carrinho" style="font-size:1.4rem; font-weight:bold; display:block; margin-bottom:15px; color: var(--marrom-chocolate);">Total: R$ 0,00</span>
+            <span id="total-carrinho" style="font-size:1.4rem; font-weight:bold; display:block; margin-bottom:15px; color: var(--cor-vinho);">Total: R$ 0,00</span>
             <a href="#" id="btn-finalizar" class="btn-whatsapp">Finalizar no WhatsApp</a>
         </div>
     </div>
@@ -332,4 +335,3 @@
 </script>
 </body>
 </html>
-
