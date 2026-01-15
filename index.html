@@ -6,7 +6,7 @@
     <title>Amor e Cacau | Encomendas</title>
     <style>
         :root {
-            --cor-vinho: #800020; /* Cor principal Vinho */
+            --cor-vinho: #800020;
             --rosa-principal: #ff85a2;
             --marrom-chocolate: #4b2e2e;
             --bege-logo: #f7ede2;
@@ -50,6 +50,19 @@
             box-shadow: 0 10px 25px rgba(128, 0, 32, 0.1);
             backdrop-filter: blur(5px);
             border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        /* Aviso de Fechado */
+        #aviso-fechado {
+            display: none;
+            background: #ffcccc;
+            color: #cc0000;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 20px;
+            border: 2px solid #cc0000;
         }
 
         .btn-sugestao {
@@ -162,47 +175,54 @@
 </header>
 
 <div class="container">
-    <button class="btn-sugestao" onclick="sugestaoDoDia()">✨ Sugestão do Dia (Mix da Casa)</button>
-
-    <div class="box-display">
-        <span class="box-title" id="contador-texto" style="font-weight: bold;">1. Monte sua caixinha (0/4):</span>
-        <div class="slots-container" id="slots-area" style="margin-top: 15px;"></div>
-        <p style="font-size:0.75rem; color:#a38f85; margin-top: 10px;">Toque no doce para remover</p>
+    <div id="aviso-fechado">
+        🌙 Desculpe, estamos fechados agora!<br>
+        Aceitamos pedidos apenas até as 18:00.
     </div>
 
-    <div class="lista-sabores" id="botoes-sabores"></div>
+    <div id="conteudo-app">
+        <button class="btn-sugestao" onclick="sugestaoDoDia()">✨ Sugestão do Dia (Mix da Casa)</button>
 
-    <button id="btn-add-carrinho" class="btn-add-carrinho" onclick="adicionarAoCarrinho()">
-        Preencha a caixa
-    </button>
-
-    <div class="carrinho-area" id="carrinho-area" style="display:none;">
-        <h3 style="border-top: 2px dashed var(--cor-vinho); padding-top: 20px; color: var(--cor-vinho);">🛒 Seu Pedido</h3>
-        
-        <div class="campo-grupo">
-            <label>Seu Nome:</label>
-            <input type="text" id="nome-cliente" placeholder="Como podemos te chamar?" oninput="validarFinalizacao()">
+        <div class="box-display">
+            <span class="box-title" id="contador-texto" style="font-weight: bold;">1. Monte sua caixinha (0/4):</span>
+            <div class="slots-container" id="slots-area" style="margin-top: 15px;"></div>
+            <p style="font-size:0.75rem; color:#a38f85; margin-top: 10px;">Toque no doce para remover</p>
         </div>
 
-        <div class="campo-grupo">
-            <label>Como deseja receber?</label>
-            <select id="metodo-entrega" onchange="toggleEndereco()">
-                <option value="">Selecione...</option>
-                <option value="Retirada no Local">Vou retirar no local</option>
-                <option value="Uber Moto">Entrega via Uber Moto (Vou cotar o valor)</option>
-            </select>
-        </div>
+        <div class="lista-sabores" id="botoes-sabores"></div>
 
-        <div class="campo-grupo" id="div-endereco" style="display:none;">
-            <label>Endereço Completo:</label>
-            <input type="text" id="endereco-cliente" placeholder="Rua, número e bairro" oninput="validarFinalizacao()">
-        </div>
+        <button id="btn-add-carrinho" class="btn-add-carrinho" onclick="adicionarAoCarrinho()">
+            Preencha a caixa
+        </button>
 
-        <div id="lista-itens-carrinho"></div>
+        <div class="carrinho-area" id="carrinho-area" style="display:none;">
+            <h3 style="border-top: 2px dashed var(--cor-vinho); padding-top: 20px; color: var(--cor-vinho);">🛒 Seu Pedido</h3>
+            
+            <div class="campo-grupo">
+                <label>Seu Nome:</label>
+                <input type="text" id="nome-cliente" placeholder="Como podemos te chamar?" oninput="validarFinalizacao()">
+            </div>
 
-        <div style="text-align:center; margin-top:20px;">
-            <span id="total-carrinho" style="font-size:1.4rem; font-weight:bold; display:block; margin-bottom:15px; color: var(--cor-vinho);">Total: R$ 0,00</span>
-            <a href="#" id="btn-finalizar" class="btn-whatsapp">Finalizar no WhatsApp</a>
+            <div class="campo-grupo">
+                <label>Como deseja receber?</label>
+                <select id="metodo-entrega" onchange="toggleEndereco()">
+                    <option value="">Selecione...</option>
+                    <option value="Retirada no Local">Vou retirar no local</option>
+                    <option value="Uber Moto">Entrega via Uber Moto (Vou cotar o valor)</option>
+                </select>
+            </div>
+
+            <div class="campo-grupo" id="div-endereco" style="display:none;">
+                <label>Endereço Completo:</label>
+                <input type="text" id="endereco-cliente" placeholder="Rua, número e bairro" oninput="validarFinalizacao()">
+            </div>
+
+            <div id="lista-itens-carrinho"></div>
+
+            <div style="text-align:center; margin-top:20px;">
+                <span id="total-carrinho" style="font-size:1.4rem; font-weight:bold; display:block; margin-bottom:15px; color: var(--cor-vinho);">Total: R$ 0,00</span>
+                <a href="#" id="btn-finalizar" class="btn-whatsapp">Finalizar no WhatsApp</a>
+            </div>
         </div>
     </div>
 </div>
@@ -213,6 +233,19 @@
     const PRECO_CAIXA = 10.00;
     let caixaAtual = [];
     let carrinho = [];
+
+    // --- LOGICA DE BLOQUEIO POR HORARIO ---
+    function verificarHorario() {
+        const agora = new Date();
+        // Ajuste para Horário de Brasília (UTC-3)
+        const horaBrasilia = agora.getUTCHours() - 3;
+        
+        // Se a hora for maior ou igual a 18h OU menor que 8h (opcional)
+        if (horaBrasilia >= 18 || horaBrasilia < 8) {
+            document.getElementById('conteudo-app').style.display = 'none';
+            document.getElementById('aviso-fechado').style.display = 'block';
+        }
+    }
 
     function renderizarBotoesSabores() {
         const div = document.getElementById('botoes-sabores');
@@ -296,8 +329,15 @@
         if (metodo === "Uber Moto" && endereco.trim().length < 5) pronto = false;
 
         if(pronto) {
+            // Gerar um ID de pedido simples para controle (ex: #5432)
+            const pedidoID = Math.floor(1000 + Math.random() * 9000);
+            const dataPedido = new Date().toLocaleDateString('pt-BR');
+
             btn.classList.add('liberado');
-            let msg = `*Novo Pedido - Amor e Cacau*%0A%0A*Cliente:* ${nome}%0A*Entrega:* ${metodo}%0A`;
+            let msg = `*PEDIDO #${pedidoID} - Amor e Cacau*%0A`;
+            msg += `_Data: ${dataPedido}_%0A%0A`;
+            msg += `*Cliente:* ${nome}%0A*Entrega:* ${metodo}%0A`;
+            
             if(metodo === "Uber Moto") msg += `*Endereço:* ${endereco}%0A`;
             msg += `%0A---%0A`;
             
@@ -313,6 +353,8 @@
         }
     }
 
+    // Inicialização
+    verificarHorario();
     renderizarBotoesSabores();
     atualizarSlots();
 </script>
