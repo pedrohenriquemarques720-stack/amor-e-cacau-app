@@ -52,6 +52,40 @@
             border: 1px solid rgba(255, 255, 255, 0.5);
         }
 
+        /* --- ESTILO DAS ABAS --- */
+        .tabs-nav {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--bege-logo);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: none;
+            color: var(--marrom-chocolate);
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 10px 10px 0 0;
+            transition: 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .tab-btn.active {
+            background: var(--cor-vinho);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
         /* Aviso de Fechado */
         #aviso-fechado {
             display: none;
@@ -163,6 +197,17 @@
         }
 
         .btn-whatsapp.liberado { opacity: 1; pointer-events: auto; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3); }
+
+        /* Ajuste para Mobile */
+        @media (max-width: 600px) {
+            .tabs-nav {
+                flex-direction: column;
+            }
+            .tab-btn {
+                border-radius: 10px;
+                text-align: center;
+            }
+        }
     </style>
 </head>
 <body>
@@ -180,20 +225,37 @@
         Aceitamos pedidos apenas até as 18:00.
     </div>
 
-    <div id="conteudo-app">
-        <button class="btn-sugestao" onclick="sugestaoDoDia()">✨ Sugestão do Dia (Mix da Casa)</button>
+    <div class="tabs-nav">
+        <button class="tab-btn" onclick="abrirAba(event, 'aba1')">Opção 1</button>
+        <button class="tab-btn" onclick="abrirAba(event, 'aba2')">Opção 2</button>
+        <button class="tab-btn active" onclick="abrirAba(event, 'aba3')">Monte sua Caixa</button>
+    </div>
 
-        <div class="box-display">
-            <span class="box-title" id="contador-texto" style="font-weight: bold;">1. Monte sua caixinha (0/4):</span>
-            <div class="slots-container" id="slots-area" style="margin-top: 15px;"></div>
-            <p style="font-size:0.75rem; color:#a38f85; margin-top: 10px;">Toque no doce para remover</p>
+    <div id="conteudo-app">
+        
+        <div id="aba1" class="tab-content">
+            <p style="text-align: center; padding: 20px; color: #999;">Conteúdo em breve...</p>
         </div>
 
-        <div class="lista-sabores" id="botoes-sabores"></div>
+        <div id="aba2" class="tab-content">
+            <p style="text-align: center; padding: 20px; color: #999;">Conteúdo em breve...</p>
+        </div>
 
-        <button id="btn-add-carrinho" class="btn-add-carrinho" onclick="adicionarAoCarrinho()">
-            Preencha a caixa
-        </button>
+        <div id="aba3" class="tab-content active">
+            <button class="btn-sugestao" onclick="sugestaoDoDia()">✨ Sugestão do Dia (Mix da Casa)</button>
+
+            <div class="box-display">
+                <span class="box-title" id="contador-texto" style="font-weight: bold;">1. Monte sua caixinha (0/4):</span>
+                <div class="slots-container" id="slots-area" style="margin-top: 15px;"></div>
+                <p style="font-size:0.75rem; color:#a38f85; margin-top: 10px;">Toque no doce para remover</p>
+            </div>
+
+            <div class="lista-sabores" id="botoes-sabores"></div>
+
+            <button id="btn-add-carrinho" class="btn-add-carrinho" onclick="adicionarAoCarrinho()">
+                Preencha a caixa
+            </button>
+        </div>
 
         <div class="carrinho-area" id="carrinho-area" style="display:none;">
             <h3 style="border-top: 2px dashed var(--cor-vinho); padding-top: 20px; color: var(--cor-vinho);">🛒 Seu Pedido</h3>
@@ -234,13 +296,25 @@
     let caixaAtual = [];
     let carrinho = [];
 
+    // --- LOGICA DAS ABAS ---
+    function abrirAba(evt, nomeAba) {
+        let i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tab-content");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tab-btn");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(nomeAba).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+
     // --- LOGICA DE BLOQUEIO POR HORARIO ---
     function verificarHorario() {
         const agora = new Date();
-        // Ajuste para Horário de Brasília (UTC-3)
         const horaBrasilia = agora.getUTCHours() - 3;
-        
-        // Se a hora for maior ou igual a 18h OU menor que 8h (opcional)
         if (horaBrasilia >= 18 || horaBrasilia < 8) {
             document.getElementById('conteudo-app').style.display = 'none';
             document.getElementById('aviso-fechado').style.display = 'block';
@@ -272,6 +346,7 @@
 
     function atualizarSlots() {
         const area = document.getElementById('slots-area');
+        if(!area) return;
         area.innerHTML = '';
         for(let i=0; i<MAX_SLOTS; i++) {
             const slot = document.createElement('div');
@@ -329,18 +404,14 @@
         if (metodo === "Uber Moto" && endereco.trim().length < 5) pronto = false;
 
         if(pronto) {
-            // Gerar um ID de pedido simples para controle (ex: #5432)
             const pedidoID = Math.floor(1000 + Math.random() * 9000);
             const dataPedido = new Date().toLocaleDateString('pt-BR');
-
             btn.classList.add('liberado');
             let msg = `*PEDIDO #${pedidoID} - Amor e Cacau*%0A`;
             msg += `_Data: ${dataPedido}_%0A%0A`;
             msg += `*Cliente:* ${nome}%0A*Entrega:* ${metodo}%0A`;
-            
             if(metodo === "Uber Moto") msg += `*Endereço:* ${endereco}%0A`;
             msg += `%0A---%0A`;
-            
             carrinho.forEach((c, i) => {
                 msg += `*Caixa ${i+1}:* `;
                 const resumo = c.reduce((acc, s) => { acc[s] = (acc[s] || 0) + 1; return acc; }, {});
@@ -353,7 +424,6 @@
         }
     }
 
-    // Inicialização
     verificarHorario();
     renderizarBotoesSabores();
     atualizarSlots();
