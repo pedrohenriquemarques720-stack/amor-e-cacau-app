@@ -21,19 +21,18 @@
         body { font-family: 'Segoe UI', sans-serif; background-color: var(--bege-logo); color: var(--marrom-chocolate); margin: 0; padding: 15px; }
         .container { max-width: 500px; margin: 0 auto; background: white; padding: 20px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
 
-        /* NAVEGAÇÃO */
         .tabs-nav { display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 10px; }
         .tab-btn { flex: none; padding: 10px 15px; border: none; background: #f0f0f0; border-radius: 12px; font-weight: bold; cursor: pointer; }
         .tab-btn.active { background: var(--cor-vinho); color: white; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
-        /* CARDÁPIO (Sessão Intacta) */
+        /* CARDÁPIO */
         .cardapio-floral { text-align: center; padding: 20px; border: 2px solid var(--bege-logo); border-radius: 20px; background: #fffcf9; }
         .preco-lista { list-style: none; padding: 0; margin: 15px 0; border-top: 1px solid #eee; padding-top: 10px; }
         .preco-lista li { margin-bottom: 8px; font-weight: bold; }
 
-        /* MONTE SEU COMBO (Sessão Intacta) */
+        /* MONTE SEU COMBO */
         .box-display { background: #fffafa; padding: 15px; border-radius: 15px; margin-bottom: 20px; text-align: center; border: 1px solid #f0e0e0; }
         .slots-container { display: flex; justify-content: center; gap: 8px; margin-top: 10px; }
         .slot { width: 55px; height: 55px; border: 2px dashed var(--cor-vinho); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; background: white; cursor: pointer; text-align: center; }
@@ -43,15 +42,18 @@
         .item-escala { display: flex; align-items: center; justify-content: space-between; padding: 10px; border: 1px solid #eee; border-radius: 12px; margin-bottom: 8px; background: #fff; }
         .btn-ctrl { background: var(--cor-vinho); color: white; border: none; width: 28px; height: 28px; border-radius: 50%; font-weight: bold; cursor: pointer; }
 
-        /* PRONTA ENTREGA (Combos Fixos com bolinhas estilo slots) */
-        .card-fixo { display: flex; align-items: center; justify-content: space-between; padding: 12px; border: 1px solid #eee; border-radius: 15px; margin-bottom: 10px; cursor: pointer; transition: 0.2s; }
+        /* PRONTA ENTREGA */
+        .card-fixo { display: flex; align-items: center; padding: 12px; border: 1px solid #eee; border-radius: 15px; margin-bottom: 10px; cursor: pointer; transition: 0.2s; }
         .card-fixo.selected { border: 2px solid var(--cor-vinho); background: #fff5f7; }
-        .fixo-info { font-weight: bold; font-size: 0.85rem; flex: 1; margin-right: 10px; }
-        .fixo-slots { display: flex; gap: 4px; }
-        .slot-mini { width: 28px; height: 28px; border: 1.5px solid var(--cor-vinho); border-radius: 50%; background: var(--cor-vinho); color: white; font-size: 0.45rem; display: flex; align-items: center; justify-content: center; font-weight: bold; text-align: center; overflow: hidden; }
+        .bolinha-selecao { width: 22px; height: 22px; border: 2px dashed var(--cor-vinho); border-radius: 50%; margin-right: 15px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+        .card-fixo.selected .bolinha-selecao { border-style: solid; background: var(--cor-vinho); }
+        .card-fixo.selected .bolinha-selecao::after { content: '✓'; color: white; font-size: 12px; font-weight: bold; }
+        .fixo-info { font-weight: bold; font-size: 0.9rem; flex: 1; }
 
-        /* FINALIZAÇÃO */
-        .area-finalizar { margin-top: 25px; padding: 15px; border-top: 2px dashed #eee; background: #fdfdfd; border-radius: 15px; }
+        /* FINALIZAÇÃO (OCULTA POR PADRÃO) */
+        .area-finalizar { margin-top: 25px; padding: 15px; border-top: 2px dashed #eee; background: #fdfdfd; border-radius: 15px; display: none; }
+        .area-finalizar.visible { display: block; }
+        
         .btn-wpp { width: 100%; background: var(--verde-wpp); color: white; border: none; padding: 15px; border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer; margin-top: 10px; opacity: 0.5; pointer-events: none; }
         .btn-wpp.liberado { opacity: 1; pointer-events: auto; }
         input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; margin-bottom: 10px; box-sizing: border-box; }
@@ -88,8 +90,9 @@
     <div id="aba-pronta" class="tab-content">
         <h3 style="color: var(--cor-vinho)">🚚 Combos Prontos (4 un - R$ 10,00)</h3>
         <div id="lista-combos-fixos"></div>
+        <h3 id="total-pronta-texto" style="text-align: center; color: var(--cor-vinho); margin-top: 15px;">Total: R$ 0,00</h3>
 
-        <div class="area-finalizar">
+        <div class="area-finalizar" id="finalizar-pronta">
             <input type="text" id="nome-pronta" placeholder="Seu Nome" oninput="validar('pronta')">
             <select id="entrega-pronta" onchange="validar('pronta')">
                 <option value="">Como vai receber?</option>
@@ -107,12 +110,11 @@
             <div class="slots-container" id="slots-area"></div>
         </div>
         <div class="grid-botoes" id="botoes-sabores"></div>
-
         <h4 style="color: var(--cor-vinho); margin: 30px 0 10px;">🎉 Monte seu Cento (em partes de 25)</h4>
         <div id="lista-escala-cento"></div>
         <h3 id="total-cento-texto" style="text-align: center; color: var(--cor-vinho); font-size: 1.1rem;">Total Cento: R$ 0,00</h3>
-
-        <div class="area-finalizar">
+        
+        <div class="area-finalizar" id="finalizar-combo">
             <input type="text" id="nome-combo" placeholder="Seu Nome" oninput="validar('combo')">
             <select id="entrega-combo" onchange="validar('combo')">
                 <option value="">Como vai receber?</option>
@@ -147,7 +149,7 @@
     const SABORES = ["Tradicional", "Beijinho", "Ferrero", "Limão", "Café", "Maracujá"];
     let caixaAtual = []; 
     let escalaCento = {}; SABORES.forEach(s => escalaCento[s] = 0);
-    let comboFixoSelecionado = null;
+    let combosSelecionados = [];
     let autenticado = false;
 
     const COMBOS_FIXOS = [
@@ -171,17 +173,21 @@
 
     function renderCombosFixos() {
         document.getElementById('lista-combos-fixos').innerHTML = COMBOS_FIXOS.map((c, i) => `
-            <div class="card-fixo ${comboFixoSelecionado === i ? 'selected' : ''}" onclick="selecionarFixo(${i})">
+            <div class="card-fixo ${combosSelecionados.includes(i) ? 'selected' : ''}" onclick="toggleFixo(${i})">
+                <div class="bolinha-selecao"></div>
                 <div class="fixo-info">${c.n}</div>
-                <div class="fixo-slots">
-                    ${c.s.map(sab => `<div class="slot-mini">${sab}</div>`).join('')}
-                </div>
             </div>
         `).join('');
+        document.getElementById('total-pronta-texto').innerText = `Total: R$ ${combosSelecionados.length * 10},00`;
+        
+        // Mostrar/Ocultar campos de finalização
+        document.getElementById('finalizar-pronta').classList.toggle('visible', combosSelecionados.length > 0);
     }
 
-    function selecionarFixo(i) {
-        comboFixoSelecionado = i;
+    function toggleFixo(i) {
+        const index = combosSelecionados.indexOf(i);
+        if (index > -1) combosSelecionados.splice(index, 1);
+        else combosSelecionados.push(i);
         renderCombosFixos();
         validar('pronta');
     }
@@ -200,6 +206,7 @@
             </div>
         `).join('');
         document.getElementById('total-cento-texto').innerText = `Total Cento: R$ ${precos[totalPartes]},00`;
+        verificarVisibilidadeCombo();
         validar('combo');
     }
 
@@ -224,7 +231,14 @@
             area.appendChild(slot);
         }
         document.getElementById('contador-texto').innerText = `Caixinha (${caixaAtual.length}/4):`;
+        verificarVisibilidadeCombo();
         validar('combo');
+    }
+
+    function verificarVisibilidadeCombo() {
+        const totalCento = Object.values(escalaCento).reduce((a, b) => a + b, 0);
+        const temItem = (caixaAtual.length === 4 || totalCento > 0);
+        document.getElementById('finalizar-combo').classList.toggle('visible', temItem);
     }
 
     function validar(tipo) {
@@ -232,8 +246,6 @@
         const entrega = document.getElementById(`entrega-${tipo}`).value;
         const btn = document.getElementById(`btn-${tipo}`);
         let pronto = (nome.trim().length > 2 && entrega !== "");
-        if(tipo === 'pronta') pronto = pronto && comboFixoSelecionado !== null;
-        else pronto = pronto && (caixaAtual.length === 4 || Object.values(escalaCento).reduce((a, b) => a + b, 0) > 0);
         btn.classList.toggle('liberado', pronto);
     }
 
@@ -244,14 +256,17 @@
         let msg = `*Amor e Cacau*%0A*Nome:* ${nome}%0A*Entrega:* ${entrega}%0A%0A`;
 
         if(tipo === 'pronta') {
-            const combo = COMBOS_FIXOS[comboFixoSelecionado];
-            itens.push({nome: combo.n, sabores: combo.s, preco: 10});
-            msg += `*Pedido:* ${combo.n}%0A*Total: R$ 10,00*`;
+            combosSelecionados.forEach(idx => {
+                const combo = COMBOS_FIXOS[idx];
+                itens.push({nome: combo.n, sabores: combo.s, preco: 10});
+                msg += `*Combo:* ${combo.n} (R$ 10,00)%0A`;
+            });
+            msg += `%0A*Total: R$ ${combosSelecionados.length * 10},00*`;
         } else {
             let totalPedido = 0;
             if(caixaAtual.length === 4) {
                 itens.push({nome: "Caixa Personalizada", sabores: [...caixaAtual], preco: 10});
-                msg += `*Caixinha:* ${caixaAtual.join(', ')}%0A`;
+                msg += `*Caixinha:* ${caixaAtual.join(', ')} (R$ 10,00)%0A`;
                 totalPedido += 10;
             }
             const partes = Object.values(escalaCento).reduce((a, b) => a + b, 0);
