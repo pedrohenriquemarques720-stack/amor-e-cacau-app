@@ -200,7 +200,6 @@
             else if (totalP === 3) valorCalculado = 100;
             else if (totalP === 4) valorCalculado = 120;
             else {
-                // Cálculo para acima de 100 un (Cento base 120 + excedente proporcional)
                 valorCalculado = 120 + ((totalP - 4) * 30);
             }
 
@@ -250,12 +249,31 @@
     async function enviarPedido() {
         const nome = document.getElementById('nome-cliente').value;
         const entrega = document.getElementById('entrega-cliente').value;
-        let totalFinal = 0; let msg = `*Amor e Cacau*%0A*Nome:* ${nome}%0A*Entrega:* ${entrega}%0A%0A`;
-        carrinho.forEach(item => { msg += `*${item.nome}* - ${item.desc}%0A`; totalFinal += item.preco; });
-        msg += `%0A*Total: R$ ${totalFinal},00*`;
-        await db.collection("pedidos").add({ cliente: nome, entrega: entrega, itens: carrinho, status: "pendente", data: new Date() });
-        window.open(`https://wa.me/5519992483488?text=${msg}`);
-        location.reload();
+        let totalFinal = 0; 
+        
+        let textoMsg = `*Amor e Cacau*\n*Nome:* ${nome}\n*Entrega:* ${entrega}\n\n`;
+        
+        carrinho.forEach(item => { 
+            textoMsg += `• *${item.nome}* - ${item.desc}\n`; 
+            totalFinal += item.preco; 
+        });
+        
+        textoMsg += `\n*Total: R$ ${totalFinal},00*`;
+
+        try {
+            await db.collection("pedidos").add({ cliente: nome, entrega: entrega, itens: carrinho, status: "pendente", data: new Date() });
+            
+            // Encode URI Component para garantir que caracteres especiais funcionem no link
+            const urlWpp = `https://api.whatsapp.com/send?phone=5519992483488&text=${encodeURIComponent(textoMsg)}`;
+            
+            // Redireciona na mesma aba para evitar bloqueio de popup
+            window.location.href = urlWpp;
+            
+        } catch (e) {
+            alert("Erro ao salvar pedido, mas tentando abrir WhatsApp...");
+            const urlWpp = `https://api.whatsapp.com/send?phone=5519992483488&text=${encodeURIComponent(textoMsg)}`;
+            window.location.href = urlWpp;
+        }
     }
 
     db.collection("pedidos").where("status", "==", "pendente").onSnapshot(snap => {
