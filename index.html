@@ -1,5 +1,3 @@
-<!DOCTYPE html>
-<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -62,9 +60,9 @@
 
         .tab-btn {
             flex: 1;
-            padding: 10px;
+            padding: 12px;
             border: none;
-            background: none;
+            background: #eee;
             color: var(--marrom-chocolate);
             font-weight: bold;
             cursor: pointer;
@@ -86,7 +84,7 @@
             display: block;
         }
 
-        /* Aviso de Fechado */
+        /* Aviso de Fechado (Oculto para teste) */
         #aviso-fechado {
             display: none;
             background: #ffcccc;
@@ -162,10 +160,6 @@
 
         .btn-sabor:active { transform: scale(0.95); }
 
-        .btn-sabor.esgotado {
-            opacity: 0.4; pointer-events: none; filter: grayscale(100%);
-        }
-
         .campo-grupo { margin-bottom: 15px; text-align: left; }
         .campo-grupo label { display: block; font-size: 0.9rem; font-weight: bold; margin-bottom: 5px; color: var(--cor-vinho); }
         .campo-grupo input, .campo-grupo select {
@@ -213,16 +207,13 @@
 <body>
 
 <header>
-    <h1>
-        <span>❤️</span> Amor e Cacau
-    </h1>
+    <h1><span>❤️</span> Amor e Cacau</h1>
     <p class="subtitulo">Caixinha com 4 doces = R$ 10,00</p>
 </header>
 
 <div class="container">
     <div id="aviso-fechado">
-        🌙 Desculpe, estamos fechados agora!<br>
-        Aceitamos pedidos apenas até as 18:00.
+        🌙 Desculpe, estamos fechados agora!
     </div>
 
     <div class="tabs-nav">
@@ -232,13 +223,16 @@
     </div>
 
     <div id="conteudo-app">
-        
         <div id="aba1" class="tab-content">
-            <p style="text-align: center; padding: 20px; color: #999;">Conteúdo em breve...</p>
+            <div style="text-align: center; padding: 40px 20px;">
+                <p style="color: #888;">Em breve: Novos produtos aqui!</p>
+            </div>
         </div>
 
         <div id="aba2" class="tab-content">
-            <p style="text-align: center; padding: 20px; color: #999;">Conteúdo em breve...</p>
+            <div style="text-align: center; padding: 40px 20px;">
+                <p style="color: #888;">Em breve: Promoções especiais!</p>
+            </div>
         </div>
 
         <div id="aba3" class="tab-content active">
@@ -270,7 +264,7 @@
                 <select id="metodo-entrega" onchange="toggleEndereco()">
                     <option value="">Selecione...</option>
                     <option value="Retirada no Local">Vou retirar no local</option>
-                    <option value="Uber Moto">Entrega via Uber Moto (Vou cotar o valor)</option>
+                    <option value="Uber Moto">Entrega via Uber Moto</option>
                 </select>
             </div>
 
@@ -296,7 +290,6 @@
     let caixaAtual = [];
     let carrinho = [];
 
-    // --- LOGICA DAS ABAS ---
     function abrirAba(evt, nomeAba) {
         let i, tabcontent, tablinks;
         tabcontent = document.getElementsByClassName("tab-content");
@@ -311,26 +304,20 @@
         evt.currentTarget.className += " active";
     }
 
-    // --- LOGICA DE BLOQUEIO POR HORARIO ---
+    // FUNÇÃO DE HORÁRIO DESATIVADA PARA TESTE
     function verificarHorario() {
-        const agora = new Date();
-        const horaBrasilia = agora.getUTCHours() - 3;
-        if (horaBrasilia >= 18 || horaBrasilia < 8) {
-            document.getElementById('conteudo-app').style.display = 'none';
-            document.getElementById('aviso-fechado').style.display = 'block';
-        }
+        console.log("Sistema em modo de teste: Aberto 24h");
     }
 
     function renderizarBotoesSabores() {
         const div = document.getElementById('botoes-sabores');
         div.innerHTML = '';
         saboresDisponiveis.forEach(s => {
-            const esgotado = s.includes('[ESGOTADO]');
             const nome = s.replace('[ESGOTADO]', '').trim();
             const btn = document.createElement('button');
-            btn.className = esgotado ? 'btn-sabor esgotado' : 'btn-sabor';
+            btn.className = 'btn-sabor';
             btn.innerText = `+ ${nome}`;
-            if (!esgotado) btn.onclick = () => {
+            btn.onclick = () => {
                 if(caixaAtual.length < MAX_SLOTS) { caixaAtual.push(nome); atualizarSlots(); }
             };
             div.appendChild(btn);
@@ -338,15 +325,15 @@
     }
 
     function sugestaoDoDia() {
-        const ativos = saboresDisponiveis.filter(s => !s.includes('[ESGOTADO]')).map(s => s.replace('[ESGOTADO]', '').trim());
         caixaAtual = [];
-        for(let i=0; i<MAX_SLOTS; i++) caixaAtual.push(ativos[Math.floor(Math.random()*ativos.length)]);
+        for(let i=0; i<MAX_SLOTS; i++) {
+            caixaAtual.push(saboresDisponiveis[Math.floor(Math.random()*saboresDisponiveis.length)]);
+        }
         atualizarSlots();
     }
 
     function atualizarSlots() {
         const area = document.getElementById('slots-area');
-        if(!area) return;
         area.innerHTML = '';
         for(let i=0; i<MAX_SLOTS; i++) {
             const slot = document.createElement('div');
@@ -359,9 +346,7 @@
         btn.disabled = caixaAtual.length !== MAX_SLOTS;
         btn.className = btn.disabled ? 'btn-add-carrinho' : 'btn-add-carrinho ativo';
         btn.innerText = btn.disabled ? `Faltam ${MAX_SLOTS - caixaAtual.length} doces` : "Adicionar Caixinha ao Pedido";
-        
-        const contador = document.getElementById('contador-texto');
-        contador.innerText = `1. Monte sua caixinha (${caixaAtual.length}/4):`;
+        document.getElementById('contador-texto').innerText = `1. Monte sua caixinha (${caixaAtual.length}/4):`;
     }
 
     function adicionarAoCarrinho() {
@@ -370,15 +355,13 @@
         atualizarSlots();
         renderizarCarrinho();
         document.getElementById('carrinho-area').style.display = 'block';
-        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
     }
 
     function removerDoCarrinho(i) { carrinho.splice(i, 1); renderizarCarrinho(); }
 
     function toggleEndereco() {
         const metodo = document.getElementById('metodo-entrega').value;
-        const divEnd = document.getElementById('div-endereco');
-        divEnd.style.display = (metodo === "Uber Moto") ? "block" : "none";
+        document.getElementById('div-endereco').style.display = (metodo === "Uber Moto") ? "block" : "none";
         validarFinalizacao();
     }
 
@@ -388,7 +371,7 @@
         carrinho.forEach((caixa, i) => {
             const resumo = caixa.reduce((acc, s) => { acc[s] = (acc[s] || 0) + 1; return acc; }, {});
             const texto = Object.entries(resumo).map(([n, q]) => `${q}x ${n}`).join(', ');
-            lista.innerHTML += `<div class="item-carrinho"><h4>📦 Caixinha #${i+1}</h4><p style="font-size:0.9rem; color:#666;">${texto}</p><button class="btn-remover-item" onclick="removerDoCarrinho(${i})">Remover</button></div>`;
+            lista.innerHTML += `<div class="item-carrinho"><h4>📦 Caixinha #${i+1}</h4><p>${texto}</p><button class="btn-remover-item" onclick="removerDoCarrinho(${i})">Remover</button></div>`;
         });
         document.getElementById('total-carrinho').innerText = `Total: R$ ${(carrinho.length * PRECO_CAIXA).toFixed(2).replace('.', ',')}`;
         validarFinalizacao();
@@ -397,34 +380,23 @@
     function validarFinalizacao() {
         const nome = document.getElementById('nome-cliente').value;
         const metodo = document.getElementById('metodo-entrega').value;
-        const endereco = document.getElementById('endereco-cliente').value;
         const btn = document.getElementById('btn-finalizar');
-        
         let pronto = (nome.trim().length > 2 && metodo !== "" && carrinho.length > 0);
-        if (metodo === "Uber Moto" && endereco.trim().length < 5) pronto = false;
 
         if(pronto) {
-            const pedidoID = Math.floor(1000 + Math.random() * 9000);
-            const dataPedido = new Date().toLocaleDateString('pt-BR');
             btn.classList.add('liberado');
-            let msg = `*PEDIDO #${pedidoID} - Amor e Cacau*%0A`;
-            msg += `_Data: ${dataPedido}_%0A%0A`;
-            msg += `*Cliente:* ${nome}%0A*Entrega:* ${metodo}%0A`;
-            if(metodo === "Uber Moto") msg += `*Endereço:* ${endereco}%0A`;
-            msg += `%0A---%0A`;
+            let msg = `*Novo Pedido - Amor e Cacau*%0A*Cliente:* ${nome}%0A*Entrega:* ${metodo}%0A%0A`;
             carrinho.forEach((c, i) => {
-                msg += `*Caixa ${i+1}:* `;
                 const resumo = c.reduce((acc, s) => { acc[s] = (acc[s] || 0) + 1; return acc; }, {});
-                msg += Object.entries(resumo).map(([n, q]) => `${q}x ${n}`).join(', ') + `%0A`;
+                msg += `*Caixa ${i+1}:* ` + Object.entries(resumo).map(([n, q]) => `${q}x ${n}`).join(', ') + `%0A`;
             });
-            msg += `---%0A*💰 Total: R$ ${(carrinho.length * PRECO_CAIXA).toFixed(2).replace('.', ',')}*`;
+            msg += `%0A*Total: R$ ${(carrinho.length * PRECO_CAIXA).toFixed(2)}*`;
             btn.href = `https://wa.me/5519992483488?text=${msg}`;
         } else {
             btn.classList.remove('liberado');
         }
     }
 
-    verificarHorario();
     renderizarBotoesSabores();
     atualizarSlots();
 </script>
