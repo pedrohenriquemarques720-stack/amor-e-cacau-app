@@ -11,7 +11,6 @@
     <style>
         :root {
             --cor-vinho: #800020;
-            --rosa-principal: #ff85a2;
             --marrom-chocolate: #4b2e2e;
             --bege-logo: #f7ede2;
             --verde-wpp: #25d366;
@@ -20,24 +19,21 @@
         body { font-family: 'Segoe UI', sans-serif; background-color: var(--bege-logo); color: var(--marrom-chocolate); margin: 0; padding: 15px; }
         .container { max-width: 500px; margin: 0 auto; background: white; padding: 20px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
 
-        /* NAVEGAÇÃO */
         .tabs-nav { display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 10px; }
         .tab-btn { flex: none; padding: 10px 15px; border: none; background: #f0f0f0; border-radius: 12px; font-weight: bold; cursor: pointer; }
         .tab-btn.active { background: var(--cor-vinho); color: white; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
-        /* CARRINHO GLOBAL */
         .carrinho-global { background: #fffcf0; border: 1px solid #e6dbb9; padding: 15px; border-radius: 15px; margin-top: 25px; display: none; }
         .carrinho-global.visible { display: block; }
         .carrinho-item { display: flex; justify-content: space-between; align-items: flex-start; font-size: 0.85rem; margin-bottom: 8px; padding-bottom: 5px; border-bottom: 1px solid #f0e6c8; }
         .btn-remover { color: red; background: none; border: none; cursor: pointer; font-size: 0.7rem; padding: 0 5px; }
 
-        /* ESTILOS COMPONENTES */
         .cardapio-floral { text-align: center; padding: 20px; border: 2px solid var(--bege-logo); border-radius: 20px; background: #fffcf9; }
         .box-display { background: #fffafa; padding: 15px; border-radius: 15px; margin-bottom: 15px; text-align: center; border: 1px solid #f0e0e0; }
         .slots-container { display: flex; justify-content: center; gap: 8px; margin-top: 10px; }
-        .slot { width: 55px; height: 55px; border: 2px dashed var(--cor-vinho); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; background: white; cursor: pointer; text-align: center; }
+        .slot { width: 55px; height: 55px; border: 2px dashed var(--cor-vinho); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; background: white; cursor: pointer; }
         .slot.filled { border: 2px solid var(--cor-vinho); background: var(--cor-vinho); color: white; font-weight: bold; }
         
         .grid-botoes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
@@ -47,15 +43,12 @@
         .item-escala { display: flex; align-items: center; justify-content: space-between; padding: 10px; border: 1px solid #eee; border-radius: 12px; margin-bottom: 8px; background: #fff; }
         .btn-ctrl { background: var(--cor-vinho); color: white; border: none; width: 28px; height: 28px; border-radius: 50%; font-weight: bold; cursor: pointer; }
 
-        /* PRONTA ENTREGA */
         .card-fixo { display: flex; align-items: center; padding: 12px; border: 1px solid #eee; border-radius: 15px; margin-bottom: 10px; cursor: pointer; }
         .card-fixo.selected { border: 2px solid var(--cor-vinho); background: #fff5f7; }
         .bolinha-selecao { width: 22px; height: 22px; border: 2px dashed var(--cor-vinho); border-radius: 50%; margin-right: 15px; flex-shrink: 0; }
         .card-fixo.selected .bolinha-selecao { border-style: solid; background: var(--cor-vinho); position: relative; }
         .card-fixo.selected .bolinha-selecao::after { content: '✓'; color: white; font-size: 12px; position: absolute; left: 5px; top: 1px; }
 
-        /* FINALIZAÇÃO */
-        .area-finalizar { margin-top: 15px; }
         .btn-wpp { width: 100%; background: var(--verde-wpp); color: white; border: none; padding: 15px; border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer; margin-top: 10px; opacity: 0.5; pointer-events: none; }
         .btn-wpp.liberado { opacity: 1; pointer-events: auto; }
         input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; margin-bottom: 10px; box-sizing: border-box; }
@@ -100,7 +93,6 @@
             <button id="btn-add-caixa" class="btn-add-caixa" style="display: none;" onclick="adicionarCaixaMontada()">Adicionar esta Caixinha ao Pedido</button>
         </div>
         <div class="grid-botoes" id="botoes-sabores"></div>
-
         <h4 style="color: var(--cor-vinho); margin-top: 30px;">🎉 Monte seu Cento (em partes de 25)</h4>
         <div id="lista-escala-cento"></div>
     </div>
@@ -112,8 +104,7 @@
             <span>Total:</span>
             <span id="valor-total">R$ 0,00</span>
         </div>
-
-        <div class="area-finalizar">
+        <div style="margin-top: 15px;">
             <input type="text" id="nome-cliente" placeholder="Seu Nome" oninput="validarPedido()">
             <select id="entrega-cliente" onchange="validarPedido()">
                 <option value="">Como vai receber?</option>
@@ -145,8 +136,7 @@
         { n: "2 Tradicionais e 2 Ferreros", s: ["Tradicional","Tradicional","Ferrero","Ferrero"] }
     ];
 
-    let carrinho = []; 
-    let caixaAtual = [];
+    let carrinho = []; let caixaAtual = [];
     let escalaCento = {}; SABORES.forEach(s => escalaCento[s] = 0);
     let autenticado = false;
 
@@ -160,31 +150,22 @@
         e.currentTarget.classList.add('active');
     }
 
-    // --- PRONTA ENTREGA ---
     function renderCombosFixos() {
         document.getElementById('lista-combos-fixos').innerHTML = COMBOS_FIXOS.map((c, i) => {
             const jaNoCarrinho = carrinho.find(item => item.tipo === 'pronta' && item.index === i);
-            return `
-                <div class="card-fixo ${jaNoCarrinho ? 'selected' : ''}" onclick="toggleComboFixo(${i})">
-                    <div class="bolinha-selecao"></div>
-                    <div class="fixo-info">${c.n}</div>
-                </div>
-            `;
+            return `<div class="card-fixo ${jaNoCarrinho ? 'selected' : ''}" onclick="toggleComboFixo(${i})"><div class="bolinha-selecao"></div><div class="fixo-info">${c.n}</div></div>`;
         }).join('');
     }
 
     function toggleComboFixo(i) {
         const idx = carrinho.findIndex(item => item.tipo === 'pronta' && item.index === i);
         if (idx > -1) carrinho.splice(idx, 1);
-        else carrinho.push({ tipo: 'pronta', index: i, nome: "1 combo pronto", desc: COMBOS_FIXOS[i].n, sabores: COMBOS_FIXOS[i].s, preco: 10 });
-        renderCombosFixos();
-        renderCarrinho();
+        else carrinho.push({ tipo: 'pronta', index: i, nome: "Combo Pronto", desc: COMBOS_FIXOS[i].n, sabores: COMBOS_FIXOS[i].s, preco: 10 });
+        renderCombosFixos(); renderCarrinho();
     }
 
-    // --- MONTE SEU COMBO ---
     function atualizarSlots() {
-        const area = document.getElementById('slots-area');
-        area.innerHTML = '';
+        const area = document.getElementById('slots-area'); area.innerHTML = '';
         for(let i=0; i<4; i++) {
             const slot = document.createElement('div');
             slot.className = caixaAtual[i] ? 'slot filled' : 'slot';
@@ -199,85 +180,48 @@
     function adicionarCaixaMontada() {
         const resumo = caixaAtual.reduce((acc, s) => { acc[s] = (acc[s] || 0) + 1; return acc; }, {});
         const desc = Object.entries(resumo).map(([s, q]) => `${q}x ${s}`).join(', ');
-        carrinho.push({ tipo: 'caixa', nome: "1 caixa montada", desc: desc, sabores: [...caixaAtual], preco: 10 });
-        caixaAtual = [];
-        atualizarSlots();
-        renderCarrinho();
+        carrinho.push({ tipo: 'caixa', nome: "Caixa Montada", desc: desc, sabores: [...caixaAtual], preco: 10 });
+        caixaAtual = []; atualizarSlots(); renderCarrinho();
     }
 
     function renderEscala() {
         const totalP = Object.values(escalaCento).reduce((a,b)=>a+b, 0);
         document.getElementById('lista-escala-cento').innerHTML = SABORES.map(s => `
-            <div class="item-escala">
-                <span><strong>25x ${s}</strong></span>
-                <div>
-                    <button class="btn-ctrl" onclick="mudarEscala('${s}', -1)">-</button>
-                    <span style="margin: 0 8px;">${escalaCento[s]}</span>
-                    <button class="btn-ctrl" onclick="mudarEscala('${s}', 1)" ${totalP >= 4 ? 'disabled' : ''}>+</button>
-                </div>
-            </div>
-        `).join('');
-        
-        // Remove centos antigos e adiciona os novos conforme a escala
+            <div class="item-escala"><span><strong>25x ${s}</strong></span><div>
+            <button class="btn-ctrl" onclick="mudarEscala('${s}', -1)">-</button><span style="margin: 0 8px;">${escalaCento[s]}</span>
+            <button class="btn-ctrl" onclick="mudarEscala('${s}', 1)" ${totalP >= 4 ? 'disabled' : ''}>+</button></div></div>`).join('');
         carrinho = carrinho.filter(item => item.tipo !== 'cento');
         if (totalP > 0) {
             const precoCentos = {1:50, 2:70, 3:100, 4:120};
-            let descSabs = [];
-            let sabsArray = [];
-            for(let s in escalaCento) {
-                if(escalaCento[s] > 0) {
-                    descSabs.push(`${escalaCento[s] * 25}x ${s}`);
-                    for(let k=0; k < escalaCento[s]*25; k++) sabsArray.push(s);
-                }
-            }
-            carrinho.push({ tipo: 'cento', nome: `${totalP * 25} unidades`, desc: descSabs.join(', '), sabores: sabsArray, preco: precoCentos[totalP] });
+            let descSabs = []; let sabsArray = [];
+            for(let s in escalaCento) { if(escalaCento[s] > 0) { descSabs.push(`${escalaCento[s] * 25}x ${s}`); for(let k=0; k < escalaCento[s]*25; k++) sabsArray.push(s); } }
+            carrinho.push({ tipo: 'cento', nome: `${totalP * 25} Unidades`, desc: descSabs.join(', '), sabores: sabsArray, preco: precoCentos[totalP] });
         }
         renderCarrinho();
     }
 
     function mudarEscala(s, d) { if (!(d===-1 && escalaCento[s]===0)) { escalaCento[s]+=d; renderEscala(); } }
 
-    // --- CARRINHO GLOBAL ---
     function renderCarrinho() {
         const cartDiv = document.getElementById('carrinho-global');
         const itensDiv = document.getElementById('itens-carrinho');
-        
         if (carrinho.length > 0) {
             cartDiv.classList.add('visible');
             let total = 0;
             itensDiv.innerHTML = carrinho.map((item, idx) => {
                 total += item.preco;
-                return `
-                    <div class="carrinho-item">
-                        <div>
-                            <strong>${item.nome}</strong><br>
-                            <small>${item.desc}</small>
-                        </div>
-                        <div style="text-align: right">
-                            R$ ${item.preco},00 
-                            <button class="btn-remover" onclick="removerItem(${idx})">✕</button>
-                        </div>
-                    </div>
-                `;
+                return `<div class="carrinho-item"><div><strong>${item.nome}</strong><br><small>${item.desc}</small></div><div style="text-align: right">R$ ${item.preco},00 <button class="btn-remover" onclick="removerItem(${idx})">✕</button></div></div>`;
             }).join('');
             document.getElementById('valor-total').innerText = `R$ ${total},00`;
-        } else {
-            cartDiv.classList.remove('visible');
-        }
+        } else { cartDiv.classList.remove('visible'); }
         validarPedido();
     }
 
     function removerItem(idx) {
         const item = carrinho[idx];
-        if (item.tipo === 'cento') {
-            SABORES.forEach(s => escalaCento[s] = 0);
-            renderEscala();
-        } else if (item.tipo === 'pronta') {
-            carrinho.splice(idx, 1);
-            renderCombosFixos();
-        } else {
-            carrinho.splice(idx, 1);
-        }
+        if (item.tipo === 'cento') { SABORES.forEach(s => escalaCento[s] = 0); renderEscala(); }
+        else if (item.tipo === 'pronta') { carrinho.splice(idx, 1); renderCombosFixos(); }
+        else { carrinho.splice(idx, 1); }
         renderCarrinho();
     }
 
@@ -290,41 +234,26 @@
     async function enviarPedido() {
         const nome = document.getElementById('nome-cliente').value;
         const entrega = document.getElementById('entrega-cliente').value;
-        let totalFinal = 0;
-        let msg = `*Amor e Cacau*%0A*Nome:* ${nome}%0A*Entrega:* ${entrega}%0A%0A`;
-        
-        carrinho.forEach(item => {
-            msg += `*${item.nome}* - ${item.desc}%0A`;
-            totalFinal += item.preco;
-        });
+        let totalFinal = 0; let msg = `*Amor e Cacau*%0A*Nome:* ${nome}%0A*Entrega:* ${entrega}%0A%0A`;
+        carrinho.forEach(item => { msg += `*${item.nome}* - ${item.desc}%0A`; totalFinal += item.preco; });
         msg += `%0A*Total: R$ ${totalFinal},00*`;
-
         await db.collection("pedidos").add({ cliente: nome, entrega: entrega, itens: carrinho, status: "pendente", data: new Date() });
         window.open(`https://wa.me/5519992483488?text=${msg}`);
         location.reload();
     }
 
-    // --- PRODUÇÃO ---
     db.collection("pedidos").where("status", "==", "pendente").onSnapshot(snap => {
         let totais = {}; SABORES.forEach(s => totais[s] = 0);
         let html = "";
         snap.forEach(doc => {
-            const p = doc.data();
-            p.itens.forEach(it => it.sabores.forEach(s => totais[s]++));
-            html += `<div style="border:1px solid #ddd; padding:10px; margin-bottom:10px; border-radius:10px;">
-                <strong>${p.cliente}</strong> (${p.entrega})<br>
-                ${p.itens.map(i => `<small>• ${i.nome}: ${i.desc}</small>`).join('<br>')}
-                <button style="width:100%; margin-top:10px; background:var(--cor-vinho); color:white; border:none; padding:8px; border-radius:8px;" onclick="db.collection('pedidos').doc('${doc.id}').update({status:'ok'})">Concluir</button>
-            </div>`;
+            const p = doc.data(); p.itens.forEach(it => it.sabores.forEach(s => totais[s]++));
+            html += `<div style="border:1px solid #ddd; padding:10px; margin-bottom:10px; border-radius:10px;"><strong>${p.cliente}</strong> (${p.entrega})<br>${p.itens.map(i => `<small>• ${i.nome}: ${i.desc}</small>`).join('<br>')}<button style="width:100%; margin-top:10px; background:var(--cor-vinho); color:white; border:none; padding:8px; border-radius:8px;" onclick="db.collection('pedidos').doc('${doc.id}').update({status:'ok'})">Concluir</button></div>`;
         });
         document.getElementById('resumo-producao').innerHTML = `<div style="background:#fff5f7; padding:15px; border-radius:15px; margin-bottom:15px"><strong>Resumo Produção:</strong><br>${SABORES.map(s => `${s}: ${totais[s]}`).join(' | ')}</div>`;
         document.getElementById('pedidos-lista-admin').innerHTML = html;
     });
 
-    // Inits
-    renderCombosFixos();
-    renderEscala();
-    atualizarSlots();
+    renderCombosFixos(); renderEscala(); atualizarSlots();
     document.getElementById('botoes-sabores').innerHTML = SABORES.map(s => `<button class="btn-item" onclick="if(caixaAtual.length<4){caixaAtual.push('${s}');atualizarSlots();} ">+ ${s}</button>`).join('');
 </script>
 </body>
