@@ -24,200 +24,66 @@
             padding: 20px;
         }
 
-        header {
-            text-align: center;
-            padding: 10px 0 20px;
-        }
-
-        header h1 {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            margin: 0;
-            color: var(--cor-vinho);
-            font-size: 1.8rem;
-        }
-
+        header { text-align: center; padding: 10px 0 20px; }
+        header h1 { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 0; color: var(--cor-vinho); font-size: 1.8rem; }
         .subtitulo { color: var(--rosa-principal); font-weight: bold; margin-top: 5px; }
 
         .container {
-            max-width: 500px;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 20px;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(128, 0, 32, 0.1);
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
+            max-width: 500px; margin: 0 auto; background: rgba(255, 255, 255, 0.9);
+            padding: 20px; border-radius: 20px; box-shadow: 0 10px 25px rgba(128, 0, 32, 0.1);
+            backdrop-filter: blur(5px); border: 1px solid rgba(255, 255, 255, 0.5);
         }
 
-        /* --- ESTILO DAS ABAS --- */
-        .tabs-nav {
-            display: flex;
-            gap: 5px;
-            margin-bottom: 20px;
-            border-bottom: 2px solid var(--bege-logo);
-        }
+        /* --- TABS --- */
+        .tabs-nav { display: flex; gap: 5px; margin-bottom: 20px; border-bottom: 2px solid var(--bege-logo); }
+        .tab-btn { flex: 1; padding: 12px; border: none; background: #eee; color: var(--marrom-chocolate); font-weight: bold; cursor: pointer; border-radius: 10px 10px 0 0; transition: 0.3s; font-size: 0.85rem; }
+        .tab-btn.active { background: var(--cor-vinho); color: white; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
 
-        .tab-btn {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            background: #eee;
-            color: var(--marrom-chocolate);
-            font-weight: bold;
-            cursor: pointer;
-            border-radius: 10px 10px 0 0;
-            transition: 0.3s;
-            font-size: 0.9rem;
-        }
+        /* --- ESTILOS GERAIS --- */
+        .secao-titulo { color: var(--cor-vinho); border-bottom: 1px solid #ddd; padding-bottom: 5px; margin: 25px 0 15px; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
+        .box-display { background: #fffafa; padding: 15px; border-radius: 15px; margin-bottom: 20px; text-align: center; border: 1px solid #f0e0e0; }
+        
+        /* Slots Combo 4 */
+        .slots-container { display: flex; justify-content: center; gap: 10px; margin-top: 10px; }
+        .slot { width: 50px; height: 50px; border: 2px dashed var(--cor-vinho); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; text-align: center; background: white; cursor: pointer; transition: 0.2s; }
+        .slot.filled { border: 2px solid var(--cor-vinho); background: var(--cor-vinho); color: white; font-weight: bold; }
 
-        .tab-btn.active {
-            background: var(--cor-vinho);
-            color: white;
-        }
+        .lista-sabores { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
+        .btn-sabor { background: white; border: 1.5px solid var(--cor-vinho); color: var(--cor-vinho); padding: 12px 8px; border-radius: 10px; cursor: pointer; font-weight: 500; font-size: 0.85rem; }
 
-        .tab-content {
-            display: none;
-        }
+        /* --- ESTILO CENTO (CONTADORES) --- */
+        .item-cento { display: flex; align-items: center; justify-content: space-between; background: white; padding: 10px 15px; border-radius: 12px; margin-bottom: 8px; border: 1px solid #eee; }
+        .info-cento { font-weight: 600; font-size: 0.9rem; }
+        .controles-cento { display: flex; align-items: center; gap: 15px; }
+        .btn-ctrl { background: var(--cor-vinho); color: white; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-weight: bold; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; }
+        .btn-ctrl:disabled { background: var(--cinza-inativo); cursor: not-allowed; }
+        .qtd-cento { font-weight: bold; min-width: 20px; text-align: center; color: var(--cor-vinho); }
 
-        .tab-content.active {
-            display: block;
-        }
-
-        /* Aviso de Fechado (Desativado para teste) */
-        #aviso-fechado {
-            display: none;
-            background: #ffcccc;
-            color: #cc0000;
-            padding: 20px;
-            border-radius: 15px;
-            text-align: center;
-            font-weight: bold;
-            margin-bottom: 20px;
-            border: 2px solid #cc0000;
-        }
-
-        .btn-sugestao {
-            width: 100%;
-            background: white;
-            border: 2px solid var(--cor-vinho);
-            color: var(--cor-vinho);
-            padding: 12px;
-            border-radius: 12px;
-            font-weight: bold;
-            margin-bottom: 20px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .btn-sugestao:hover { background: var(--cor-vinho); color: white; }
-
-        .box-display {
-            background: #fffafa;
-            padding: 15px;
-            border-radius: 15px;
-            margin-bottom: 20px;
-            text-align: center;
-            border: 1px solid #f0e0e0;
-        }
-
-        .slots-container {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-
-        .slot {
-            width: 60px; height: 60px;
-            border: 2px dashed var(--cor-vinho);
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 0.65rem; text-align: center;
-            background: white; cursor: pointer; overflow: hidden;
-            transition: 0.2s;
-        }
-
-        .slot.filled {
-            border: 2px solid var(--cor-vinho);
-            background: var(--cor-vinho);
-            color: white; font-weight: bold;
-        }
-
-        .lista-sabores {
-            display: grid; grid-template-columns: 1fr 1fr;
-            gap: 10px; margin-bottom: 20px;
-        }
-
-        .btn-sabor {
-            background: white; 
-            border: 1.5px solid var(--cor-vinho);
-            color: var(--cor-vinho); 
-            padding: 15px 10px;
-            border-radius: 12px; cursor: pointer; position: relative;
-            font-weight: 500; transition: 0.2s;
-        }
-
-        .btn-sabor:active { transform: scale(0.95); }
-
-        .campo-grupo { margin-bottom: 15px; text-align: left; }
-        .campo-grupo label { display: block; font-size: 0.9rem; font-weight: bold; margin-bottom: 5px; color: var(--cor-vinho); }
-        .campo-grupo input, .campo-grupo select {
-            width: 100%; padding: 12px; border: 1px solid #eee; border-radius: 10px; box-sizing: border-box; background: white;
-            outline-color: var(--cor-vinho);
-        }
-
-        .btn-add-carrinho {
-            display: block; width: 100%; background: var(--cinza-inativo);
-            color: white; border: none; padding: 15px; border-radius: 12px;
-            font-weight: bold; cursor: not-allowed; margin-bottom: 20px;
-            font-size: 1rem;
-        }
-
+        .btn-add-carrinho { display: block; width: 100%; background: var(--cinza-inativo); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; cursor: not-allowed; margin-top: 10px; }
         .btn-add-carrinho.ativo { background: var(--cor-vinho); cursor: pointer; }
 
-        .item-carrinho {
-            background: white; padding: 12px; border-radius: 12px;
-            margin-bottom: 10px; position: relative; border: 1px solid var(--cor-vinho);
-        }
-
+        /* --- CARRINHO --- */
+        .item-carrinho { background: white; padding: 12px; border-radius: 12px; margin-bottom: 10px; position: relative; border: 1px solid var(--cor-vinho); }
         .btn-remover-item { position: absolute; top: 12px; right: 12px; color: #ff4d4d; cursor: pointer; border: none; background: none; font-weight: bold; }
+        .btn-whatsapp { display: block; width: 100%; background: var(--verde-wpp); color: white; text-decoration: none; padding: 16px; border-radius: 12px; font-weight: bold; opacity: 0.5; pointer-events: none; text-align: center; margin-top: 15px; }
+        .btn-whatsapp.liberado { opacity: 1; pointer-events: auto; }
+        .campo-grupo { margin-bottom: 12px; text-align: left; }
+        .campo-grupo label { display: block; font-size: 0.85rem; font-weight: bold; margin-bottom: 5px; color: var(--cor-vinho); }
+        .campo-grupo input, .campo-grupo select { width: 100%; padding: 10px; border: 1px solid #eee; border-radius: 8px; box-sizing: border-box; }
 
-        .btn-whatsapp {
-            display: block; width: 100%; background: var(--verde-wpp);
-            color: white; text-decoration: none; padding: 16px;
-            border-radius: 12px; font-weight: bold; opacity: 0.5; pointer-events: none; text-align: center;
-            font-size: 1.1rem;
-        }
-
-        .btn-whatsapp.liberado { opacity: 1; pointer-events: auto; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3); }
-
-        /* Ajuste para Mobile */
-        @media (max-width: 600px) {
-            .tabs-nav {
-                flex-direction: column;
-            }
-            .tab-btn {
-                border-radius: 10px;
-                text-align: center;
-            }
-        }
+        @media (max-width: 600px) { .tabs-nav { flex-direction: column; } .tab-btn { border-radius: 10px; } }
     </style>
 </head>
 <body>
 
 <header>
     <h1><span>❤️</span> Amor e Cacau</h1>
-    <p class="subtitulo">Combo com 4 doces = R$ 10,00</p>
+    <p class="subtitulo">Doces Artesanais & Delícias</p>
 </header>
 
 <div class="container">
-    <div id="aviso-fechado">
-        🌙 Desculpe, estamos fechados agora!
-    </div>
-
     <div class="tabs-nav">
         <button class="tab-btn" onclick="abrirAba(event, 'aba1')">Pronta Entrega</button>
         <button class="tab-btn" onclick="abrirAba(event, 'aba2')">Cardápio</button>
@@ -225,62 +91,52 @@
     </div>
 
     <div id="conteudo-app">
-        <div id="aba1" class="tab-content">
-            <div style="text-align: center; padding: 40px 20px;">
-                <h3 style="color: var(--cor-vinho);">🚚 Pronta Entrega</h3>
-                <p style="color: #888;">Produtos disponíveis para retirada imediata.</p>
-            </div>
-        </div>
-
-        <div id="aba2" class="tab-content">
-            <div style="text-align: center; padding: 40px 20px;">
-                <h3 style="color: var(--cor-vinho);">📖 Nosso Cardápio</h3>
-                <p style="color: #888;">Explore nossa variedade de sabores e delícias.</p>
-            </div>
-        </div>
+        <div id="aba1" class="tab-content"> <p style="text-align:center; padding:20px; color:#888;">Em breve...</p> </div>
+        <div id="aba2" class="tab-content"> <p style="text-align:center; padding:20px; color:#888;">Em breve...</p> </div>
 
         <div id="aba3" class="tab-content active">
-            <button class="btn-sugestao" onclick="sugestaoDoDia()">✨ Sugestão do Dia (Mix da Casa)</button>
-
+            
+            <div class="secao-titulo">🎁 Combo 4 Doces (R$ 10,00)</div>
             <div class="box-display">
-                <span class="box-title" id="contador-texto" style="font-weight: bold;">1. Monte seu combo (0/4):</span>
-                <div class="slots-container" id="slots-area" style="margin-top: 15px;"></div>
-                <p style="font-size:0.75rem; color:#a38f85; margin-top: 10px;">Toque no doce para remover</p>
+                <span id="contador-combo" style="font-weight: bold; font-size: 0.9rem;">Escolha 4 doces (0/4):</span>
+                <div class="slots-container" id="slots-combo"></div>
             </div>
+            <div class="lista-sabores" id="botoes-sabores-combo"></div>
+            <button id="btn-add-combo" class="btn-add-carrinho" onclick="adicionarComboAoCarrinho()">Preencha o combo</button>
 
-            <div class="lista-sabores" id="botoes-sabores"></div>
+            <div class="secao-titulo">🎉 Cento de Doces (R$ 130,00)</div>
+            <p style="font-size: 0.8rem; color: #666; margin-bottom: 10px; text-align: center;">Cada unidade (1) equivale a 25 doces.<br>Escolha 4 unidades para completar o cento.</p>
+            
+            <div id="lista-sabores-cento">
+                </div>
 
-            <button id="btn-add-carrinho" class="btn-add-carrinho" onclick="adicionarAoCarrinho()">
-                Preencha o combo
-            </button>
+            <div class="box-display" style="margin-top: 10px;">
+                <span id="contador-cento" style="font-weight: bold;">Total: 0 / 4 unidades</span>
+            </div>
+            <button id="btn-add-cento" class="btn-add-carrinho" onclick="adicionarCentoAoCarrinho()">Selecione as 4 unidades</button>
+
         </div>
 
-        <div class="carrinho-area" id="carrinho-area" style="display:none;">
+        <div class="carrinho-area" id="carrinho-area" style="display:none; margin-top: 30px;">
             <h3 style="border-top: 2px dashed var(--cor-vinho); padding-top: 20px; color: var(--cor-vinho);">🛒 Seu Pedido</h3>
             
             <div class="campo-grupo">
                 <label>Seu Nome:</label>
-                <input type="text" id="nome-cliente" placeholder="Como podemos te chamar?" oninput="validarFinalizacao()">
+                <input type="text" id="nome-cliente" placeholder="Seu nome" oninput="validarFinalizacao()">
             </div>
-
             <div class="campo-grupo">
-                <label>Como deseja receber?</label>
-                <select id="metodo-entrega" onchange="toggleEndereco()">
+                <label>Entrega/Retirada:</label>
+                <select id="metodo-entrega" onchange="validarFinalizacao()">
                     <option value="">Selecione...</option>
-                    <option value="Retirada no Local">Vou retirar no local</option>
-                    <option value="Uber Moto">Entrega via Uber Moto</option>
+                    <option value="Retirada">Vou retirar</option>
+                    <option value="Uber Moto">Uber Moto</option>
                 </select>
-            </div>
-
-            <div class="campo-grupo" id="div-endereco" style="display:none;">
-                <label>Endereço Completo:</label>
-                <input type="text" id="endereco-cliente" placeholder="Rua, número e bairro" oninput="validarFinalizacao()">
             </div>
 
             <div id="lista-itens-carrinho"></div>
 
-            <div style="text-align:center; margin-top:20px;">
-                <span id="total-carrinho" style="font-size:1.4rem; font-weight:bold; display:block; margin-bottom:15px; color: var(--cor-vinho);">Total: R$ 0,00</span>
+            <div style="text-align:center;">
+                <span id="total-carrinho" style="font-size:1.3rem; font-weight:bold; color: var(--cor-vinho);">Total: R$ 0,00</span>
                 <a href="#" id="btn-finalizar" class="btn-whatsapp">Finalizar no WhatsApp</a>
             </div>
         </div>
@@ -288,115 +144,158 @@
 </div>
 
 <script>
-    const saboresDisponiveis = ["Tradicional", "Beijinho", "Ferrero", "Limão", "Café", "Maracujá"];
-    const MAX_SLOTS = 4;
+    const sabores = ["Tradicional", "Beijinho", "Ferrero", "Limão", "Café", "Maracujá"];
     const PRECO_COMBO = 10.00;
-    let caixaAtual = [];
+    const PRECO_CENTO = 130.00; // Valor exemplo para o Cento
+
+    let comboAtual = [];
+    let centoQtds = {}; // { "Tradicional": 0, "Beijinho": 1 ... }
     let carrinho = [];
 
+    // Inicializa cento
+    sabores.forEach(s => centoQtds[s] = 0);
+
     function abrirAba(evt, nomeAba) {
-        let i, tabcontent, tablinks;
-        tabcontent = document.getElementsByClassName("tab-content");
-        for (i = 0; i < tabcontent.length; i++) {
-            tabcontent[i].style.display = "none";
-        }
-        tablinks = document.getElementsByClassName("tab-btn");
-        for (i = 0; i < tablinks.length; i++) {
-            tablinks[i].className = tablinks[i].className.replace(" active", "");
-        }
+        let i, content, links;
+        content = document.getElementsByClassName("tab-content");
+        for (i = 0; i < content.length; i++) content[i].style.display = "none";
+        links = document.getElementsByClassName("tab-btn");
+        for (i = 0; i < links.length; i++) links[i].className = links[i].className.replace(" active", "");
         document.getElementById(nomeAba).style.display = "block";
         evt.currentTarget.className += " active";
     }
 
-    function renderizarBotoesSabores() {
-        const div = document.getElementById('botoes-sabores');
+    // --- LÓGICA COMBO 4 ---
+    function renderBotoesCombo() {
+        const div = document.getElementById('botoes-sabores-combo');
         div.innerHTML = '';
-        saboresDisponiveis.forEach(s => {
+        sabores.forEach(s => {
             const btn = document.createElement('button');
             btn.className = 'btn-sabor';
             btn.innerText = `+ ${s}`;
-            btn.onclick = () => {
-                if(caixaAtual.length < MAX_SLOTS) { caixaAtual.push(s); atualizarSlots(); }
-            };
+            btn.onclick = () => { if(comboAtual.length < 4) { comboAtual.push(s); updateCombo(); } };
             div.appendChild(btn);
         });
     }
 
-    function sugestaoDoDia() {
-        caixaAtual = [];
-        for(let i=0; i<MAX_SLOTS; i++) {
-            caixaAtual.push(saboresDisponiveis[Math.floor(Math.random()*saboresDisponiveis.length)]);
-        }
-        atualizarSlots();
-    }
-
-    function atualizarSlots() {
-        const area = document.getElementById('slots-area');
+    function updateCombo() {
+        const area = document.getElementById('slots-combo');
         area.innerHTML = '';
-        for(let i=0; i<MAX_SLOTS; i++) {
+        for(let i=0; i<4; i++) {
             const slot = document.createElement('div');
-            slot.className = caixaAtual[i] ? 'slot filled' : 'slot';
-            slot.innerHTML = caixaAtual[i] ? `<span>${caixaAtual[i]}</span>` : '';
-            slot.onclick = () => { if(caixaAtual[i]) { caixaAtual.splice(i, 1); atualizarSlots(); } };
+            slot.className = comboAtual[i] ? 'slot filled' : 'slot';
+            slot.innerHTML = comboAtual[i] ? `<span>${comboAtual[i]}</span>` : '';
+            slot.onclick = () => { if(comboAtual[i]) { comboAtual.splice(i, 1); updateCombo(); } };
             area.appendChild(slot);
         }
-        const btn = document.getElementById('btn-add-carrinho');
-        btn.disabled = caixaAtual.length !== MAX_SLOTS;
+        const btn = document.getElementById('btn-add-combo');
+        btn.disabled = comboAtual.length !== 4;
         btn.className = btn.disabled ? 'btn-add-carrinho' : 'btn-add-carrinho ativo';
-        btn.innerText = btn.disabled ? `Faltam ${MAX_SLOTS - caixaAtual.length} doces` : "Adicionar Combo ao Pedido";
-        document.getElementById('contador-texto').innerText = `1. Monte seu combo (${caixaAtual.length}/4):`;
+        btn.innerText = btn.disabled ? `Faltam ${4 - comboAtual.length} doces` : "Adicionar Combo ao Pedido";
+        document.getElementById('contador-combo').innerText = `Escolha 4 doces (${comboAtual.length}/4):`;
     }
 
-    function adicionarAoCarrinho() {
-        carrinho.push([...caixaAtual]);
-        caixaAtual = [];
-        atualizarSlots();
-        renderizarCarrinho();
-        document.getElementById('carrinho-area').style.display = 'block';
-    }
+    // --- LÓGICA CENTO ---
+    function renderCento() {
+        const div = document.getElementById('lista-sabores-cento');
+        div.innerHTML = '';
+        const totalCento = Object.values(centoQtds).reduce((a, b) => a + b, 0);
 
-    function removerDoCarrinho(i) { carrinho.splice(i, 1); renderizarCarrinho(); }
-
-    function toggleEndereco() {
-        const metodo = document.getElementById('metodo-entrega').value;
-        document.getElementById('div-endereco').style.display = (metodo === "Uber Moto") ? "block" : "none";
-        validarFinalizacao();
-    }
-
-    function renderizarCarrinho() {
-        const lista = document.getElementById('lista-itens-carrinho');
-        lista.innerHTML = '';
-        carrinho.forEach((combo, i) => {
-            const resumo = combo.reduce((acc, s) => { acc[s] = (acc[s] || 0) + 1; return acc; }, {});
-            const texto = Object.entries(resumo).map(([n, q]) => `${q}x ${n}`).join(', ');
-            lista.innerHTML += `<div class="item-carrinho"><h4>📦 Combo #${i+1}</h4><p>${texto}</p><button class="btn-remover-item" onclick="removerDoCarrinho(${i})">Remover</button></div>`;
+        sabores.forEach(s => {
+            const item = document.createElement('div');
+            item.className = 'item-cento';
+            item.innerHTML = `
+                <div class="info-cento">25x ${s}</div>
+                <div class="controles-cento">
+                    <button class="btn-ctrl" onclick="mudarCento('${s}', -1)" ${centoQtds[s] === 0 ? 'disabled' : ''}>-</button>
+                    <span class="qtd-cento">${centoQtds[s]}</span>
+                    <button class="btn-ctrl" onclick="mudarCento('${s}', 1)" ${totalCento >= 4 ? 'disabled' : ''}>+</button>
+                </div>
+            `;
+            div.appendChild(item);
         });
-        document.getElementById('total-carrinho').innerText = `Total: R$ ${(carrinho.length * PRECO_COMBO).toFixed(2).replace('.', ',')}`;
+
+        document.getElementById('contador-cento').innerText = `Total: ${totalCento} / 4 unidades (Total: ${totalCento * 25} doces)`;
+        const btn = document.getElementById('btn-add-cento');
+        btn.disabled = totalCento !== 4;
+        btn.className = btn.disabled ? 'btn-add-carrinho' : 'btn-add-carrinho ativo';
+        btn.innerText = btn.disabled ? `Escolha 4 unidades (${totalCento}/4)` : "Adicionar Cento ao Pedido";
+    }
+
+    function mudarCento(sabor, delta) {
+        centoQtds[sabor] += delta;
+        renderCento();
+    }
+
+    // --- CARRINHO ---
+    function adicionarComboAoCarrinho() {
+        carrinho.push({ tipo: 'Combo', itens: [...comboAtual], preco: PRECO_COMBO });
+        comboAtual = [];
+        updateCombo();
+        renderCarrinho();
+    }
+
+    function adicionarCentoAoCarrinho() {
+        let resumo = [];
+        for (let s in centoQtds) { if(centoQtds[s] > 0) resumo.push(`${centoQtds[s] * 25}x ${s}`); }
+        carrinho.push({ tipo: 'Cento', itens: resumo, preco: PRECO_CENTO });
+        sabores.forEach(s => centoQtds[s] = 0);
+        renderCento();
+        renderCarrinho();
+    }
+
+    function renderCarrinho() {
+        const area = document.getElementById('carrinho-area');
+        const lista = document.getElementById('lista-itens-carrinho');
+        area.style.display = carrinho.length > 0 ? 'block' : 'none';
+        lista.innerHTML = '';
+        let total = 0;
+
+        carrinho.forEach((obj, i) => {
+            total += obj.preco;
+            const desc = obj.tipo === 'Combo' 
+                ? obj.itens.join(', ') 
+                : obj.itens.join(' | ');
+            
+            lista.innerHTML += `
+                <div class="item-carrinho">
+                    <strong>${obj.tipo}</strong><br>
+                    <small>${desc}</small><br>
+                    <strong>R$ ${obj.preco.toFixed(2).replace('.', ',')}</strong>
+                    <button class="btn-remover-item" onclick="removerItem(${i})">✕</button>
+                </div>
+            `;
+        });
+
+        document.getElementById('total-carrinho').innerText = `Total: R$ ${total.toFixed(2).replace('.', ',')}`;
         validarFinalizacao();
     }
+
+    function removerItem(i) { carrinho.splice(i, 1); renderCarrinho(); }
 
     function validarFinalizacao() {
         const nome = document.getElementById('nome-cliente').value;
         const metodo = document.getElementById('metodo-entrega').value;
         const btn = document.getElementById('btn-finalizar');
-        let pronto = (nome.trim().length > 2 && metodo !== "" && carrinho.length > 0);
+        const pronto = (nome.trim().length > 2 && metodo !== "" && carrinho.length > 0);
 
         if(pronto) {
             btn.classList.add('liberado');
             let msg = `*Novo Pedido - Amor e Cacau*%0A*Cliente:* ${nome}%0A*Entrega:* ${metodo}%0A%0A`;
-            carrinho.forEach((c, i) => {
-                const resumo = c.reduce((acc, s) => { acc[s] = (acc[s] || 0) + 1; return acc; }, {});
-                msg += `*Combo ${i+1}:* ` + Object.entries(resumo).map(([n, q]) => `${q}x ${n}`).join(', ') + `%0A`;
+            carrinho.forEach((obj, i) => {
+                msg += `*${i+1}. ${obj.tipo}:* ${obj.tipo === 'Combo' ? obj.itens.join(', ') : obj.itens.join(' | ')}%0A`;
             });
-            msg += `%0A*Total: R$ ${(carrinho.length * PRECO_COMBO).toFixed(2).replace('.', ',')}*`;
+            const total = carrinho.reduce((a, b) => a + b.preco, 0);
+            msg += `%0A*💰 Total: R$ ${total.toFixed(2).replace('.', ',')}*`;
             btn.href = `https://wa.me/5519992483488?text=${msg}`;
         } else {
             btn.classList.remove('liberado');
         }
     }
 
-    renderizarBotoesSabores();
-    atualizarSlots();
+    renderBotoesCombo();
+    updateCombo();
+    renderCento();
 </script>
 </body>
 </html>
