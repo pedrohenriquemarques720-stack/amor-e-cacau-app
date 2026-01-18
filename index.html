@@ -27,22 +27,24 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
-        /* ESTILOS DE ITENS */
-        .card-item { display: flex; align-items: center; justify-content: space-between; padding: 12px; border: 1px solid #eee; border-radius: 15px; margin-bottom: 10px; }
+        /* CARDÁPIO FLORAL */
+        .cardapio-floral { text-align: center; padding: 20px; border: 2px solid var(--bege-logo); border-radius: 20px; background: #fffcf9; }
+        .lista-sabores-texto { list-style: none; padding: 0; line-height: 2.2; font-weight: 500; font-size: 1.1rem; }
+
+        /* ITENS */
+        .card-item { display: flex; align-items: center; justify-content: space-between; padding: 12px; border: 1px solid #eee; border-radius: 15px; margin-bottom: 10px; background: white; }
         .btn-acao { background: var(--cor-vinho); color: white; border: none; padding: 8px 15px; border-radius: 20px; font-weight: bold; cursor: pointer; }
         .btn-ctrl { background: var(--cor-vinho); color: white; border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; cursor: pointer; }
 
-        /* ÁREA DE FECHAMENTO (CARRINHO) */
+        /* CARRINHO */
         .sessao-fechamento { margin-top: 30px; padding-top: 20px; border-top: 2px dashed #eee; }
         .item-no-carrinho { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f9f9f9; font-size: 0.9rem; }
         .pix-destaque { background: #fff5f7; border: 1px solid var(--rosa-principal); padding: 15px; border-radius: 15px; text-align: center; margin: 15px 0; }
-        
         .btn-final { width: 100%; background: var(--verde-wpp); color: white; border: none; padding: 15px; border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        .btn-final:disabled { background: #ccc; cursor: not-allowed; }
+        .btn-final:disabled { background: #ccc; }
 
         input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; margin-bottom: 10px; font-size: 1rem; box-sizing: border-box; }
-
-        /* ADMIN */
+        
         .card-admin { background: #fff5f7; border: 1px solid var(--rosa-principal); border-radius: 15px; padding: 15px; margin-bottom: 15px; }
     </style>
 </head>
@@ -55,37 +57,57 @@
 
     <div class="tabs-nav">
         <button class="tab-btn active" onclick="abrirAba(event, 'aba-pronta')">Pronta Entrega</button>
+        <button class="tab-btn" onclick="abrirAba(event, 'aba-cardapio')">Cardápio</button>
         <button class="tab-btn" onclick="abrirAba(event, 'aba-combo')">Monte seu Combo</button>
         <button class="tab-btn" style="background: #fdf2f5;" onclick="abrirAba(event, 'aba-admin')">👩‍🍳 Produção</button>
     </div>
 
     <div id="aba-pronta" class="tab-content active">
+        <h3 style="color: var(--cor-vinho)">🚚 Combos Prontos</h3>
         <div id="lista-pronta"></div>
     </div>
 
+    <div id="aba-cardapio" class="tab-content">
+        <div class="cardapio-floral">
+            <h2 style="color: var(--cor-vinho); font-family: Georgia, serif;">Nossos Sabores</h2>
+            <div style="color: var(--rosa-principal); margin-bottom: 10px;">✨ 🤎 ✨</div>
+            <ul class="lista-sabores-texto">
+                <li>🍫 Tradicional</li>
+                <li>☕ Café</li>
+                <li>🍋 Limão</li>
+                <li>🌰 Ferrero</li>
+                <li>🟡 Maracujá</li>
+                <li>🥥 Beijinho</li>
+            </ul>
+            <div style="border-top: 1px solid #eee; margin-top: 15px; padding-top: 10px; font-weight: bold;">
+                R$ 3,00 a unidade
+            </div>
+            <p style="font-style: italic; color: var(--rosa-principal); font-size: 0.8rem; margin-top: 10px;">"Adoçando seus momentos especiais"</p>
+        </div>
+    </div>
+
     <div id="aba-combo" class="tab-content">
-        <h4 style="color: var(--cor-vinho)">🎁 Combo 4 Doces (R$ 10,00)</h4>
+        <h4 style="color: var(--cor-vinho)">🎁 Monte seu Combo (4 un - R$ 10,00)</h4>
         <div id="grid-combo" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;"></div>
         <button id="btn-add-combo" class="btn-acao" style="width:100%" onclick="adicionarCombo()" disabled>Selecione 4 doces</button>
 
-        <h4 style="color: var(--cor-vinho); margin-top: 25px;">🎉 Cento (R$ 120,00)</h4>
+        <h4 style="color: var(--cor-vinho); margin-top: 30px;">🎉 Cento (100 un - R$ 120,00)</h4>
         <div id="lista-cento"></div>
-        <button id="btn-add-cento" class="btn-acao" style="width:100%" onclick="adicionarCento()" disabled>Selecione 4 partes</button>
+        <button id="btn-add-cento" class="btn-acao" style="width:100%" onclick="adicionarCento()" disabled>Selecione 4 partes de 25</button>
     </div>
 
     <div id="aba-admin" class="tab-content">
         <div class="card-admin">
             <h3 style="margin-top:0">📊 Totais para Enrolar</h3>
-            <div id="resumo-producao">Carregando...</div>
+            <div id="resumo-producao">Aguardando dados...</div>
         </div>
-        <h4>Pedidos na Fila</h4>
+        <h4>Pedidos Pendentes</h4>
         <div id="pedidos-lista-admin"></div>
     </div>
 
     <div id="secao-carrinho" class="sessao-fechamento" style="display: none;">
         <h3 style="color: var(--cor-vinho)">🛒 Resumo do Pedido</h3>
         <div id="itens-carrinho"></div>
-        
         <h2 id="valor-total" style="text-align: center; color: var(--cor-vinho); margin: 20px 0;">Total: R$ 0,00</h2>
 
         <input type="text" id="nome-cliente" placeholder="Seu Nome Completo" oninput="validar()">
@@ -96,12 +118,10 @@
         </select>
 
         <div class="pix-destaque">
+            <small>Favorecida: Ana Clara Toledo Morelli</small><br>
             <strong>Chave PIX (CPF): 473.387.918-05</strong><br>
-            Ana Clara Toledo Morelli
-            <br><br>
-            <button onclick="copiarPix()" style="padding: 5px 15px; cursor: pointer;">Copiar Chave</button>
+            <button onclick="copiarPix()" style="margin-top:8px; cursor:pointer;">Copiar Chave</button>
         </div>
-
         <button id="btn-finalizar" class="btn-final" onclick="finalizarTudo()" disabled>Finalizar no WhatsApp</button>
     </div>
 </div>
@@ -124,10 +144,14 @@
     let centoTemp = {}; SABORES.forEach(s => centoTemp[s] = 0);
     let autenticado = false;
 
+    // TODOS OS COMBOS RESTAURADOS
     const combosFixos = [
-        { n: "Combo: 2 Ferreros e 2 Tradicionais", s: ["Ferrero", "Ferrero", "Tradicional", "Tradicional"] },
-        { n: "Combo: 2 Beijinhos e 2 Brigadeiros", s: ["Beijinho", "Beijinho", "Tradicional", "Tradicional"] },
-        { n: "Combo: 4 Tradicionais", s: ["Tradicional", "Tradicional", "Tradicional", "Tradicional"] }
+        { n: "2 Ferreros e 2 Tradicionais", s: ["Ferrero", "Ferrero", "Tradicional", "Tradicional"] },
+        { n: "2 Beijinhos e 2 Brigadeiros", s: ["Beijinho", "Beijinho", "Tradicional", "Tradicional"] },
+        { n: "4 Tradicionais", s: ["Tradicional", "Tradicional", "Tradicional", "Tradicional"] },
+        { n: "4 Ferreros", s: ["Ferrero", "Ferrero", "Ferrero", "Ferrero"] },
+        { n: "4 Beijinhos", s: ["Beijinho", "Beijinho", "Beijinho", "Beijinho"] },
+        { n: "2 Ferreros e 2 Beijinhos", s: ["Ferrero", "Ferrero", "Beijinho", "Beijinho"] }
     ];
 
     function abrirAba(e, id) {
@@ -138,8 +162,6 @@
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         e.currentTarget.classList.add('active');
-        
-        // Esconde o carrinho apenas na aba de produção
         document.getElementById('secao-carrinho').style.display = (id === 'aba-admin' || carrinho.length === 0) ? 'none' : 'block';
     }
 
@@ -203,8 +225,9 @@
         const area = document.getElementById('secao-carrinho');
         const lista = document.getElementById('itens-carrinho');
         const totalDisplay = document.getElementById('valor-total');
+        const abaAtiva = document.querySelector('.tab-content.active').id;
 
-        if(carrinho.length > 0) {
+        if(carrinho.length > 0 && abaAtiva !== 'aba-admin') {
             area.style.display = 'block';
             lista.innerHTML = carrinho.map((it, i) => `
                 <div class="item-no-carrinho">
@@ -247,11 +270,10 @@
             carrinho = [];
             document.getElementById('nome-cliente').value = "";
             atualizarCarrinhoVisual();
-            alert("Pedido enviado! Fale conosco no WhatsApp.");
+            alert("Pedido enviado! Não esqueça de mandar o comprovante.");
         } catch (e) { alert("Erro ao salvar. Tente novamente."); }
     }
 
-    // LISTENER DE PRODUÇÃO
     db.collection("pedidos").where("status", "==", "pendente").onSnapshot((snapshot) => {
         let totais = {}; SABORES.forEach(s => totais[s] = 0);
         let htmlP = "";
