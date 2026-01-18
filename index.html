@@ -27,33 +27,31 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
-        /* CARDÁPIO */
-        .cardapio-floral { text-align: center; padding: 20px; border: 2px solid var(--bege-logo); border-radius: 20px; background: #fffcf9; }
-        .preco-lista { list-style: none; padding: 0; margin: 15px 0; border-top: 1px solid #eee; padding-top: 10px; }
-        .preco-lista li { margin-bottom: 8px; font-weight: bold; }
+        /* CARRINHO DINÂMICO */
+        .carrinho-float { background: #fffcf0; border: 1px solid #e6dbb9; padding: 12px; border-radius: 12px; margin: 15px 0; display: none; }
+        .carrinho-float.visible { display: block; }
+        .carrinho-item { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 5px; color: #666; }
 
-        /* MONTE SEU COMBO */
+        /* ESTILOS COMPONENTES (Cardápio, Slots, Escala) */
+        .cardapio-floral { text-align: center; padding: 20px; border: 2px solid var(--bege-logo); border-radius: 20px; background: #fffcf9; }
         .box-display { background: #fffafa; padding: 15px; border-radius: 15px; margin-bottom: 20px; text-align: center; border: 1px solid #f0e0e0; }
         .slots-container { display: flex; justify-content: center; gap: 8px; margin-top: 10px; }
-        .slot { width: 55px; height: 55px; border: 2px dashed var(--cor-vinho); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; background: white; cursor: pointer; text-align: center; }
+        .slot { width: 55px; height: 55px; border: 2px dashed var(--cor-vinho); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; background: white; cursor: pointer; }
         .slot.filled { border: 2px solid var(--cor-vinho); background: var(--cor-vinho); color: white; font-weight: bold; }
         .grid-botoes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-        .btn-item { background: white; border: 1.5px solid var(--cor-vinho); color: var(--cor-vinho); padding: 12px; border-radius: 12px; cursor: pointer; font-weight: 500; }
+        .btn-item { background: white; border: 1.5px solid var(--cor-vinho); color: var(--cor-vinho); padding: 12px; border-radius: 12px; cursor: pointer; }
         .item-escala { display: flex; align-items: center; justify-content: space-between; padding: 10px; border: 1px solid #eee; border-radius: 12px; margin-bottom: 8px; background: #fff; }
         .btn-ctrl { background: var(--cor-vinho); color: white; border: none; width: 28px; height: 28px; border-radius: 50%; font-weight: bold; cursor: pointer; }
 
         /* PRONTA ENTREGA */
-        .card-fixo { display: flex; align-items: center; padding: 12px; border: 1px solid #eee; border-radius: 15px; margin-bottom: 10px; cursor: pointer; transition: 0.2s; }
+        .card-fixo { display: flex; align-items: center; padding: 12px; border: 1px solid #eee; border-radius: 15px; margin-bottom: 10px; cursor: pointer; }
         .card-fixo.selected { border: 2px solid var(--cor-vinho); background: #fff5f7; }
-        .bolinha-selecao { width: 22px; height: 22px; border: 2px dashed var(--cor-vinho); border-radius: 50%; margin-right: 15px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+        .bolinha-selecao { width: 22px; height: 22px; border: 2px dashed var(--cor-vinho); border-radius: 50%; margin-right: 15px; flex-shrink: 0; }
         .card-fixo.selected .bolinha-selecao { border-style: solid; background: var(--cor-vinho); }
-        .card-fixo.selected .bolinha-selecao::after { content: '✓'; color: white; font-size: 12px; font-weight: bold; }
-        .fixo-info { font-weight: bold; font-size: 0.9rem; flex: 1; }
 
-        /* FINALIZAÇÃO (OCULTA POR PADRÃO) */
+        /* FINALIZAÇÃO */
         .area-finalizar { margin-top: 25px; padding: 15px; border-top: 2px dashed #eee; background: #fdfdfd; border-radius: 15px; display: none; }
         .area-finalizar.visible { display: block; }
-        
         .btn-wpp { width: 100%; background: var(--verde-wpp); color: white; border: none; padding: 15px; border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer; margin-top: 10px; opacity: 0.5; pointer-events: none; }
         .btn-wpp.liberado { opacity: 1; pointer-events: auto; }
         input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; margin-bottom: 10px; box-sizing: border-box; }
@@ -76,21 +74,25 @@
 
     <div id="aba-cardapio" class="tab-content active">
         <div class="cardapio-floral">
-            <h2 style="color: var(--cor-vinho)">Nossos Sabores</h2>
-            <p>Tradicional • Beijinho • Ferrero • Limão • Café • Maracujá</p>
+            <h2>Nossos Sabores</h2>
             <ul class="preco-lista">
                 <li>1 Unidade: R$ 3,00</li>
                 <li>📦 Caixinha (4 un): R$ 10,00</li>
-                <li>🎉 25 Doces: R$ 50,00 | 50 Doces: R$ 70,00</li>
-                <li>🎉 75 Doces: R$ 100,00 | 100 Doces: R$ 120,00</li>
+                <li>🎉 25 un: R$ 50 | 50 un: R$ 70</li>
+                <li>🎉 75 un: R$ 100 | 100 un: R$ 120</li>
             </ul>
         </div>
     </div>
 
     <div id="aba-pronta" class="tab-content">
-        <h3 style="color: var(--cor-vinho)">🚚 Combos Prontos (4 un - R$ 10,00)</h3>
+        <h3 style="color: var(--cor-vinho)">🚚 Combos Prontos</h3>
         <div id="lista-combos-fixos"></div>
-        <h3 id="total-pronta-texto" style="text-align: center; color: var(--cor-vinho); margin-top: 15px;">Total: R$ 0,00</h3>
+        
+        <div id="carrinho-pronta" class="carrinho-float">
+            <strong>Resumo do Pedido:</strong>
+            <div id="itens-carrinho-pronta"></div>
+            <div style="border-top: 1px solid #ccc; margin-top: 5px; padding-top: 5px; font-weight: bold;" id="total-pronta"></div>
+        </div>
 
         <div class="area-finalizar" id="finalizar-pronta">
             <input type="text" id="nome-pronta" placeholder="Seu Nome" oninput="validar('pronta')">
@@ -104,15 +106,21 @@
     </div>
 
     <div id="aba-combo" class="tab-content">
-        <h4 style="color: var(--cor-vinho); margin-bottom: 10px;">🎁 Monte sua Caixinha (4 un)</h4>
+        <h4 style="color: var(--cor-vinho)">🎁 Monte sua Caixinha</h4>
         <div class="box-display">
-            <span id="contador-texto" style="font-weight: bold; font-size: 0.9rem;">Caixinha (0/4):</span>
+            <span id="contador-texto">Caixinha (0/4):</span>
             <div class="slots-container" id="slots-area"></div>
         </div>
         <div class="grid-botoes" id="botoes-sabores"></div>
-        <h4 style="color: var(--cor-vinho); margin: 30px 0 10px;">🎉 Monte seu Cento (em partes de 25)</h4>
+
+        <h4 style="color: var(--cor-vinho)">🎉 Monte seu Cento (25x)</h4>
         <div id="lista-escala-cento"></div>
-        <h3 id="total-cento-texto" style="text-align: center; color: var(--cor-vinho); font-size: 1.1rem;">Total Cento: R$ 0,00</h3>
+
+        <div id="carrinho-combo" class="carrinho-float">
+            <strong>Resumo do Pedido:</strong>
+            <div id="itens-carrinho-combo"></div>
+            <div style="border-top: 1px solid #ccc; margin-top: 5px; padding-top: 5px; font-weight: bold;" id="total-combo"></div>
+        </div>
         
         <div class="area-finalizar" id="finalizar-combo">
             <input type="text" id="nome-combo" placeholder="Seu Nome" oninput="validar('combo')">
@@ -121,28 +129,19 @@
                 <option value="Retirada">Retirada</option>
                 <option value="Uber Moto">Uber Moto</option>
             </select>
-            <button id="btn-combo" class="btn-wpp" onclick="finalizar('combo')">Pedir Montagem no WhatsApp</button>
+            <button id="btn-combo" class="btn-wpp" onclick="finalizar('combo')">Pedir no WhatsApp</button>
         </div>
     </div>
 
     <div id="aba-admin" class="tab-content">
-        <div class="card-admin">
-            <h3>📊 Resumo de Produção</h3>
-            <div id="resumo-producao">...</div>
-        </div>
+        <div class="card-admin"><h3>📊 Resumo de Produção</h3><div id="resumo-producao"></div></div>
         <div id="pedidos-lista-admin"></div>
     </div>
 </div>
 
 <script>
-    const firebaseConfig = {
-        apiKey: "AIzaSyDHcHj9p1CWXxJf14E9OIO1LJA4miwDGlo",
-        authDomain: "amor-e-cacau.firebaseapp.com",
-        projectId: "amor-e-cacau",
-        storageBucket: "amor-e-cacau.firebasestorage.app",
-        messagingSenderId: "766363119746",
-        appId: "1:766363119746:web:1c63801fe2218ed224449b"
-    };
+    // Configurações Firebase
+    const firebaseConfig = { apiKey: "AIzaSyDHcHj9p1CWXxJf14E9OIO1LJA4miwDGlo", authDomain: "amor-e-cacau.firebaseapp.com", projectId: "amor-e-cacau", storageBucket: "amor-e-cacau.firebasestorage.app", messagingSenderId: "766363119746", appId: "1:766363119746:web:1c63801fe2218ed224449b" };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
@@ -163,7 +162,7 @@
 
     function abrirAba(e, id) {
         if (id === 'aba-admin' && !autenticado) {
-            if (prompt("PIN:") === "1808") { autenticado = true; } else { return; }
+            let p = prompt("PIN:"); if (p === "1808") { autenticado = true; } else return;
         }
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -171,6 +170,7 @@
         e.currentTarget.classList.add('active');
     }
 
+    // --- LOGICA PRONTA ENTREGA ---
     function renderCombosFixos() {
         document.getElementById('lista-combos-fixos').innerHTML = COMBOS_FIXOS.map((c, i) => `
             <div class="card-fixo ${combosSelecionados.includes(i) ? 'selected' : ''}" onclick="toggleFixo(${i})">
@@ -178,47 +178,44 @@
                 <div class="fixo-info">${c.n}</div>
             </div>
         `).join('');
-        document.getElementById('total-pronta-texto').innerText = `Total: R$ ${combosSelecionados.length * 10},00`;
         
-        // Mostrar/Ocultar campos de finalização
-        document.getElementById('finalizar-pronta').classList.toggle('visible', combosSelecionados.length > 0);
+        const cart = document.getElementById('carrinho-pronta');
+        const lista = document.getElementById('itens-carrinho-pronta');
+        if(combosSelecionados.length > 0) {
+            cart.classList.add('visible');
+            lista.innerHTML = combosSelecionados.map(i => `<div class="carrinho-item"><span>${COMBOS_FIXOS[i].n}</span><span>R$ 10,00</span></div>`).join('');
+            document.getElementById('total-pronta').innerText = `Total: R$ ${combosSelecionados.length * 10},00`;
+            document.getElementById('finalizar-pronta').classList.add('visible');
+        } else {
+            cart.classList.remove('visible');
+            document.getElementById('finalizar-pronta').classList.remove('visible');
+        }
     }
 
     function toggleFixo(i) {
-        const index = combosSelecionados.indexOf(i);
-        if (index > -1) combosSelecionados.splice(index, 1);
-        else combosSelecionados.push(i);
+        const idx = combosSelecionados.indexOf(i);
+        if(idx > -1) combosSelecionados.splice(idx, 1); else combosSelecionados.push(i);
         renderCombosFixos();
         validar('pronta');
     }
 
+    // --- LOGICA MONTE SEU COMBO ---
     function renderEscala() {
-        const totalPartes = Object.values(escalaCento).reduce((a, b) => a + b, 0);
-        const precos = { 0:0, 1: 50, 2: 70, 3: 100, 4: 120 };
+        const totalP = Object.values(escalaCento).reduce((a,b)=>a+b, 0);
         document.getElementById('lista-escala-cento').innerHTML = SABORES.map(s => `
             <div class="item-escala">
                 <span><strong>25x ${s}</strong></span>
                 <div>
                     <button class="btn-ctrl" onclick="mudarEscala('${s}', -1)">-</button>
                     <span style="margin: 0 8px;">${escalaCento[s]}</span>
-                    <button class="btn-ctrl" onclick="mudarEscala('${s}', 1)" ${totalPartes >= 4 ? 'disabled' : ''}>+</button>
+                    <button class="btn-ctrl" onclick="mudarEscala('${s}', 1)" ${totalP >= 4 ? 'disabled' : ''}>+</button>
                 </div>
             </div>
         `).join('');
-        document.getElementById('total-cento-texto').innerText = `Total Cento: R$ ${precos[totalPartes]},00`;
-        verificarVisibilidadeCombo();
-        validar('combo');
+        atualizarCarrinhoCombo();
     }
 
-    function mudarEscala(s, d) { if (!(d===-1 && escalaCento[s]===0)) { escalaCento[s]+=d; renderEscala(); } }
-
-    function renderBotoes() {
-        document.getElementById('botoes-sabores').innerHTML = SABORES.map(s => `
-            <button class="btn-item" onclick="addDoce('${s}')">+ ${s}</button>
-        `).join('');
-    }
-
-    function addDoce(s) { if(caixaAtual.length < 4) { caixaAtual.push(s); atualizarSlots(); } }
+    function mudarEscala(s, d) { if(!(d===-1 && escalaCento[s]===0)) { escalaCento[s]+=d; renderEscala(); } }
 
     function atualizarSlots() {
         const area = document.getElementById('slots-area');
@@ -231,22 +228,43 @@
             area.appendChild(slot);
         }
         document.getElementById('contador-texto').innerText = `Caixinha (${caixaAtual.length}/4):`;
-        verificarVisibilidadeCombo();
+        atualizarCarrinhoCombo();
+    }
+
+    function atualizarCarrinhoCombo() {
+        const cart = document.getElementById('carrinho-combo');
+        const lista = document.getElementById('itens-carrinho-combo');
+        const partes = Object.values(escalaCento).reduce((a,b)=>a+b, 0);
+        const precosCento = {0:0, 1:50, 2:70, 3:100, 4:120};
+        
+        let html = "";
+        let total = 0;
+
+        if(caixaAtual.length === 4) {
+            html += `<div class="carrinho-item"><span>Caixinha Montada</span><span>R$ 10,00</span></div>`;
+            total += 10;
+        }
+        if(partes > 0) {
+            html += `<div class="carrinho-item"><span>Cento (${partes*25} un)</span><span>R$ ${precosCento[partes]},00</span></div>`;
+            total += precosCento[partes];
+        }
+
+        if(total > 0) {
+            cart.classList.add('visible');
+            lista.innerHTML = html;
+            document.getElementById('total-combo').innerText = `Total: R$ ${total},00`;
+            document.getElementById('finalizar-combo').classList.add('visible');
+        } else {
+            cart.classList.remove('visible');
+            document.getElementById('finalizar-combo').classList.remove('visible');
+        }
         validar('combo');
     }
 
-    function verificarVisibilidadeCombo() {
-        const totalCento = Object.values(escalaCento).reduce((a, b) => a + b, 0);
-        const temItem = (caixaAtual.length === 4 || totalCento > 0);
-        document.getElementById('finalizar-combo').classList.toggle('visible', temItem);
-    }
-
     function validar(tipo) {
-        const nome = document.getElementById(`nome-${tipo}`).value;
-        const entrega = document.getElementById(`entrega-${tipo}`).value;
-        const btn = document.getElementById(`btn-${tipo}`);
-        let pronto = (nome.trim().length > 2 && entrega !== "");
-        btn.classList.toggle('liberado', pronto);
+        const n = document.getElementById(`nome-${tipo}`).value;
+        const e = document.getElementById(`entrega-${tipo}`).value;
+        document.getElementById(`btn-${tipo}`).classList.toggle('liberado', n.length > 2 && e !== "");
     }
 
     async function finalizar(tipo) {
@@ -256,55 +274,48 @@
         let msg = `*Amor e Cacau*%0A*Nome:* ${nome}%0A*Entrega:* ${entrega}%0A%0A`;
 
         if(tipo === 'pronta') {
-            combosSelecionados.forEach(idx => {
-                const combo = COMBOS_FIXOS[idx];
-                itens.push({nome: combo.n, sabores: combo.s, preco: 10});
-                msg += `*Combo:* ${combo.n} (R$ 10,00)%0A`;
+            combosSelecionados.forEach(i => {
+                itens.push({nome: COMBOS_FIXOS[i].n, sabores: COMBOS_FIXOS[i].s, preco: 10});
+                msg += `- ${COMBOS_FIXOS[i].n} (R$ 10,00)%0A`;
             });
-            msg += `%0A*Total: R$ ${combosSelecionados.length * 10},00*`;
         } else {
-            let totalPedido = 0;
             if(caixaAtual.length === 4) {
-                itens.push({nome: "Caixa Personalizada", sabores: [...caixaAtual], preco: 10});
-                msg += `*Caixinha:* ${caixaAtual.join(', ')} (R$ 10,00)%0A`;
-                totalPedido += 10;
+                itens.push({nome: "Caixa Montada", sabores: [...caixaAtual], preco: 10});
+                msg += `- Caixa Montada (R$ 10,00)%0A`;
             }
-            const partes = Object.values(escalaCento).reduce((a, b) => a + b, 0);
-            if(partes > 0) {
-                let sabsCento = [];
-                for(let s in escalaCento) for(let i=0; i<escalaCento[s]*25; i++) sabsCento.push(s);
-                const pCentos = {1:50, 2:70, 3:100, 4:120};
-                itens.push({nome: `Cento (${partes*25} un)`, sabores: sabsCento, preco: pCentos[partes]});
-                msg += `*Cento:* `;
-                for(let s in escalaCento) if(escalaCento[s]>0) msg += `${escalaCento[s]*25}x ${s} `;
-                totalPedido += pCentos[partes];
+            const p = Object.values(escalaCento).reduce((a,b)=>a+b, 0);
+            if(p > 0) {
+                let sabs = []; for(let s in escalaCento) for(let i=0; i<escalaCento[s]*25; i++) sabs.push(s);
+                const val = {1:50, 2:70, 3:100, 4:120}[p];
+                itens.push({nome: `Cento ${p*25}un`, sabores: sabs, preco: val});
+                msg += `- Cento ${p*25}un (R$ ${val},00)%0A`;
             }
-            msg += `%0A*Total: R$ ${totalPedido},00*`;
         }
 
-        try {
-            await db.collection("pedidos").add({ cliente: nome, entrega: entrega, itens: itens, status: "pendente", data: new Date() });
-            window.open(`https://wa.me/5519992483488?text=${msg}`);
-            location.reload();
-        } catch (e) { alert("Erro ao salvar."); }
+        await db.collection("pedidos").add({cliente: nome, entrega: entrega, itens: itens, status: "pendente", data: new Date()});
+        window.open(`https://wa.me/5519992483488?text=${msg}`);
+        location.reload();
     }
 
+    // Monitor Produção
     db.collection("pedidos").where("status", "==", "pendente").onSnapshot(snap => {
         let totais = {}; SABORES.forEach(s => totais[s] = 0);
         let html = "";
         snap.forEach(doc => {
             const p = doc.data();
             p.itens.forEach(it => it.sabores.forEach(s => totais[s]++));
-            html += `<div class="card-admin"><strong>${p.cliente}</strong><br><small>${p.itens.map(i=>i.nome).join(' + ')}</small><br><button class="btn-item" style="width:100%; margin-top:10px" onclick="db.collection('pedidos').doc('${doc.id}').update({status:'ok'})">Concluir</button></div>`;
+            html += `<div class="card-admin"><strong>${p.cliente}</strong> (${p.entrega})<br><button onclick="db.collection('pedidos').doc('${doc.id}').update({status:'ok'})">OK</button></div>`;
         });
-        document.getElementById('resumo-producao').innerHTML = SABORES.map(s => `<div>${s}: <strong>${totais[s]}</strong></div>`).join('');
+        document.getElementById('resumo-producao').innerHTML = SABORES.map(s => `<div>${s}: ${totais[s]}</div>`).join('');
         document.getElementById('pedidos-lista-admin').innerHTML = html;
     });
 
+    // Inits
     renderCombosFixos();
     renderEscala();
     renderBotoes();
     atualizarSlots();
+    function addDoce(s) { if(caixaAtual.length < 4) { caixaAtual.push(s); atualizarSlots(); } }
 </script>
 </body>
 </html>
