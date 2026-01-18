@@ -1,9 +1,15 @@
+Ficou um charme! Atualizei a aba Cardápio com uma estética "achocolatada", usando tons de marrom e rosa, e organizei os sabores com ícones que despertam o apetite. Também adicionei uma frase carinhosa para dar aquele toque especial da Amor e Cacau.
+
+Aqui está o código completo e atualizado:
+
+HTML
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amor e Cacau | Encomendas</title>
+    <title>Amor e Cacau | Pedidos</title>
     <style>
         :root {
             --cor-vinho: #800020;
@@ -17,285 +23,256 @@
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bege-logo);
-            background-image: radial-gradient(circle at top right, #fdf8f3 0%, var(--bege-logo) 100%);
-            background-attachment: fixed;
             color: var(--marrom-chocolate);
-            margin: 0;
-            padding: 20px;
+            margin: 0; padding: 15px;
         }
 
-        header { text-align: center; padding: 10px 0 20px; }
-        header h1 { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 0; color: var(--cor-vinho); font-size: 1.8rem; }
-        .subtitulo { color: var(--rosa-principal); font-weight: bold; margin-top: 5px; }
+        header { text-align: center; padding-bottom: 15px; }
+        header h1 { color: var(--cor-vinho); margin: 0; font-size: 1.6rem; }
 
         .container {
-            max-width: 500px; margin: 0 auto; background: rgba(255, 255, 255, 0.9);
-            padding: 20px; border-radius: 20px; box-shadow: 0 10px 25px rgba(128, 0, 32, 0.1);
-            backdrop-filter: blur(5px); border: 1px solid rgba(255, 255, 255, 0.5);
+            max-width: 500px; margin: 0 auto; background: white;
+            padding: 20px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);
         }
 
-        /* --- TABS --- */
-        .tabs-nav { display: flex; gap: 5px; margin-bottom: 20px; border-bottom: 2px solid var(--bege-logo); }
-        .tab-btn { flex: 1; padding: 12px; border: none; background: #eee; color: var(--marrom-chocolate); font-weight: bold; cursor: pointer; border-radius: 10px 10px 0 0; transition: 0.3s; font-size: 0.85rem; }
+        /* --- ABAS --- */
+        .tabs-nav { display: flex; gap: 5px; margin-bottom: 20px; }
+        .tab-btn { flex: 1; padding: 10px 5px; border: none; background: #f0f0f0; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.8rem; }
         .tab-btn.active { background: var(--cor-vinho); color: white; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
+        /* --- ESTILO CARDÁPIO (NOVO) --- */
+        .cardapio-floral { text-align: center; padding: 10px; border: 2px solid var(--bege-logo); border-radius: 15px; background: #fffcf9; }
+        .cardapio-floral h2 { color: var(--cor-vinho); font-family: 'Georgia', serif; margin-bottom: 5px; }
+        .coracao-divisor { color: var(--rosa-principal); font-size: 1.2rem; margin: 10px 0; }
+        .lista-sabores-texto { list-style: none; padding: 0; line-height: 2; font-weight: 500; font-size: 1.05rem; }
+        .valor-unitario { margin-top: 15px; padding-top: 10px; border-top: 1px solid #eee; font-weight: bold; color: var(--marrom-chocolate); }
+        .frase-carinho { font-style: italic; font-size: 0.85rem; color: var(--rosa-principal); margin-top: 10px; }
+
+        /* --- VITRINE PRONTA ENTREGA --- */
+        .card-pronta { display: flex; align-items: center; justify-content: space-between; padding: 12px; border: 1px solid #eee; border-radius: 12px; margin-bottom: 10px; }
+        .info-produto { flex: 1; }
+        .info-produto strong { display: block; color: var(--cor-vinho); font-size: 0.95rem; }
+        .info-produto span { font-size: 0.8rem; color: #666; }
+
         /* --- ESTILOS GERAIS --- */
-        .secao-titulo { color: var(--cor-vinho); border-bottom: 1px solid #ddd; padding-bottom: 5px; margin: 25px 0 15px; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
-        .box-display { background: #fffafa; padding: 15px; border-radius: 15px; margin-bottom: 20px; text-align: center; border: 1px solid #f0e0e0; }
-        
-        /* Slots Combo 4 */
-        .slots-container { display: flex; justify-content: center; gap: 10px; margin-top: 10px; }
-        .slot { width: 50px; height: 50px; border: 2px dashed var(--cor-vinho); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; text-align: center; background: white; cursor: pointer; transition: 0.2s; }
+        .secao-titulo { color: var(--cor-vinho); border-bottom: 1px solid #eee; padding-bottom: 5px; margin: 20px 0 10px; font-weight: bold; }
+        .box-display { background: #fffafa; padding: 12px; border-radius: 12px; margin-bottom: 15px; text-align: center; border: 1px solid #f0e0e0; }
+        .slots-container { display: flex; justify-content: center; gap: 8px; margin-top: 8px; }
+        .slot { width: 45px; height: 45px; border: 2px dashed var(--cor-vinho); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.55rem; background: white; cursor: pointer; text-align: center; overflow: hidden; padding: 2px; }
         .slot.filled { border: 2px solid var(--cor-vinho); background: var(--cor-vinho); color: white; font-weight: bold; }
+        .grid-sabores { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .btn-sabor { background: white; border: 1.5px solid var(--cor-vinho); padding: 10px; border-radius: 10px; cursor: pointer; font-size: 0.85rem; }
 
-        .lista-sabores { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
-        .btn-sabor { background: white; border: 1.5px solid var(--cor-vinho); color: var(--cor-vinho); padding: 12px 8px; border-radius: 10px; cursor: pointer; font-weight: 500; font-size: 0.85rem; }
-
-        /* --- ESTILO CENTO (CONTADORES) --- */
-        .item-cento { display: flex; align-items: center; justify-content: space-between; background: white; padding: 10px 15px; border-radius: 12px; margin-bottom: 8px; border: 1px solid #eee; }
-        .info-cento { font-weight: 600; font-size: 0.9rem; }
-        .controles-cento { display: flex; align-items: center; gap: 15px; }
-        .btn-ctrl { background: var(--cor-vinho); color: white; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-weight: bold; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; }
-        .btn-ctrl:disabled { background: var(--cinza-inativo); cursor: not-allowed; }
-        .qtd-cento { font-weight: bold; min-width: 20px; text-align: center; color: var(--cor-vinho); }
-
-        .btn-add-carrinho { display: block; width: 100%; background: var(--cinza-inativo); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; cursor: not-allowed; margin-top: 10px; }
-        .btn-add-carrinho.ativo { background: var(--cor-vinho); cursor: pointer; }
+        .btn-ctrl { background: var(--cor-vinho); color: white; border: none; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-weight: bold; }
+        .btn-add-geral { width: 100%; background: var(--cor-vinho); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: bold; margin-top: 10px; cursor: pointer; }
+        .btn-add-geral:disabled { background: var(--cinza-inativo); }
 
         /* --- CARRINHO --- */
-        .item-carrinho { background: white; padding: 12px; border-radius: 12px; margin-bottom: 10px; position: relative; border: 1px solid var(--cor-vinho); }
-        .btn-remover-item { position: absolute; top: 12px; right: 12px; color: #ff4d4d; cursor: pointer; border: none; background: none; font-weight: bold; }
-        .btn-whatsapp { display: block; width: 100%; background: var(--verde-wpp); color: white; text-decoration: none; padding: 16px; border-radius: 12px; font-weight: bold; opacity: 0.5; pointer-events: none; text-align: center; margin-top: 15px; }
+        .item-carrinho { background: #fdfdfd; padding: 10px; border-radius: 10px; margin-bottom: 8px; border-left: 4px solid var(--cor-vinho); position: relative; }
+        .btn-remover { position: absolute; right: 10px; top: 10px; color: #ff4d4d; border: none; background: none; font-weight: bold; cursor: pointer; }
+        .btn-whatsapp { display: block; width: 100%; background: var(--verde-wpp); color: white; text-decoration: none; padding: 15px; border-radius: 10px; text-align: center; font-weight: bold; margin-top: 15px; opacity: 0.5; pointer-events: none; }
         .btn-whatsapp.liberado { opacity: 1; pointer-events: auto; }
-        .campo-grupo { margin-bottom: 12px; text-align: left; }
-        .campo-grupo label { display: block; font-size: 0.85rem; font-weight: bold; margin-bottom: 5px; color: var(--cor-vinho); }
-        .campo-grupo input, .campo-grupo select { width: 100%; padding: 10px; border: 1px solid #eee; border-radius: 8px; box-sizing: border-box; }
 
-        @media (max-width: 600px) { .tabs-nav { flex-direction: column; } .tab-btn { border-radius: 10px; } }
+        .campo { margin-bottom: 10px; }
+        .campo label { display: block; font-size: 0.8rem; font-weight: bold; margin-bottom: 3px; }
+        .campo input, .campo select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
     </style>
 </head>
 <body>
 
 <header>
-    <h1><span>❤️</span> Amor e Cacau</h1>
-    <p class="subtitulo">Doces Artesanais & Delícias</p>
+    <h1>❤️ Amor e Cacau</h1>
 </header>
 
 <div class="container">
     <div class="tabs-nav">
         <button class="tab-btn" onclick="abrirAba(event, 'aba1')">Pronta Entrega</button>
-        <button class="tab-btn" onclick="abrirAba(event, 'aba2')">Cardápio</button>
-        <button class="tab-btn active" onclick="abrirAba(event, 'aba3')">Monte seu Combo</button>
+        <button class="tab-btn active" onclick="abrirAba(event, 'aba2')">Cardápio</button>
+        <button class="tab-btn" onclick="abrirAba(event, 'aba3')">Monte seu Combo</button>
     </div>
 
-    <div id="conteudo-app">
-        <div id="aba1" class="tab-content"> <p style="text-align:center; padding:20px; color:#888;">Em breve...</p> </div>
-        <div id="aba2" class="tab-content"> <p style="text-align:center; padding:20px; color:#888;">Em breve...</p> </div>
+    <div id="aba1" class="tab-content">
+        <div class="secao-titulo">🚚 Combos Prontos (R$ 10,00)</div>
+        <div id="lista-pronta-entrega"></div>
+    </div>
 
-        <div id="aba3" class="tab-content active">
+    <div id="aba2" class="tab-content active">
+        <div class="cardapio-floral">
+            <h2>Nosso Cardápio</h2>
+            <div class="coracao-divisor">🤎 ✨ 🤎</div>
             
-            <div class="secao-titulo">🎁 Combo 4 Doces (R$ 10,00)</div>
-            <div class="box-display">
-                <span id="contador-combo" style="font-weight: bold; font-size: 0.9rem;">Escolha 4 doces (0/4):</span>
-                <div class="slots-container" id="slots-combo"></div>
-            </div>
-            <div class="lista-sabores" id="botoes-sabores-combo"></div>
-            <button id="btn-add-combo" class="btn-add-carrinho" onclick="adicionarComboAoCarrinho()">Preencha o combo</button>
+            <ul class="lista-sabores-texto">
+                <li>🍫 Brigadeiro Tradicional</li>
+                <li>☕ Brigadeiro de Café</li>
+                <li>🍋 Brigadeiro de Limão</li>
+                <li>🌰 Brigadeiro de Ferrero</li>
+                <li>🟡 Brigadeiro de Maracujá</li>
+                <li>🥥 Beijinho</li>
+            </ul>
 
-            <div class="secao-titulo">🎉 Cento de Doces (R$ 130,00)</div>
-            <p style="font-size: 0.8rem; color: #666; margin-bottom: 10px; text-align: center;">Cada unidade (1) equivale a 25 doces.<br>Escolha 4 unidades para completar o cento.</p>
+            <div class="valor-unitario">
+                Valor unitário: R$ 3,00 cada
+            </div>
             
-            <div id="lista-sabores-cento">
-                </div>
-
-            <div class="box-display" style="margin-top: 10px;">
-                <span id="contador-cento" style="font-weight: bold;">Total: 0 / 4 unidades</span>
-            </div>
-            <button id="btn-add-cento" class="btn-add-carrinho" onclick="adicionarCentoAoCarrinho()">Selecione as 4 unidades</button>
-
+            <p class="frase-carinho">"Feitos com amor para adoçar o seu dia!"</p>
         </div>
+    </div>
 
-        <div class="carrinho-area" id="carrinho-area" style="display:none; margin-top: 30px;">
-            <h3 style="border-top: 2px dashed var(--cor-vinho); padding-top: 20px; color: var(--cor-vinho);">🛒 Seu Pedido</h3>
-            
-            <div class="campo-grupo">
-                <label>Seu Nome:</label>
-                <input type="text" id="nome-cliente" placeholder="Seu nome" oninput="validarFinalizacao()">
-            </div>
-            <div class="campo-grupo">
-                <label>Entrega/Retirada:</label>
-                <select id="metodo-entrega" onchange="validarFinalizacao()">
-                    <option value="">Selecione...</option>
-                    <option value="Retirada">Vou retirar</option>
-                    <option value="Uber Moto">Uber Moto</option>
-                </select>
-            </div>
+    <div id="aba3" class="tab-content">
+        <div class="secao-titulo">🎁 Monte seu Combo (R$ 10,00)</div>
+        <div class="box-display">
+            <span id="txt-combo" style="font-size: 0.85rem;">Escolha 4 doces (0/4):</span>
+            <div class="slots-container" id="slots-combo"></div>
+        </div>
+        <div class="grid-sabores" id="btns-combo"></div>
+        <button id="btn-add-combo" class="btn-add-geral" onclick="addComboCarrinho()" disabled>Preencha o combo</button>
 
-            <div id="lista-itens-carrinho"></div>
+        <div class="secao-titulo">🎉 Cento de Doces (R$ 120,00)</div>
+        <div id="lista-cento"></div>
+        <div class="box-display"><span id="txt-cento" style="font-weight:bold">Total: 0/4 unidades</span></div>
+        <button id="btn-add-cento" class="btn-add-geral" onclick="addCentoCarrinho()" disabled>Selecione as 4 unidades</button>
+    </div>
 
-            <div style="text-align:center;">
-                <span id="total-carrinho" style="font-size:1.3rem; font-weight:bold; color: var(--cor-vinho);">Total: R$ 0,00</span>
-                <a href="#" id="btn-finalizar" class="btn-whatsapp">Finalizar no WhatsApp</a>
-            </div>
+    <div class="carrinho-area" id="area-carrinho" style="display:none; margin-top: 30px; border-top: 2px dashed #eee; padding-top: 20px;">
+        <h3 style="color: var(--cor-vinho); margin-top: 0;">🛒 Seu Pedido</h3>
+        <div class="campo"><label>Seu Nome:</label><input type="text" id="nome" placeholder="Digite seu nome" oninput="validar()"></div>
+        <div class="campo">
+            <label>Como deseja receber?</label>
+            <select id="entrega" onchange="validar()">
+                <option value="">Selecione...</option>
+                <option value="Retirada">Vou retirar</option>
+                <option value="Uber Moto">Uber Moto</option>
+            </select>
+        </div>
+        <div id="itens-carrinho"></div>
+        <div style="text-align: center; margin-top: 15px;">
+            <span id="total-geral" style="font-size: 1.2rem; font-weight: bold; color: var(--cor-vinho);">Total: R$ 0,00</span>
+            <a href="#" id="btn-wpp" class="btn-whatsapp">Finalizar no WhatsApp</a>
         </div>
     </div>
 </div>
 
 <script>
     const sabores = ["Tradicional", "Beijinho", "Ferrero", "Limão", "Café", "Maracujá"];
-    const PRECO_COMBO = 10.00;
-    const PRECO_CENTO = 130.00; // Valor exemplo para o Cento
+    const prontaCombos = [
+        { nome: "2 Ferreros e 2 Tradicionais", preco: 10.00 },
+        { nome: "2 Beijinhos e 2 Brigadeiros", preco: 10.00 },
+        { nome: "4 Tradicionais", preco: 10.00 },
+        { nome: "4 Ferreros", preco: 10.00 },
+        { nome: "4 Beijinhos", preco: 10.00 },
+        { nome: "2 Ferreros e 2 Beijinhos", preco: 10.00 }
+    ];
 
-    let comboAtual = [];
-    let centoQtds = {}; // { "Tradicional": 0, "Beijinho": 1 ... }
     let carrinho = [];
-
-    // Inicializa cento
-    sabores.forEach(s => centoQtds[s] = 0);
+    let comboAux = [];
+    let centoAux = {};
+    sabores.forEach(s => centoAux[s] = 0);
 
     function abrirAba(evt, nomeAba) {
-        let i, content, links;
-        content = document.getElementsByClassName("tab-content");
-        for (i = 0; i < content.length; i++) content[i].style.display = "none";
-        links = document.getElementsByClassName("tab-btn");
-        for (i = 0; i < links.length; i++) links[i].className = links[i].className.replace(" active", "");
-        document.getElementById(nomeAba).style.display = "block";
-        evt.currentTarget.className += " active";
+        document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(nomeAba).style.display = 'block';
+        evt.currentTarget.classList.add('active');
     }
 
-    // --- LÓGICA COMBO 4 ---
-    function renderBotoesCombo() {
-        const div = document.getElementById('botoes-sabores-combo');
-        div.innerHTML = '';
-        sabores.forEach(s => {
-            const btn = document.createElement('button');
-            btn.className = 'btn-sabor';
-            btn.innerText = `+ ${s}`;
-            btn.onclick = () => { if(comboAtual.length < 4) { comboAtual.push(s); updateCombo(); } };
-            div.appendChild(btn);
-        });
+    function renderPronta() {
+        const div = document.getElementById('lista-pronta-entrega');
+        div.innerHTML = prontaCombos.map(p => `
+            <div class="card-pronta">
+                <div class="info-produto"><strong>${p.nome}</strong><span>R$ ${p.preco.toFixed(2).replace('.',',')}</span></div>
+                <button class="btn-ctrl" style="width:auto; padding:0 15px; border-radius:8px;" onclick="addProntaCarrinho('${p.nome}', ${p.preco})">Adicionar</button>
+            </div>
+        `).join('');
     }
+
+    function addProntaCarrinho(nome, preco) {
+        carrinho.push({ tipo: 'PRONTA ENTREGA', nome: nome, preco: preco });
+        renderCarrinho();
+    }
+
+    function renderCombo() {
+        const div = document.getElementById('btns-combo');
+        div.innerHTML = sabores.map(s => `<button class="btn-sabor" onclick="clickSaborCombo('${s}')">+ ${s}</button>`).join('');
+    }
+
+    function clickSaborCombo(s) { if(comboAux.length < 4) { comboAux.push(s); updateCombo(); } }
 
     function updateCombo() {
         const area = document.getElementById('slots-combo');
-        area.innerHTML = '';
-        for(let i=0; i<4; i++) {
-            const slot = document.createElement('div');
-            slot.className = comboAtual[i] ? 'slot filled' : 'slot';
-            slot.innerHTML = comboAtual[i] ? `<span>${comboAtual[i]}</span>` : '';
-            slot.onclick = () => { if(comboAtual[i]) { comboAtual.splice(i, 1); updateCombo(); } };
-            area.appendChild(slot);
-        }
-        const btn = document.getElementById('btn-add-combo');
-        btn.disabled = comboAtual.length !== 4;
-        btn.className = btn.disabled ? 'btn-add-carrinho' : 'btn-add-carrinho ativo';
-        btn.innerText = btn.disabled ? `Faltam ${4 - comboAtual.length} doces` : "Adicionar Combo ao Pedido";
-        document.getElementById('contador-combo').innerText = `Escolha 4 doces (${comboAtual.length}/4):`;
+        area.innerHTML = Array.from({length:4}, (_,i) => `
+            <div class="${comboAux[i] ? 'slot filled' : 'slot'}" onclick="removeSaborCombo(${i})">${comboAux[i] || ''}</div>
+        `).join('');
+        document.getElementById('btn-add-combo').disabled = comboAux.length !== 4;
+        document.getElementById('txt-combo').innerText = `Escolha 4 doces (${comboAux.length}/4):`;
     }
 
-    // --- LÓGICA CENTO ---
+    function removeSaborCombo(i) { if(comboAux[i]) { comboAux.splice(i,1); updateCombo(); } }
+
+    function addComboCarrinho() {
+        carrinho.push({ tipo: 'COMBO PERSONALIZADO', nome: 'Combo 4 Doces', itens: [...comboAux], preco: 10.00 });
+        comboAux = []; updateCombo(); renderCarrinho();
+    }
+
     function renderCento() {
-        const div = document.getElementById('lista-sabores-cento');
-        div.innerHTML = '';
-        const totalCento = Object.values(centoQtds).reduce((a, b) => a + b, 0);
-
-        sabores.forEach(s => {
-            const item = document.createElement('div');
-            item.className = 'item-cento';
-            item.innerHTML = `
-                <div class="info-cento">25x ${s}</div>
-                <div class="controles-cento">
-                    <button class="btn-ctrl" onclick="mudarCento('${s}', -1)" ${centoQtds[s] === 0 ? 'disabled' : ''}>-</button>
-                    <span class="qtd-cento">${centoQtds[s]}</span>
-                    <button class="btn-ctrl" onclick="mudarCento('${s}', 1)" ${totalCento >= 4 ? 'disabled' : ''}>+</button>
+        const div = document.getElementById('lista-cento');
+        const total = Object.values(centoAux).reduce((a,b) => a+b, 0);
+        div.innerHTML = sabores.map(s => `
+            <div class="card-pronta">
+                <div class="info-produto"><strong>25x ${s}</strong></div>
+                <div class="controles">
+                    <button class="btn-ctrl" onclick="mudarCento('${s}', -1)" ${centoAux[s]==0?'disabled':''}>-</button>
+                    <span style="font-weight:bold; margin: 0 10px;">${centoAux[s]}</span>
+                    <button class="btn-ctrl" onclick="mudarCento('${s}', 1)" ${total>=4?'disabled':''}>+</button>
                 </div>
-            `;
-            div.appendChild(item);
-        });
-
-        document.getElementById('contador-cento').innerText = `Total: ${totalCento} / 4 unidades (Total: ${totalCento * 25} doces)`;
-        const btn = document.getElementById('btn-add-cento');
-        btn.disabled = totalCento !== 4;
-        btn.className = btn.disabled ? 'btn-add-carrinho' : 'btn-add-carrinho ativo';
-        btn.innerText = btn.disabled ? `Escolha 4 unidades (${totalCento}/4)` : "Adicionar Cento ao Pedido";
+            </div>
+        `).join('');
+        document.getElementById('txt-cento').innerText = `Total: ${total}/4 unidades`;
+        document.getElementById('btn-add-cento').disabled = total !== 4;
     }
 
-    function mudarCento(sabor, delta) {
-        centoQtds[sabor] += delta;
-        renderCento();
-    }
+    function mudarCento(s, d) { centoAux[s] += d; renderCento(); }
 
-    // --- CARRINHO ---
-    function adicionarComboAoCarrinho() {
-        carrinho.push({ tipo: 'Combo', itens: [...comboAtual], preco: PRECO_COMBO });
-        comboAtual = [];
-        updateCombo();
-        renderCarrinho();
-    }
-
-    function adicionarCentoAoCarrinho() {
-        let resumo = [];
-        for (let s in centoQtds) { if(centoQtds[s] > 0) resumo.push(`${centoQtds[s] * 25}x ${s}`); }
-        carrinho.push({ tipo: 'Cento', itens: resumo, preco: PRECO_CENTO });
-        sabores.forEach(s => centoQtds[s] = 0);
-        renderCento();
-        renderCarrinho();
+    function addCentoCarrinho() {
+        let selecionados = [];
+        for(let s in centoAux) if(centoAux[s]>0) selecionados.push(`${centoAux[s]*25}x ${s}`);
+        carrinho.push({ tipo: 'CENTO', nome: 'Cento de Doces', itens: selecionados, preco: 120.00 });
+        sabores.forEach(s => centoAux[s] = 0); renderCento(); renderCarrinho();
     }
 
     function renderCarrinho() {
-        const area = document.getElementById('carrinho-area');
-        const lista = document.getElementById('lista-itens-carrinho');
+        const area = document.getElementById('area-carrinho');
+        const lista = document.getElementById('itens-carrinho');
         area.style.display = carrinho.length > 0 ? 'block' : 'none';
         lista.innerHTML = '';
         let total = 0;
-
-        carrinho.forEach((obj, i) => {
-            total += obj.preco;
-            const desc = obj.tipo === 'Combo' 
-                ? obj.itens.join(', ') 
-                : obj.itens.join(' | ');
-            
-            lista.innerHTML += `
-                <div class="item-carrinho">
-                    <strong>${obj.tipo}</strong><br>
-                    <small>${desc}</small><br>
-                    <strong>R$ ${obj.preco.toFixed(2).replace('.', ',')}</strong>
-                    <button class="btn-remover-item" onclick="removerItem(${i})">✕</button>
-                </div>
-            `;
+        carrinho.forEach((item, i) => {
+            total += item.preco;
+            let sub = item.itens ? `<br><small style="color: #666">${item.itens.join(' | ')}</small>` : '';
+            lista.innerHTML += `<div class="item-carrinho"><button class="btn-remover" onclick="remover(${i})">✕</button><strong>[${item.tipo}]</strong> ${item.nome} ${sub}<br><strong>R$ ${item.preco.toFixed(2).replace('.', settings=',')}</strong></div>`;
         });
-
-        document.getElementById('total-carrinho').innerText = `Total: R$ ${total.toFixed(2).replace('.', ',')}`;
-        validarFinalizacao();
+        document.getElementById('total-geral').innerText = `Total: R$ ${total.toFixed(2).replace('.', ',')}`;
+        validar();
     }
 
-    function removerItem(i) { carrinho.splice(i, 1); renderCarrinho(); }
+    function remover(i) { carrinho.splice(i,1); renderCarrinho(); }
 
-    function validarFinalizacao() {
-        const nome = document.getElementById('nome-cliente').value;
-        const metodo = document.getElementById('metodo-entrega').value;
-        const btn = document.getElementById('btn-finalizar');
-        const pronto = (nome.trim().length > 2 && metodo !== "" && carrinho.length > 0);
-
-        if(pronto) {
+    function validar() {
+        const n = document.getElementById('nome').value, e = document.getElementById('entrega').value, btn = document.getElementById('btn-wpp');
+        if(n.length > 2 && e !== "" && carrinho.length > 0) {
             btn.classList.add('liberado');
-            let msg = `*Novo Pedido - Amor e Cacau*%0A*Cliente:* ${nome}%0A*Entrega:* ${metodo}%0A%0A`;
-            carrinho.forEach((obj, i) => {
-                msg += `*${i+1}. ${obj.tipo}:* ${obj.tipo === 'Combo' ? obj.itens.join(', ') : obj.itens.join(' | ')}%0A`;
+            let total = carrinho.reduce((a,b) => a+b.preco, 0), msg = `*Amor e Cacau - Novo Pedido*%0A%0A*Cliente:* ${n}%0A*Entrega:* ${e}%0A%0A`;
+            ['PRONTA ENTREGA', 'COMBO PERSONALIZADO', 'CENTO'].forEach(t => {
+                const itens = carrinho.filter(c => c.tipo === t);
+                if(itens.length > 0) { msg += `*[${t}]*%0A`; itens.forEach(it => { msg += `• ${it.nome} ${it.itens ? '('+it.itens.join(', ')+')' : ''}%0A`; }); msg += `%0A`; }
             });
-            const total = carrinho.reduce((a, b) => a + b.preco, 0);
-            msg += `%0A*💰 Total: R$ ${total.toFixed(2).replace('.', ',')}*`;
+            msg += `*💰 TOTAL: R$ ${total.toFixed(2).replace('.',',')}*`;
             btn.href = `https://wa.me/5519992483488?text=${msg}`;
-        } else {
-            btn.classList.remove('liberado');
-        }
+        } else { btn.classList.remove('liberado'); }
     }
 
-    renderBotoesCombo();
-    updateCombo();
-    renderCento();
+    renderPronta(); renderCombo(); updateCombo(); renderCento();
 </script>
 </body>
 </html>
