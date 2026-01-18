@@ -185,17 +185,33 @@
     }
 
     function renderEscala() {
-        const totalP = Object.values(escalaCento).reduce((a,b)=>a+b, 0);
         document.getElementById('lista-escala-cento').innerHTML = SABORES.map(s => `
             <div class="item-escala"><span><strong>25x ${s}</strong></span><div>
             <button class="btn-ctrl" onclick="mudarEscala('${s}', -1)">-</button><span style="margin: 0 8px;">${escalaCento[s]}</span>
-            <button class="btn-ctrl" onclick="mudarEscala('${s}', 1)" ${totalP >= 4 ? 'disabled' : ''}>+</button></div></div>`).join('');
+            <button class="btn-ctrl" onclick="mudarEscala('${s}', 1)">+</button></div></div>`).join('');
+        
         carrinho = carrinho.filter(item => item.tipo !== 'cento');
+        const totalP = Object.values(escalaCento).reduce((a,b)=>a+b, 0);
+        
         if (totalP > 0) {
-            const precoCentos = {1:50, 2:70, 3:100, 4:120};
+            let valorCalculado = 0;
+            if (totalP === 1) valorCalculado = 50;
+            else if (totalP === 2) valorCalculado = 70;
+            else if (totalP === 3) valorCalculado = 100;
+            else if (totalP === 4) valorCalculado = 120;
+            else {
+                // Cálculo para acima de 100 un (Cento base 120 + excedente proporcional)
+                valorCalculado = 120 + ((totalP - 4) * 30);
+            }
+
             let descSabs = []; let sabsArray = [];
-            for(let s in escalaCento) { if(escalaCento[s] > 0) { descSabs.push(`${escalaCento[s] * 25}x ${s}`); for(let k=0; k < escalaCento[s]*25; k++) sabsArray.push(s); } }
-            carrinho.push({ tipo: 'cento', nome: `${totalP * 25} Unidades`, desc: descSabs.join(', '), sabores: sabsArray, preco: precoCentos[totalP] });
+            for(let s in escalaCento) { 
+                if(escalaCento[s] > 0) { 
+                    descSabs.push(`${escalaCento[s] * 25}x ${s}`); 
+                    for(let k=0; k < escalaCento[s]*25; k++) sabsArray.push(s); 
+                } 
+            }
+            carrinho.push({ tipo: 'cento', nome: `${totalP * 25} Unidades`, desc: descSabs.join(', '), sabores: sabsArray, preco: valorCalculado });
         }
         renderCarrinho();
     }
