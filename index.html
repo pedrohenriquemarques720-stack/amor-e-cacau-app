@@ -137,7 +137,8 @@
 
         <div class="area-pagamento">
             <div style="font-weight: bold; color: var(--cor-vinho); margin-bottom: 5px;">💳 Pague com PIX</div>
-            <span class="chave-pix-box" id="pix-chave">SUA_CHAVE_PIX_AQUI</span>
+            <div style="font-size: 0.9rem; margin-bottom: 5px;"><strong>Favorecido:</strong> Ana Clara Toledo Morelli</div>
+            <span class="chave-pix-box" id="pix-chave">473.387.918-05</span>
             <button class="btn-copiar" onclick="copiarPix()">Copiar Chave PIX</button>
             <div style="font-size: 0.75rem; color: #666; margin-top: 10px;">Anexe o comprovante ao finalizar.</div>
         </div>
@@ -149,7 +150,7 @@
 
 <script>
     const SABORES = ["Tradicional", "Beijinho", "Ferrero", "Limão", "Café", "Maracujá"];
-    const PIN_MESTRE = "1234"; // SUA SENHA DE ACESSO
+    const PIN_MESTRE = "1808"; 
     
     let carrinho = [];
     let pedidosProducao = [];
@@ -183,7 +184,6 @@
     }
 
     function render() {
-        // Pronta Entrega
         document.getElementById('lista-pronta').innerHTML = combosFixos.map(c => `
             <div class="card-item">
                 <span><strong>${c.n}</strong></span>
@@ -191,12 +191,10 @@
             </div>
         `).join('');
 
-        // Grid Combo
         document.getElementById('grid-combo').innerHTML = SABORES.map(s => `
             <button class="tab-btn" style="background:white; border:1px solid var(--cor-vinho)" onclick="clickSaborCombo('${s}')">+ ${s}</button>
         `).join('');
 
-        // Cento
         const totalCento = Object.values(centoTemp).reduce((a,b)=>a+b,0);
         document.getElementById('lista-cento').innerHTML = SABORES.map(s => `
             <div class="card-item">
@@ -266,7 +264,6 @@
         const nome = document.getElementById('nome-cliente').value;
         const entrega = document.getElementById('metodo-entrega').value;
         
-        // Registra para o Dashboard
         pedidosProducao.push({
             id: Date.now(),
             cliente: nome,
@@ -275,12 +272,11 @@
         });
         atualizarDashboard();
 
-        // Monta Mensagem
         let msg = `*Novo Pedido - Amor e Cacau*%0A%0A*Cliente:* ${nome}%0A*Entrega:* ${entrega}%0A%0A`;
         carrinho.forEach(it => {
             msg += `*${it.tipo}:* ${it.nome}%0A`;
         });
-        msg += `%0A*Total: ${document.getElementById('total-final').innerText}*`;
+        msg += `%0A*Total: ${document.getElementById('total-final').innerText}*%0A%0A_Enviando comprovante..._`;
         
         window.open(`https://wa.me/5519992483488?text=${msg}`);
         carrinho = []; atualizarCarrinho();
@@ -310,7 +306,7 @@
         lista.innerHTML = pedidosProducao.map(p => `
             <div class="card-producao" style="background:white; border-color:#eee">
                 <strong>${p.cliente}</strong> (${p.hora})
-                <button onclick="concluirPedido(${p.id})" style="width:100%; margin-top:10px; padding:5px; background:var(--verde-wpp); border:none; color:white; border-radius:5px">Finalizar</button>
+                <button onclick="concluirPedido(${p.id})" style="width:100%; margin-top:10px; padding:5px; background:var(--verde-wpp); border:none; color:white; border-radius:5px">Marcar como Pronto</button>
             </div>
         `).join('');
     }
@@ -321,8 +317,8 @@
     }
 
     function copiarPix() {
-        navigator.clipboard.writeText("SUA_CHAVE_PIX_AQUI");
-        alert("Chave PIX copiada! Agora é só pagar e enviar o comprovante.");
+        navigator.clipboard.writeText("47338791805");
+        alert("Chave PIX (CPF) copiada!\nFavorecido: Ana Clara Toledo Morelli");
     }
 
     render();
