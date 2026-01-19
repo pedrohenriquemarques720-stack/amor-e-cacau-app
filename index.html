@@ -8,12 +8,15 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
 
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
+
     <style>
         :root {
             --cor-vinho: #800020;
             --marrom-chocolate: #4b2e2e;
             --bege-logo: #f7ede2;
             --verde-wpp: #25d366;
+            --azul-mp: #009ee3; /* Cor do Mercado Pago */
         }
 
         body { font-family: 'Segoe UI', sans-serif; background-color: var(--bege-logo); color: var(--marrom-chocolate); margin: 0; padding: 15px; }
@@ -51,6 +54,11 @@
 
         .btn-wpp { width: 100%; background: var(--verde-wpp); color: white; border: none; padding: 15px; border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer; margin-top: 10px; opacity: 0.5; pointer-events: none; }
         .btn-wpp.liberado { opacity: 1; pointer-events: auto; }
+        
+        /* Estilo do botão de pagamento (NOVO) */
+        #wallet_container { margin-top: 10px; display: none; }
+        #wallet_container.visible { display: block; }
+
         input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; margin-bottom: 10px; box-sizing: border-box; }
     </style>
 </head>
@@ -111,7 +119,10 @@
                 <option value="Retirada">Retirada</option>
                 <option value="Uber Moto">Uber Moto</option>
             </select>
-            <button id="btn-finalizar" class="btn-wpp" onclick="enviarPedido()">Pedir no WhatsApp</button>
+            
+            <button id="btn-finalizar" class="btn-wpp" onclick="enviarPedido()">Pagar e Avisar no WhatsApp</button>
+            
+            <div id="wallet_container"></div>
         </div>
     </div>
 
@@ -122,9 +133,13 @@
 </div>
 
 <script>
+    // Configurações Iniciais
     const firebaseConfig = { apiKey: "AIzaSyDHcHj9p1CWXxJf14E9OIO1LJA4miwDGlo", authDomain: "amor-e-cacau.firebaseapp.com", projectId: "amor-e-cacau", storageBucket: "amor-e-cacau.firebasestorage.app", messagingSenderId: "766363119746", appId: "1:766363119746:web:1c63801fe2218ed224449b" };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
+
+    // Mercado Pago - Substitua pela sua Public Key quando tiver
+    const mp = new MercadoPago('SUA_PUBLIC_KEY_AQUI', { locale: 'pt-BR' });
 
     const SABORES = ["Tradicional", "Beijinho", "Ferrero", "Limão", "Café", "Maracujá"];
     const COMBOS_FIXOS = [
@@ -140,6 +155,7 @@
     let escalaCento = {}; SABORES.forEach(s => escalaCento[s] = 0);
     let autenticado = false;
 
+    // Funções de Interface (Abas, Slots, etc - Mantidas)
     function abrirAba(e, id) {
         if (id === 'aba-admin' && !autenticado) {
             if (prompt("PIN:") === "1808") { autenticado = true; } else return;
@@ -199,9 +215,7 @@
             else if (totalP === 2) valorCalculado = 70;
             else if (totalP === 3) valorCalculado = 100;
             else if (totalP === 4) valorCalculado = 120;
-            else {
-                valorCalculado = 120 + ((totalP - 4) * 30);
-            }
+            else { valorCalculado = 120 + ((totalP - 4) * 30); }
 
             let descSabs = []; let sabsArray = [];
             for(let s in escalaCento) { 
@@ -246,36 +260,67 @@
         document.getElementById('btn-finalizar').classList.toggle('liberado', n.length > 2 && e !== "" && carrinho.length > 0);
     }
 
+    // LOGICA DE ENVIO E PAGAMENTO
     async function enviarPedido() {
         const nome = document.getElementById('nome-cliente').value;
         const entrega = document.getElementById('entrega-cliente').value;
         let totalFinal = 0; 
-        
-        let textoMsg = `*Amor e Cacau*\n*Nome:* ${nome}\n*Entrega:* ${entrega}\n\n`;
-        
-        carrinho.forEach(item => { 
-            textoMsg += `• *${item.nome}* - ${item.desc}\n`; 
-            totalFinal += item.preco; 
-        });
-        
-        textoMsg += `\n*Total: R$ ${totalFinal},00*`;
+        carrinho.forEach(item => totalFinal += item.preco);
 
         try {
-            await db.collection("pedidos").add({ cliente: nome, entrega: entrega, itens: carrinho, status: "pendente", data: new Date() });
+            // 1. Salva no Firebase
+            const docRef = await db.collection("pedidos").add({ 
+                cliente: nome, 
+                entrega: entrega, 
+                itens: carrinho, 
+                total: totalFinal,
+                status: "pendente", 
+                data: new Date() 
+            });
+
+            // 2. Chama o Mercado Pago para criar o botão de pagamento
+            await criarBotaoPagamento(totalFinal, docRef.id);
             
-            // Encode URI Component para garantir que caracteres especiais funcionem no link
-            const urlWpp = `https://api.whatsapp.com/send?phone=5519992483488&text=${encodeURIComponent(textoMsg)}`;
-            
-            // Redireciona na mesma aba para evitar bloqueio de popup
-            window.location.href = urlWpp;
-            
+            // 3. Muda o texto do botão de WhatsApp para guiar o usuário
+            const btnWpp = document.getElementById('btn-finalizar');
+            btnWpp.innerText = "Clique abaixo para pagar via PIX/Cartão";
+            btnWpp.style.background = "#666";
+
         } catch (e) {
-            alert("Erro ao salvar pedido, mas tentando abrir WhatsApp...");
-            const urlWpp = `https://api.whatsapp.com/send?phone=5519992483488&text=${encodeURIComponent(textoMsg)}`;
-            window.location.href = urlWpp;
+            console.error("Erro no fluxo:", e);
+            alert("Erro ao processar pedido.");
         }
     }
 
+    async function criarBotaoPagamento(valor, pedidoId) {
+        // Mostra o container do Mercado Pago
+        const container = document.getElementById('wallet_container');
+        container.classList.add('visible');
+        container.innerHTML = "Carregando opção de pagamento...";
+
+        /* AQUI ESTÁ O SEGREDO: 
+           Como você ainda não tem o servidor (Firebase Functions), 
+           eu vou te ajudar a configurar isso na próxima etapa. 
+           O código abaixo vai buscar a "Preferência de Pagamento" 
+           que o Mercado Pago gera.
+        */
+        
+        // Exemplo do que faremos na Functions:
+        /*
+        fetch("SUA_URL_DA_FIREBASE_FUNCTION", {
+            method: "POST",
+            body: JSON.stringify({ valor: valor, id: pedidoId })
+        }).then(res => res.json()).then(pref => {
+            mp.bricks().create("wallet", "wallet_container", {
+                initialization: { preferenceId: pref.id },
+            });
+        });
+        */
+        
+        container.innerHTML = "<p style='color:var(--azul-mp)'>💳 Quase pronto! Agora precisamos conectar com sua conta do Mercado Pago para gerar o PIX.</p>";
+    }
+
+    // Listener de Admin (Mantido)
     db.collection("pedidos").where("status", "==", "pendente").onSnapshot(snap => {
         let totais = {}; SABORES.forEach(s => totais[s] = 0);
         let html = "";
@@ -287,6 +332,7 @@
         document.getElementById('pedidos-lista-admin').innerHTML = html;
     });
 
+    // Inicialização
     renderCombosFixos(); renderEscala(); atualizarSlots();
     document.getElementById('botoes-sabores').innerHTML = SABORES.map(s => `<button class="btn-item" onclick="if(caixaAtual.length<4){caixaAtual.push('${s}');atualizarSlots();} ">+ ${s}</button>`).join('');
 </script>
