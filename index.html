@@ -14,6 +14,7 @@
             --marrom-chocolate: #4b2e2e;
             --bege-logo: #f7ede2;
             --verde-wpp: #25d366;
+            --cor-esgotado: #999;
         }
 
         body { font-family: 'Segoe UI', sans-serif; background-color: var(--bege-logo); color: var(--marrom-chocolate); margin: 0; padding: 15px; }
@@ -38,13 +39,18 @@
         
         .grid-botoes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
         .btn-item { background: white; border: 1.5px solid var(--cor-vinho); color: var(--cor-vinho); padding: 12px; border-radius: 12px; cursor: pointer; font-weight: bold; }
+        .btn-item.esgotado { border-color: var(--cor-esgotado); color: var(--cor-esgotado); opacity: 0.6; cursor: not-allowed; }
+        
         .btn-add-caixa { background: var(--cor-vinho); color: white; border: none; width: 100%; padding: 12px; border-radius: 12px; margin-top: 10px; font-weight: bold; cursor: pointer; }
 
         .item-escala { display: flex; align-items: center; justify-content: space-between; padding: 10px; border: 1px solid #eee; border-radius: 12px; margin-bottom: 8px; background: #fff; }
         .btn-ctrl { background: var(--cor-vinho); color: white; border: none; width: 28px; height: 28px; border-radius: 50%; font-weight: bold; cursor: pointer; }
+        .btn-ctrl:disabled { background: #ccc; cursor: not-allowed; }
 
         .card-fixo { display: flex; align-items: center; padding: 12px; border: 1px solid #eee; border-radius: 15px; margin-bottom: 10px; cursor: pointer; }
         .card-fixo.selected { border: 2px solid var(--cor-vinho); background: #fff5f7; }
+        .card-fixo.esgotado-fixo { opacity: 0.5; cursor: not-allowed; background: #f9f9f9; }
+        
         .bolinha-selecao { width: 22px; height: 22px; border: 2px dashed var(--cor-vinho); border-radius: 50%; margin-right: 15px; flex-shrink: 0; }
         .card-fixo.selected .bolinha-selecao { border-style: solid; background: var(--cor-vinho); position: relative; }
         .card-fixo.selected .bolinha-selecao::after { content: '✓'; color: white; font-size: 12px; position: absolute; left: 5px; top: 1px; }
@@ -71,7 +77,7 @@
     <div id="aba-cardapio" class="tab-content active">
         <div class="cardapio-floral">
             <h2 style="color: var(--cor-vinho)">Nossos Sabores</h2>
-            <p>Tradicional • Beijinho • Ferrero • Limão • Café • Maracujá</p>
+            <p>Tradicional • Beijinho • <span style="text-decoration: line-through; color: #999;">Ferrero</span> • Limão • Café • Maracujá</p>
             <ul style="list-style: none; padding: 0; font-weight: bold;">
                 <li>📦 Caixinha (4 un): R$ 10,00</li>
                 <li>🎉 25 un: R$ 50 | 50 un: R$ 70</li>
@@ -127,6 +133,9 @@
     const db = firebase.firestore();
 
     const SABORES = ["Tradicional", "Beijinho", "Ferrero", "Limão", "Café", "Maracujá"];
+    // Sabor que está travado/esgotado
+    const SABOR_ESGOTADO = "Ferrero";
+
     const COMBOS_FIXOS = [
         { n: "4 Tradicionais", s: ["Tradicional","Tradicional","Tradicional","Tradicional"] },
         { n: "4 Ferreros", s: ["Ferrero","Ferrero","Ferrero","Ferrero"] },
@@ -153,11 +162,25 @@
     function renderCombosFixos() {
         document.getElementById('lista-combos-fixos').innerHTML = COMBOS_FIXOS.map((c, i) => {
             const jaNoCarrinho = carrinho.find(item => item.tipo === 'pronta' && item.index === i);
-            return `<div class="card-fixo ${jaNoCarrinho ? 'selected' : ''}" onclick="toggleComboFixo(${i})"><div class="bolinha-selecao"></div><div class="fixo-info">${c.n}</div></div>`;
+            const possuiEsgotado = c.s.includes(SABOR_ESGOTADO);
+            
+            if (possuiEsgotado) {
+                return `<div class="card-fixo esgotado-fixo">
+                            <div class="bolinha-selecao" style="border-color:#ccc;"></div>
+                            <div class="fixo-info" style="color:#999;"><s>${c.n}</s> <br><small>(Sabor esgotado)</small></div>
+                        </div>`;
+            }
+
+            return `<div class="card-fixo ${jaNoCarrinho ? 'selected' : ''}" onclick="toggleComboFixo(${i})">
+                        <div class="bolinha-selecao"></div>
+                        <div class="fixo-info">${c.n}</div>
+                    </div>`;
         }).join('');
     }
 
     function toggleComboFixo(i) {
+        if (COMBOS_FIXOS[i].s.includes(SABOR_ESGOTADO)) return; // Trava clique se tiver esgotado
+
         const idx = carrinho.findIndex(item => item.tipo === 'pronta' && item.index === i);
         if (idx > -1) carrinho.splice(idx, 1);
         else carrinho.push({ tipo: 'pronta', index: i, nome: "Combo Pronto", desc: COMBOS_FIXOS[i].n, sabores: COMBOS_FIXOS[i].s, preco: 10 });
@@ -185,10 +208,17 @@
     }
 
     function renderEscala() {
-        document.getElementById('lista-escala-cento').innerHTML = SABORES.map(s => `
-            <div class="item-escala"><span><strong>25x ${s}</strong></span><div>
-            <button class="btn-ctrl" onclick="mudarEscala('${s}', -1)">-</button><span style="margin: 0 8px;">${escalaCento[s]}</span>
-            <button class="btn-ctrl" onclick="mudarEscala('${s}', 1)">+</button></div></div>`).join('');
+        document.getElementById('lista-escala-cento').innerHTML = SABORES.map(s => {
+            const isEsgotado = (s === SABOR_ESGOTADO);
+            return `
+            <div class="item-escala" style="${isEsgotado ? 'background: #fafafa; color: #999;' : ''}">
+                <span><strong>25x ${isEsgotado ? `<s>${s}</s>` : s}</strong> ${isEsgotado ? '<br><small>Esgotado</small>' : ''}</span>
+                <div>
+                    <button class="btn-ctrl" onclick="mudarEscala('${s}', -1)">-</button>
+                    <span style="margin: 0 8px;">${escalaCento[s]}</span>
+                    <button class="btn-ctrl" ${isEsgotado ? 'disabled' : ''} onclick="mudarEscala('${s}', 1)">+</button>
+                </div>
+            </div>`}).join('');
         
         carrinho = carrinho.filter(item => item.tipo !== 'cento');
         const totalP = Object.values(escalaCento).reduce((a,b)=>a+b, 0);
@@ -215,7 +245,10 @@
         renderCarrinho();
     }
 
-    function mudarEscala(s, d) { if (!(d===-1 && escalaCento[s]===0)) { escalaCento[s]+=d; renderEscala(); } }
+    function mudarEscala(s, d) { 
+        if (s === SABOR_ESGOTADO && d > 0) return;
+        if (!(d===-1 && escalaCento[s]===0)) { escalaCento[s]+=d; renderEscala(); } 
+    }
 
     function renderCarrinho() {
         const cartDiv = document.getElementById('carrinho-global');
@@ -262,13 +295,8 @@
 
         try {
             await db.collection("pedidos").add({ cliente: nome, entrega: entrega, itens: carrinho, status: "pendente", data: new Date() });
-            
-            // Encode URI Component para garantir que caracteres especiais funcionem no link
             const urlWpp = `https://api.whatsapp.com/send?phone=5519992483488&text=${encodeURIComponent(textoMsg)}`;
-            
-            // Redireciona na mesma aba para evitar bloqueio de popup
             window.location.href = urlWpp;
-            
         } catch (e) {
             alert("Erro ao salvar pedido, mas tentando abrir WhatsApp...");
             const urlWpp = `https://api.whatsapp.com/send?phone=5519992483488&text=${encodeURIComponent(textoMsg)}`;
@@ -288,7 +316,14 @@
     });
 
     renderCombosFixos(); renderEscala(); atualizarSlots();
-    document.getElementById('botoes-sabores').innerHTML = SABORES.map(s => `<button class="btn-item" onclick="if(caixaAtual.length<4){caixaAtual.push('${s}');atualizarSlots();} ">+ ${s}</button>`).join('');
+    
+    // Renderiza botões de sabores com a trava do Ferrero
+    document.getElementById('botoes-sabores').innerHTML = SABORES.map(s => {
+        if(s === SABOR_ESGOTADO) {
+            return `<button class="btn-item esgotado"><s>+ ${s}</s></button>`;
+        }
+        return `<button class="btn-item" onclick="if(caixaAtual.length<4){caixaAtual.push('${s}');atualizarSlots();} ">+ ${s}</button>`;
+    }).join('');
 </script>
 </body>
 </html>
