@@ -3,72 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amor e Cacau</title>
+    <title>Amor e Cacau | Pedidos</title>
     <style>
-        :root { --vinho: #800020; --bege: #f7ede2; }
-        body { font-family: sans-serif; background: var(--bege); margin: 0; padding: 10px; color: #4b2e2e; }
-        .container { max-width: 450px; margin: 0 auto; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .tabs { display: flex; gap: 5px; margin-bottom: 15px; overflow-x: auto; }
-        .tab-btn { padding: 10px; border: none; border-radius: 8px; background: #eee; cursor: pointer; font-weight: bold; flex: 1; white-space: nowrap; }
-        .tab-btn.active { background: var(--vinho); color: white; }
+        :root {
+            --cor-vinho: #800020;
+            --marrom-chocolate: #4b2e2e;
+            --bege-logo: #f7ede2;
+            --verde-wpp: #25d366;
+            --cor-esgotado: #999;
+        }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bege-logo); color: var(--marrom-chocolate); margin: 0; padding: 15px; }
+        .container { max-width: 500px; margin: 0 auto; background: white; padding: 20px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .tabs-nav { display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 10px; }
+        .tab-btn { flex: none; padding: 10px 15px; border: none; background: #f0f0f0; border-radius: 12px; font-weight: bold; cursor: pointer; }
+        .tab-btn.active { background: var(--cor-vinho); color: white; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        .card-item { border: 1px solid #ddd; padding: 12px; border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
-        .btn-add { background: var(--vinho); color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; }
-        .carrinho { background: #fffcf0; padding: 15px; border-radius: 10px; margin-top: 20px; border: 1px solid #e6dbb9; }
-        .btn-wpp { width: 100%; padding: 15px; background: #25d366; color: white; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; }
-        input, select { width: 100%; padding: 10px; margin: 5px 0; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; }
-        .item-estoque { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #eee; }
+        .carrinho-global { background: #fffcf0; border: 1px solid #e6dbb9; padding: 15px; border-radius: 15px; margin-top: 25px; display: none; }
+        .carrinho-global.visible { display: block; }
+        .carrinho-item { display: flex; justify-content: space-between; align-items: flex-start; font-size: 0.85rem; margin-bottom: 8px; padding-bottom: 5px; border-bottom: 1px solid #f0e6c8; }
+        .btn-remover { color: red; background: none; border: none; cursor: pointer; font-size: 0.7rem; padding: 0 5px; }
+        .cardapio-floral { text-align: center; padding: 20px; border: 2px solid var(--bege-logo); border-radius: 20px; background: #fffcf9; }
+        .box-display { background: #fffafa; padding: 15px; border-radius: 15px; margin-bottom: 15px; text-align: center; border: 1px solid #f0e0e0; }
+        .slots-container { display: flex; justify-content: center; gap: 8px; margin-top: 10px; }
+        .slot { width: 55px; height: 55px; border: 2px dashed var(--cor-vinho); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; background: white; cursor: pointer; }
+        .slot.filled { border: 2px solid var(--cor-vinho); background: var(--cor-vinho); color: white; font-weight: bold; }
+        .grid-botoes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .btn-item { background: white; border: 1.5px solid var(--cor-vinho); color: var(--cor-vinho); padding: 12px; border-radius: 12px; cursor: pointer; font-weight: bold; }
+        .item-escala { display: flex; align-items: center; justify-content: space-between; padding: 10px; border: 1px solid #eee; border-radius: 12px; margin-bottom: 8px; background: #fff; }
+        .btn-ctrl { background: var(--cor-vinho); color: white; border: none; width: 28px; height: 28px; border-radius: 50%; font-weight: bold; cursor: pointer; }
+        .card-fixo { display: flex; align-items: center; padding: 12px; border: 1px solid #eee; border-radius: 15px; margin-bottom: 10px; cursor: pointer; }
+        .card-fixo.selected { border: 2px solid var(--cor-vinho); background: #fff5f7; }
+        .bolinha-selecao { width: 22px; height: 22px; border: 2px dashed var(--cor-vinho); border-radius: 50%; margin-right: 15px; flex-shrink: 0; }
+        .card-fixo.selected .bolinha-selecao { border-style: solid; background: var(--cor-vinho); position: relative; }
+        .card-fixo.selected .bolinha-selecao::after { content: '✓'; color: white; font-size: 12px; position: absolute; left: 5px; top: 1px; }
+        .btn-wpp { width: 100%; background: var(--verde-wpp); color: white; border: none; padding: 15px; border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer; margin-top: 10px; opacity: 0.5; pointer-events: none; }
+        .btn-wpp.liberado { opacity: 1; pointer-events: auto; }
+        input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; margin-bottom: 10px; box-sizing: border-box; }
+        .estoque-item { display: flex; align-items: center; justify-content: space-between; background: #fff; padding: 15px; border-radius: 15px; border: 1px solid #eee; margin-bottom: 10px; }
+        .btn-baixa { background: var(--cor-vinho); color: white; border: none; padding: 10px 15px; border-radius: 10px; font-weight: bold; cursor: pointer; }
+        .btn-baixa:disabled { background: #ccc; }
     </style>
 </head>
 <body>
-
 <div class="container">
-    <h2 style="text-align:center; color: var(--vinho);">❤️ Amor e Cacau</h2>
-    
-    <div class="tabs">
-        <button class="tab-btn active" onclick="aba(event, 'venda')">Venda</button>
-        <button class="tab-btn" onclick="aba(event, 'estoque')">📦 Estoque</button>
+    <header style="text-align: center; margin-bottom: 20px;">
+        <h1 style="color: var(--cor-vinho); margin: 0;">❤️ Amor e Cacau</h1>
+    </header>
+
+    <div class="tabs-nav">
+        <button class="tab-btn active" onclick="abrirAba(event, 'aba-cardapio')">Cardápio</button>
+        <button class="tab-btn" onclick="abrirAba(event, 'aba-pronta')">Pronta Entrega</button>
+        <button class="tab-btn" onclick="abrirAba(event, 'aba-combo')">Monte seu Combo</button>
+        <button class="tab-btn" style="background: #eef2ff;" onclick="abrirAba(event, 'aba-estoque')">📦 Estoque</button>
     </div>
 
-    <div id="venda" class="tab-content active">
-        <h3>Combos de Amanhã</h3>
-        <div id="lista-combos"></div>
-        
-        <div class="carrinho" id="box-cart" style="display:none;">
-            <strong>🛒 Pedido:</strong>
-            <div id="itens-cart"></div>
-            <hr>
-            <input type="text" id="cliente" placeholder="Nome do Cliente">
-            <select id="entrega">
-                <option value="">Como entregar?</option>
-                <option value="Retirada">Retirada</option>
-                <option value="Uber Moto">Uber Moto</option>
-            </select>
-            <button class="btn-wpp" onclick="enviar()">Enviar para WhatsApp</button>
+    <div id="aba-cardapio" class="tab-content active">
+        <div class="cardapio-floral">
+            <h2 style="color: var(--cor-vinho)">Sabores de Amanhã</h2>
+            <p>Tradicional • Beijinho • Limão • Café • Maracujá</p>
+            <ul style="list-style: none; padding: 0; font-weight: bold;">
+                <li>📦 Caixinha (4 un): R$ 10,00</li>
+                <li>🎉 Cento (100 un): R$ 120</li>
+            </ul>
         </div>
     </div>
 
-    <div id="estoque" class="tab-content">
-        <h3>Baixa Manual</h3>
-        <div id="lista-estoque"></div>
-        <button onclick="resetaEstoque()" style="width:100%; margin-top:20px; padding:8px;">🔄 Resetar para Amanhã</button>
+    <div id="aba-pronta" class="tab-content">
+        <h3 style="color: var(--cor-vinho)">🚚 Combos Prontos</h3>
+        <div id="lista-combos-fixos"></div>
+    </div>
+
+    <div id="aba-combo" class="tab-content">
+        <h4 style="color: var(--cor-vinho)">🎁 Monte sua Caixinha (4 un)</h4>
+        <div class="box-display">
+            <span id="contador-texto" style="font-weight: bold; font-size: 0.9rem;">Caixinha (0/4):</span>
+            <div class="slots-container" id="slots-area"></div>
+            <button id="btn-add-caixa" style="background:var(--cor-vinho); color:white; border:none; width:100%; padding:12px; border-radius:12px; margin-top:10px; font-weight:bold; display:none;" onclick="adicionarCaixaMontada()">Adicionar ao Pedido</button>
+        </div>
+        <div class="grid-botoes" id="botoes-sabores"></div>
+        <h4 style="color: var(--cor-vinho); margin-top: 30px;">🎉 Monte seu Cento</h4>
+        <div id="lista-escala-cento"></div>
+    </div>
+
+    <div id="aba-estoque" class="tab-content">
+        <h3 style="color: var(--cor-vinho)">📦 Baixa de Estoque</h3>
+        <div id="lista-estoque-manual"></div>
+        <button onclick="resetarEstoqueManual()" style="width: 100%; padding: 10px; background: #eee; border: 1px solid #ddd; border-radius: 10px; font-size: 0.8rem; margin-top:20px; cursor:pointer;">🔄 Reiniciar Tudo</button>
+    </div>
+
+    <div id="carrinho-global" class="carrinho-global">
+        <h4 style="margin: 0 0 10px 0; color: var(--cor-vinho);">🛒 Seu Pedido</h4>
+        <div id="itens-carrinho"></div>
+        <div style="border-top: 2px solid #e6dbb9; margin-top: 10px; padding-top: 10px; font-weight: bold; display: flex; justify-content: space-between;">
+            <span>Total:</span> <span id="valor-total">R$ 0,00</span>
+        </div>
+        <input type="text" id="nome-cliente" placeholder="Seu Nome" style="margin-top:10px;" oninput="validarPedido()">
+        <select id="entrega-cliente" onchange="validarPedido()">
+            <option value="">Como vai receber?</option>
+            <option value="Retirada">Retirada</option>
+            <option value="Uber Moto">Uber Moto</option>
+        </select>
+        <button id="btn-finalizar" class="btn-wpp" onclick="enviarPedido()">Pedir no WhatsApp</button>
     </div>
 </div>
 
 <script>
-    const COMBOS = [
-        { n: "Combo Tropical (Marac/Limão)", p: 10 },
-        { n: "Combo Chocolatudo (Tradicional)", p: 10 },
-        { n: "Combo Turbo (Trad/Café)", p: 10 },
-        { n: "Combo Festa (Trad/Beijinho)", p: 10 },
-        { n: "Combo Misto (Variados)", p: 10 },
-        { n: "Combo Chocolima (Limão/Trad)", p: 10 },
-        { n: "Combo Café Azedo", p: 10 },
-        { n: "Combo Maracublack (Trad/Marac)", p: 10 }
-    ];
+    const SABORES = ["Tradicional", "Beijinho", "Limão", "Café", "Maracujá"];
 
-    const INICIAL = {
+    const ESTOQUE_INICIAL = {
         "Combo Tropical (Marac/Limão)": 4,
         "Combo Chocolatudo (Tradicional)": 4,
         "Combo Turbo (Trad/Café)": 2,
@@ -79,90 +122,169 @@
         "Combo Maracublack (Trad/Marac)": 2
     };
 
-    let estoque = JSON.parse(localStorage.getItem('aec_estoque')) || {...INICIAL};
-    let carrinho = [];
+    const COMBOS_FIXOS = [
+        { n: "Combo Tropical (2x Marac, 2x Limão)", s: ["Maracujá","Maracujá","Limão","Limão"] },
+        { n: "Combo Chocolatudo (4x Tradicional)", s: ["Tradicional","Tradicional","Tradicional","Tradicional"] },
+        { n: "Combo Turbo (2x Trad, 2x Café)", s: ["Tradicional","Tradicional","Café","Café"] },
+        { n: "Combo Festa (2x Trad, 2x Beijinho)", s: ["Tradicional","Tradicional","Beijinho","Beijinho"] },
+        { n: "Combo Misto (Variados)", s: ["Tradicional","Beijinho","Limão","Maracujá"] },
+        { n: "Combo Chocolima (2x Limão, 2x Trad)", s: ["Limão","Limão","Tradicional","Tradicional"] },
+        { n: "Combo Café Azedo", s: ["Café","Café","Maracujá","Maracujá"] },
+        { n: "Combo Maracublack (2x Trad, 2x Marac)", s: ["Tradicional","Tradicional","Maracujá","Maracujá"] }
+    ];
 
-    function aba(e, id) {
+    let meuEstoque = JSON.parse(localStorage.getItem('amorECacauEstoque')) || { ...ESTOQUE_INICIAL };
+    let carrinho = []; let caixaAtual = [];
+    let escalaCento = {}; SABORES.forEach(s => escalaCento[s] = 0);
+    let autenticado = false;
+
+    function abrirAba(e, id) {
+        if (id === 'aba-estoque' && !autenticado) {
+            let pin = prompt("PIN:");
+            if (pin === "1808") { autenticado = true; } else return;
+        }
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         e.currentTarget.classList.add('active');
-        if(id === 'estoque') renderEstoque();
+        if(id === 'aba-estoque') renderEstoqueManual();
     }
 
-    function renderVenda() {
-        const div = document.getElementById('lista-combos');
-        div.innerHTML = COMBOS.map(c => `
-            <div class="card-item">
-                <span>${c.n}</span>
-                <button class="btn-add" onclick="add('${c.n}', ${c.p})">Adicionar</button>
-            </div>
-        `).join('');
-    }
-
-    function add(nome, preco) {
-        carrinho.push({nome, preco});
-        renderCarrinho();
-    }
-
-    function renderCarrinho() {
-        const box = document.getElementById('box-cart');
-        const lista = document.getElementById('itens-cart');
-        if(carrinho.length > 0) {
-            box.style.display = 'block';
-            lista.innerHTML = carrinho.map((it, i) => `
-                <div style="font-size:14px; margin:5px 0;">
-                    ${it.nome} - R$ ${it.preco},00 
-                    <button onclick="remover(${i})" style="color:red; border:none; background:none;">[x]</button>
-                </div>
-            `).join('');
-        } else { box.style.display = 'none'; }
-    }
-
-    function remover(i) { carrinho.splice(i,1); renderCarrinho(); }
-
-    function renderEstoque() {
-        const div = document.getElementById('lista-estoque');
-        div.innerHTML = "";
-        for(let k in estoque) {
-            div.innerHTML += `
-                <div class="item-estoque">
-                    <span>${k} (<strong>${estoque[k]}</strong>)</span>
-                    <button onclick="baixa('${k}')" ${estoque[k]<=0?'disabled':''}>VENDI -1</button>
+    function renderEstoqueManual() {
+        const container = document.getElementById('lista-estoque-manual');
+        if(!container) return;
+        container.innerHTML = "";
+        for (let item in meuEstoque) {
+            const qtd = meuEstoque[item];
+            container.innerHTML += `
+                <div class="estoque-item" style="${qtd <= 0 ? 'opacity: 0.5' : ''}">
+                    <div style="flex:1"><strong>${item}</strong><br><small>${qtd} un</small></div>
+                    <button class="btn-baixa" onclick="darBaixa('${item}')" ${qtd <= 0 ? 'disabled' : ''}>VENDI -1</button>
                 </div>`;
         }
     }
 
-    function baixa(k) {
-        if(estoque[k] > 0) {
-            estoque[k]--;
-            localStorage.setItem('aec_estoque', JSON.stringify(estoque));
-            renderEstoque();
+    function darBaixa(item) {
+        if (meuEstoque[item] > 0) {
+            meuEstoque[item]--;
+            localStorage.setItem('amorECacauEstoque', JSON.stringify(meuEstoque));
+            renderEstoqueManual();
         }
     }
 
-    function resetaEstoque() {
-        if(confirm("Resetar?")) {
-            estoque = {...INICIAL};
-            localStorage.setItem('aec_estoque', JSON.stringify(estoque));
-            renderEstoque();
+    function resetarEstoqueManual() {
+        if (confirm("Resetar estoque para amanhã?")) {
+            meuEstoque = { ...ESTOQUE_INICIAL };
+            localStorage.setItem('amorECacauEstoque', JSON.stringify(meuEstoque));
+            renderEstoqueManual();
         }
     }
 
-    function enviar() {
-        const nome = document.getElementById('cliente').value;
-        const ent = document.getElementById('entrega').value;
-        if(!nome || !ent) return alert("Preencha nome e entrega!");
+    function renderCombosFixos() {
+        const div = document.getElementById('lista-combos-fixos');
+        if(!div) return;
+        div.innerHTML = COMBOS_FIXOS.map((c, i) => {
+            const sel = carrinho.find(it => it.tipo === 'pronta' && it.index === i);
+            return `<div class="card-fixo ${sel ? 'selected' : ''}" onclick="toggleComboFixo(${i})"><div class="bolinha-selecao"></div><div>${c.n}</div></div>`;
+        }).join('');
+    }
+
+    function toggleComboFixo(i) {
+        const idx = carrinho.findIndex(it => it.tipo === 'pronta' && it.index === i);
+        if (idx > -1) carrinho.splice(idx, 1);
+        else carrinho.push({ tipo: 'pronta', index: i, nome: "Combo", desc: COMBOS_FIXOS[i].n, preco: 10 });
+        renderCombosFixos(); renderCarrinho();
+    }
+
+    function atualizarSlots() {
+        const area = document.getElementById('slots-area');
+        if(!area) return;
+        area.innerHTML = '';
+        for(let i=0; i<4; i++) {
+            const s = document.createElement('div');
+            s.className = caixaAtual[i] ? 'slot filled' : 'slot';
+            s.innerHTML = caixaAtual[i] || '';
+            s.onclick = () => { if(caixaAtual[i]) { caixaAtual.splice(i, 1); atualizarSlots(); } };
+            area.appendChild(s);
+        }
+        document.getElementById('contador-texto').innerText = `Caixinha (${caixaAtual.length}/4):`;
+        document.getElementById('btn-add-caixa').style.display = caixaAtual.length === 4 ? 'block' : 'none';
+    }
+
+    function adicionarCaixaMontada() {
+        carrinho.push({ tipo: 'caixa', nome: "Caixa Montada", desc: caixaAtual.join(', '), preco: 10 });
+        caixaAtual = []; atualizarSlots(); renderCarrinho();
+    }
+
+    function renderEscala() {
+        const div = document.getElementById('lista-escala-cento');
+        if(!div) return;
+        div.innerHTML = SABORES.map(s => `
+            <div class="item-escala">
+                <span>25x ${s}</span>
+                <div>
+                    <button class="btn-ctrl" onclick="mudarEscala('${s}', -1)">-</button>
+                    <span style="margin: 0 8px;">${escalaCento[s]}</span>
+                    <button class="btn-ctrl" onclick="mudarEscala('${s}', 1)">+</button>
+                </div>
+            </div>`).join('');
         
-        let msg = `*Amor e Cacau*\nCliente: ${nome}\nEntrega: ${ent}\n\n`;
+        carrinho = carrinho.filter(it => it.tipo !== 'cento');
+        const totalP = Object.values(escalaCento).reduce((a,b)=>a+b, 0);
+        if (totalP > 0) {
+            let v = totalP === 1 ? 50 : totalP === 2 ? 70 : totalP === 3 ? 100 : 120 + ((totalP-4)*30);
+            carrinho.push({ tipo: 'cento', nome: "Cento", desc: `${totalP*25} unidades`, preco: v });
+        }
+        renderCarrinho();
+    }
+
+    function mudarEscala(s, d) { if (!(d===-1 && escalaCento[s]===0)) { escalaCento[s]+=d; renderEscala(); } }
+
+    function renderCarrinho() {
+        const cartDiv = document.getElementById('carrinho-global');
+        const itensDiv = document.getElementById('itens-carrinho');
+        if (carrinho.length > 0) {
+            cartDiv.classList.add('visible');
+            let total = 0;
+            itensDiv.innerHTML = carrinho.map((it, idx) => {
+                total += it.preco;
+                return `<div class="carrinho-item"><div><strong>${it.nome}</strong><br><small>${it.desc}</small></div><div>R$ ${it.preco},00 <button class="btn-remover" onclick="removerItem(${idx})">✕</button></div></div>`;
+            }).join('');
+            document.getElementById('valor-total').innerText = `R$ ${total},00`;
+        } else { cartDiv.classList.remove('visible'); }
+        validarPedido();
+    }
+
+    function removerItem(idx) {
+        if (carrinho[idx].tipo === 'cento') { SABORES.forEach(s => escalaCento[s] = 0); renderEscala(); }
+        else { carrinho.splice(idx, 1); renderCombosFixos(); }
+        renderCarrinho();
+    }
+
+    function validarPedido() {
+        const n = document.getElementById('nome-cliente').value;
+        const e = document.getElementById('entrega-cliente').value;
+        const btn = document.getElementById('btn-finalizar');
+        btn.classList.toggle('liberado', n.length > 2 && e !== "" && carrinho.length > 0);
+    }
+
+    function enviarPedido() {
+        const nome = document.getElementById('nome-cliente').value;
+        const entrega = document.getElementById('entrega-cliente').value;
+        let msg = `*Amor e Cacau*\n*Nome:* ${nome}\n*Entrega:* ${entrega}\n\n`;
         let total = 0;
-        carrinho.forEach(it => { msg += `• ${it.nome}\n`; total += it.preco; });
+        carrinho.forEach(it => { msg += `• ${it.nome}: ${it.desc}\n`; total += it.preco; });
         msg += `\n*Total: R$ ${total},00*`;
-        
         window.location.href = `https://api.whatsapp.com/send?phone=5519992483488&text=${encodeURIComponent(msg)}`;
     }
 
-    renderVenda();
+    // INICIALIZAÇÃO OBRIGATÓRIA
+    window.onload = function() {
+        renderCombosFixos(); 
+        renderEscala(); 
+        atualizarSlots();
+        document.getElementById('botoes-sabores').innerHTML = SABORES.map(s => `<button class="btn-item" onclick="if(caixaAtual.length<4){caixaAtual.push('${s}');atualizarSlots();} ">+ ${s}</button>`).join('');
+    };
 </script>
 </body>
 </html>
