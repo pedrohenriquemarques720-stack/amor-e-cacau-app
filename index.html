@@ -58,6 +58,11 @@
         .btn-wpp { width: 100%; background: var(--verde-wpp); color: white; border: none; padding: 15px; border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer; margin-top: 10px; opacity: 0.5; pointer-events: none; }
         .btn-wpp.liberado { opacity: 1; pointer-events: auto; }
         input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; margin-bottom: 10px; box-sizing: border-box; }
+
+        /* Estilo para itens de estoque */
+        .estoque-item { display: flex; align-items: center; justify-content: space-between; background: #fff; padding: 15px; border-radius: 15px; border: 1px solid #eee; margin-bottom: 10px; }
+        .btn-baixa { background: var(--cor-vinho); color: white; border: none; padding: 10px 15px; border-radius: 10px; font-weight: bold; cursor: pointer; }
+        .btn-baixa:disabled { background: #ccc; }
     </style>
 </head>
 <body>
@@ -72,6 +77,7 @@
         <button class="tab-btn" onclick="abrirAba(event, 'aba-pronta')">Pronta Entrega</button>
         <button class="tab-btn" onclick="abrirAba(event, 'aba-combo')">Monte seu Combo</button>
         <button class="tab-btn" style="background: #fdf2f5;" onclick="abrirAba(event, 'aba-admin')">👩‍🍳 Produção</button>
+        <button class="tab-btn" style="background: #eef2ff;" onclick="abrirAba(event, 'aba-estoque')">📦 Estoque</button>
     </div>
 
     <div id="aba-cardapio" class="tab-content active">
@@ -125,6 +131,16 @@
         <div id="resumo-producao"></div>
         <div id="pedidos-lista-admin"></div>
     </div>
+
+    <div id="aba-estoque" class="tab-content">
+        <h3 style="color: var(--cor-vinho)">📦 Controle de Saída (Físico)</h3>
+        <p><small>Dê baixa aqui ao entregar uma caixa pronta no balcão.</small></p>
+        <div id="lista-estoque-manual"></div>
+        <hr style="margin: 20px 0; border: 0; border-top: 1px dashed #ccc;">
+        <button onclick="resetarEstoqueManual()" style="width: 100%; padding: 10px; background: #eee; border: 1px solid #ddd; border-radius: 10px; font-size: 0.8rem; color: #666; cursor: pointer;">
+            🔄 Reiniciar Estoque do Dia
+        </button>
+    </div>
 </div>
 
 <script>
@@ -133,7 +149,6 @@
     const db = firebase.firestore();
 
     const SABORES = ["Tradicional", "Beijinho", "Ferrero", "Limão", "Café", "Maracujá"];
-    // Sabor que está travado/esgotado
     const SABOR_ESGOTADO = "Ferrero";
 
     const COMBOS_FIXOS = [
@@ -145,42 +160,75 @@
         { n: "2 Tradicionais e 2 Ferreros", s: ["Tradicional","Tradicional","Ferrero","Ferrero"] }
     ];
 
+    // --- CONFIGURAÇÃO MANUAL DE ESTOQUE ---
+    const ESTOQUE_INICIAL = {
+        "4 Tradicionais": 10,
+        "4 Beijinhos": 10,
+        "4 Ferreros": 5,
+        "Combos Mistos": 15
+    };
+
+    let meuEstoque = JSON.parse(localStorage.getItem('amorECacauEstoque')) || { ...ESTOQUE_INICIAL };
     let carrinho = []; let caixaAtual = [];
     let escalaCento = {}; SABORES.forEach(s => escalaCento[s] = 0);
     let autenticado = false;
 
     function abrirAba(e, id) {
-        if (id === 'aba-admin' && !autenticado) {
+        if ((id === 'aba-admin' || id === 'aba-estoque') && !autenticado) {
             if (prompt("PIN:") === "1808") { autenticado = true; } else return;
         }
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         e.currentTarget.classList.add('active');
+        if(id === 'aba-estoque') renderEstoqueManual();
     }
 
+    // --- FUNÇÕES DE ESTOQUE ---
+    function renderEstoqueManual() {
+        const container = document.getElementById('lista-estoque-manual');
+        container.innerHTML = "";
+        for (let item in meuEstoque) {
+            const qtd = meuEstoque[item];
+            const esgotado = qtd <= 0;
+            container.innerHTML += `
+                <div class="estoque-item" style="${esgotado ? 'opacity: 0.5' : ''}">
+                    <div><strong>${item}</strong><br><span style="font-size: 1.2rem; color: var(--cor-vinho); font-weight: bold;">${qtd} un</span></div>
+                    <button class="btn-baixa" onclick="darBaixa('${item}')" ${esgotado ? 'disabled' : ''}>${esgotado ? 'FIM' : 'VENDI -1'}</button>
+                </div>`;
+        }
+    }
+
+    function darBaixa(item) {
+        if (meuEstoque[item] > 0) {
+            meuEstoque[item]--;
+            localStorage.setItem('amorECacauEstoque', JSON.stringify(meuEstoque));
+            renderEstoqueManual();
+        }
+    }
+
+    function resetarEstoqueManual() {
+        if (confirm("Resetar para os valores iniciais?")) {
+            meuEstoque = { ...ESTOQUE_INICIAL };
+            localStorage.setItem('amorECacauEstoque', JSON.stringify(meuEstoque));
+            renderEstoqueManual();
+        }
+    }
+
+    // --- FUNÇÕES ORIGINAIS ---
     function renderCombosFixos() {
         document.getElementById('lista-combos-fixos').innerHTML = COMBOS_FIXOS.map((c, i) => {
             const jaNoCarrinho = carrinho.find(item => item.tipo === 'pronta' && item.index === i);
             const possuiEsgotado = c.s.includes(SABOR_ESGOTADO);
-            
             if (possuiEsgotado) {
-                return `<div class="card-fixo esgotado-fixo">
-                            <div class="bolinha-selecao" style="border-color:#ccc;"></div>
-                            <div class="fixo-info" style="color:#999;"><s>${c.n}</s> <br><small>(Sabor esgotado)</small></div>
-                        </div>`;
+                return `<div class="card-fixo esgotado-fixo"><div class="bolinha-selecao" style="border-color:#ccc;"></div><div class="fixo-info" style="color:#999;"><s>${c.n}</s> <br><small>(Sabor esgotado)</small></div></div>`;
             }
-
-            return `<div class="card-fixo ${jaNoCarrinho ? 'selected' : ''}" onclick="toggleComboFixo(${i})">
-                        <div class="bolinha-selecao"></div>
-                        <div class="fixo-info">${c.n}</div>
-                    </div>`;
+            return `<div class="card-fixo ${jaNoCarrinho ? 'selected' : ''}" onclick="toggleComboFixo(${i})"><div class="bolinha-selecao"></div><div class="fixo-info">${c.n}</div></div>`;
         }).join('');
     }
 
     function toggleComboFixo(i) {
-        if (COMBOS_FIXOS[i].s.includes(SABOR_ESGOTADO)) return; // Trava clique se tiver esgotado
-
+        if (COMBOS_FIXOS[i].s.includes(SABOR_ESGOTADO)) return;
         const idx = carrinho.findIndex(item => item.tipo === 'pronta' && item.index === i);
         if (idx > -1) carrinho.splice(idx, 1);
         else carrinho.push({ tipo: 'pronta', index: i, nome: "Combo Pronto", desc: COMBOS_FIXOS[i].n, sabores: COMBOS_FIXOS[i].s, preco: 10 });
@@ -212,7 +260,7 @@
             const isEsgotado = (s === SABOR_ESGOTADO);
             return `
             <div class="item-escala" style="${isEsgotado ? 'background: #fafafa; color: #999;' : ''}">
-                <span><strong>25x ${isEsgotado ? `<s>${s}</s>` : s}</strong> ${isEsgotado ? '<br><small>Esgotado</small>' : ''}</span>
+                <span><strong>25x ${isEsgotado ? `<s>${s}</s>` : s}</strong></span>
                 <div>
                     <button class="btn-ctrl" onclick="mudarEscala('${s}', -1)">-</button>
                     <span style="margin: 0 8px;">${escalaCento[s]}</span>
@@ -222,33 +270,16 @@
         
         carrinho = carrinho.filter(item => item.tipo !== 'cento');
         const totalP = Object.values(escalaCento).reduce((a,b)=>a+b, 0);
-        
         if (totalP > 0) {
-            let valorCalculado = 0;
-            if (totalP === 1) valorCalculado = 50;
-            else if (totalP === 2) valorCalculado = 70;
-            else if (totalP === 3) valorCalculado = 100;
-            else if (totalP === 4) valorCalculado = 120;
-            else {
-                valorCalculado = 120 + ((totalP - 4) * 30);
-            }
-
-            let descSabs = []; let sabsArray = [];
-            for(let s in escalaCento) { 
-                if(escalaCento[s] > 0) { 
-                    descSabs.push(`${escalaCento[s] * 25}x ${s}`); 
-                    for(let k=0; k < escalaCento[s]*25; k++) sabsArray.push(s); 
-                } 
-            }
-            carrinho.push({ tipo: 'cento', nome: `${totalP * 25} Unidades`, desc: descSabs.join(', '), sabores: sabsArray, preco: valorCalculado });
+            let v = totalP === 1 ? 50 : totalP === 2 ? 70 : totalP === 3 ? 100 : 120 + ((totalP-4)*30);
+            let dS = []; let sA = [];
+            for(let s in escalaCento) { if(escalaCento[s]>0) { dS.push(`${escalaCento[s]*25}x ${s}`); for(let k=0;k<escalaCento[s]*25;k++) sA.push(s); } }
+            carrinho.push({ tipo: 'cento', nome: `${totalP*25} Unidades`, desc: dS.join(', '), sabores: sA, preco: v });
         }
         renderCarrinho();
     }
 
-    function mudarEscala(s, d) { 
-        if (s === SABOR_ESGOTADO && d > 0) return;
-        if (!(d===-1 && escalaCento[s]===0)) { escalaCento[s]+=d; renderEscala(); } 
-    }
+    function mudarEscala(s, d) { if (!(d===-1 && escalaCento[s]===0)) { escalaCento[s]+=d; renderEscala(); } }
 
     function renderCarrinho() {
         const cartDiv = document.getElementById('carrinho-global');
@@ -268,8 +299,7 @@
     function removerItem(idx) {
         const item = carrinho[idx];
         if (item.tipo === 'cento') { SABORES.forEach(s => escalaCento[s] = 0); renderEscala(); }
-        else if (item.tipo === 'pronta') { carrinho.splice(idx, 1); renderCombosFixos(); }
-        else { carrinho.splice(idx, 1); }
+        else { carrinho.splice(idx, 1); renderCombosFixos(); }
         renderCarrinho();
     }
 
@@ -282,25 +312,14 @@
     async function enviarPedido() {
         const nome = document.getElementById('nome-cliente').value;
         const entrega = document.getElementById('entrega-cliente').value;
-        let totalFinal = 0; 
-        
-        let textoMsg = `*Amor e Cacau*\n*Nome:* ${nome}\n*Entrega:* ${entrega}\n\n`;
-        
-        carrinho.forEach(item => { 
-            textoMsg += `• *${item.nome}* - ${item.desc}\n`; 
-            totalFinal += item.preco; 
-        });
-        
+        let totalFinal = 0; let textoMsg = `*Amor e Cacau*\n*Nome:* ${nome}\n*Entrega:* ${entrega}\n\n`;
+        carrinho.forEach(item => { textoMsg += `• *${item.nome}* - ${item.desc}\n`; totalFinal += item.preco; });
         textoMsg += `\n*Total: R$ ${totalFinal},00*`;
-
         try {
             await db.collection("pedidos").add({ cliente: nome, entrega: entrega, itens: carrinho, status: "pendente", data: new Date() });
-            const urlWpp = `https://api.whatsapp.com/send?phone=5519992483488&text=${encodeURIComponent(textoMsg)}`;
-            window.location.href = urlWpp;
+            window.location.href = `https://api.whatsapp.com/send?phone=5519992483488&text=${encodeURIComponent(textoMsg)}`;
         } catch (e) {
-            alert("Erro ao salvar pedido, mas tentando abrir WhatsApp...");
-            const urlWpp = `https://api.whatsapp.com/send?phone=5519992483488&text=${encodeURIComponent(textoMsg)}`;
-            window.location.href = urlWpp;
+            window.location.href = `https://api.whatsapp.com/send?phone=5519992483488&text=${encodeURIComponent(textoMsg)}`;
         }
     }
 
@@ -309,19 +328,15 @@
         let html = "";
         snap.forEach(doc => {
             const p = doc.data(); p.itens.forEach(it => it.sabores.forEach(s => totais[s]++));
-            html += `<div style="border:1px solid #ddd; padding:10px; margin-bottom:10px; border-radius:10px;"><strong>${p.cliente}</strong> (${p.entrega})<br>${p.itens.map(i => `<small>• ${i.nome}: ${i.desc}</small>`).join('<br>')}<button style="width:100%; margin-top:10px; background:var(--cor-vinho); color:white; border:none; padding:8px; border-radius:8px;" onclick="db.collection('pedidos').doc('${doc.id}').update({status:'ok'})">Concluir</button></div>`;
+            html += `<div style="border:1px solid #ddd; padding:10px; margin-bottom:10px; border-radius:10px;"><strong>${p.cliente}</strong><br>${p.itens.map(i => `<small>• ${i.nome}</small>`).join('<br>')}<button style="width:100%; margin-top:10px; background:var(--cor-vinho); color:white; border:none; padding:8px; border-radius:8px;" onclick="db.collection('pedidos').doc('${doc.id}').update({status:'ok'})">Concluir</button></div>`;
         });
         document.getElementById('resumo-producao').innerHTML = `<div style="background:#fff5f7; padding:15px; border-radius:15px; margin-bottom:15px"><strong>Resumo Produção:</strong><br>${SABORES.map(s => `${s}: ${totais[s]}`).join(' | ')}</div>`;
         document.getElementById('pedidos-lista-admin').innerHTML = html;
     });
 
     renderCombosFixos(); renderEscala(); atualizarSlots();
-    
-    // Renderiza botões de sabores com a trava do Ferrero
     document.getElementById('botoes-sabores').innerHTML = SABORES.map(s => {
-        if(s === SABOR_ESGOTADO) {
-            return `<button class="btn-item esgotado"><s>+ ${s}</s></button>`;
-        }
+        if(s === SABOR_ESGOTADO) return `<button class="btn-item esgotado"><s>+ ${s}</s></button>`;
         return `<button class="btn-item" onclick="if(caixaAtual.length<4){caixaAtual.push('${s}');atualizarSlots();} ">+ ${s}</button>`;
     }).join('');
 </script>
