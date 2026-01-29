@@ -56,9 +56,12 @@
         .btn-wpp.liberado { opacity: 1; pointer-events: auto; }
         input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; margin-bottom: 10px; box-sizing: border-box; }
 
-        .estoque-item { display: flex; align-items: center; justify-content: space-between; background: #fff; padding: 15px; border-radius: 15px; border: 1px solid #eee; margin-bottom: 10px; }
-        .btn-baixa { background: var(--cor-vinho); color: white; border: none; padding: 10px 15px; border-radius: 10px; font-weight: bold; cursor: pointer; }
+        /* Estilo Estoque igual à imagem */
+        .estoque-item { display: flex; align-items: center; justify-content: space-between; background: #fff; padding: 15px; border-radius: 15px; border: 1px solid #eee; margin-bottom: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .btn-baixa { background: var(--cor-vinho); color: white; border: none; padding: 10px 20px; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 0.9rem; }
         .btn-baixa:disabled { background: #ccc; }
+        .estoque-titulo { font-weight: bold; font-size: 1rem; color: #333; }
+        .estoque-qtd { color: var(--cor-vinho); font-weight: bold; font-size: 1.1rem; display: block; margin-top: 4px; }
     </style>
 </head>
 <body>
@@ -132,7 +135,7 @@
         <p><small>Clique no botão ao entregar o combo físico.</small></p>
         <div id="lista-estoque-manual"></div>
         <hr style="margin: 20px 0; border: 0; border-top: 1px dashed #ccc;">
-        <button onclick="resetarEstoqueManual()" style="width: 100%; padding: 10px; background: #eee; border: 1px solid #ddd; border-radius: 10px; font-size: 0.8rem; color: #666; cursor: pointer;">
+        <button onclick="resetarEstoqueManual()" style="width: 100%; padding: 15px; background: #eee; border: 1px solid #ddd; border-radius: 12px; font-size: 0.9rem; color: #555; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;">
             🔄 Reiniciar Estoque de Amanhã
         </button>
     </div>
@@ -145,31 +148,44 @@
 
     const SABORES = ["Tradicional", "Beijinho", "Ferrero", "Limão", "Café", "Maracujá"];
 
-    // --- CONFIGURAÇÃO DOS COMBOS E ESTOQUE PARA AMANHÃ ---
+    // --- NOVA LISTA DE COMBOS E ESTOQUE ---
     const ESTOQUE_INICIAL = {
-        "Combo Tropical (2x Marac, 2x Limão)": 4,
-        "Combo Chocolatudo (4x Tradicional)": 4,
-        "Combo Turbo (2x Trad, 2x Café)": 2,
-        "Combo Festa (2x Trad, 2x Beijinho)": 3,
-        "Combo Misto (Sabores Variados)": 3,
-        "Combo Chocolima (2x Limão, 2x Trad)": 2,
-        "Combo Café Azedo (2x Café, 2x Marac ou Limão)": 4,
-        "Combo Maracublack (2x Trad, 2x Marac)": 2
+        "Combo Chocolatudo": 4,
+        "Combo Turbo": 2,
+        "Combo Festa": 3,
+        "Combo Misto": 3,
+        "Combo Chocolima": 2,
+        "Combo Café Azedo": 4,
+        "Combo Maracublack": 2
     };
 
-    // Mapeamento para a aba "Pronta Entrega" do cliente
+    const DETALHES_COMBOS = {
+        "Combo Chocolatudo": "4x Tradicional",
+        "Combo Turbo": "2x Tradicional, 2x Café",
+        "Combo Festa": "2x Tradicional, 2x Beijinho",
+        "Combo Misto": "Sabores Variados",
+        "Combo Chocolima": "2x Limão, 2x Tradicional",
+        "Combo Café Azedo": "2x Café, 2x Maracujá ou Limão",
+        "Combo Maracublack": "2x Tradicional, 2x Maracujá"
+    };
+
     const COMBOS_FIXOS = [
-        { n: "Combo Tropical (2x Marac, 2x Limão)", s: ["Maracujá","Maracujá","Limão","Limão"] },
-        { n: "Combo Chocolatudo (4x Tradicional)", s: ["Tradicional","Tradicional","Tradicional","Tradicional"] },
-        { n: "Combo Turbo (2x Trad, 2x Café)", s: ["Tradicional","Tradicional","Café","Café"] },
-        { n: "Combo Festa (2x Trad, 2x Beijinho)", s: ["Tradicional","Tradicional","Beijinho","Beijinho"] },
-        { n: "Combo Misto (Sabores Variados)", s: ["Tradicional","Beijinho","Limão","Maracujá"] },
-        { n: "Combo Chocolima (2x Limão, 2x Trad)", s: ["Limão","Limão","Tradicional","Tradicional"] },
-        { n: "Combo Café Azedo (2x Café, 2x Marac ou Limão)", s: ["Café","Café","Maracujá","Maracujá"] },
-        { n: "Combo Maracublack (2x Trad, 2x Marac)", s: ["Tradicional","Tradicional","Maracujá","Maracujá"] }
+        { n: "Combo Chocolatudo", desc: "4x Tradicional", s: ["Tradicional","Tradicional","Tradicional","Tradicional"] },
+        { n: "Combo Turbo", desc: "2x Tradicional, 2x Café", s: ["Tradicional","Tradicional","Café","Café"] },
+        { n: "Combo Festa", desc: "2x Tradicional, 2x Beijinho", s: ["Tradicional","Tradicional","Beijinho","Beijinho"] },
+        { n: "Combo Misto", desc: "Sabores Variados", s: ["Tradicional","Beijinho","Limão","Maracujá"] },
+        { n: "Combo Chocolima", desc: "2x Limão, 2x Tradicional", s: ["Limão","Limão","Tradicional","Tradicional"] },
+        { n: "Combo Café Azedo", desc: "2x Café, 2x Maracujá ou Limão", s: ["Café","Café","Maracujá","Maracujá"] },
+        { n: "Combo Maracublack", desc: "2x Tradicional, 2x Maracujá", s: ["Tradicional","Tradicional","Maracujá","Maracujá"] }
     ];
 
     let meuEstoque = JSON.parse(localStorage.getItem('amorECacauEstoque')) || { ...ESTOQUE_INICIAL };
+    
+    // Pequena correção: Se o estoque salvo no navegador for antigo (com nomes velhos), reseta para o novo
+    if (!meuEstoque["Combo Chocolatudo"]) {
+        meuEstoque = { ...ESTOQUE_INICIAL };
+    }
+
     let carrinho = []; let caixaAtual = [];
     let escalaCento = {}; SABORES.forEach(s => escalaCento[s] = 0);
     let autenticado = false;
@@ -186,17 +202,24 @@
         if(id === 'aba-estoque') renderEstoqueManual();
     }
 
-    // --- LÓGICA DE ESTOQUE ---
+    // --- LÓGICA DE ESTOQUE IGUAL À IMAGEM ---
     function renderEstoqueManual() {
         const container = document.getElementById('lista-estoque-manual');
         container.innerHTML = "";
         for (let item in meuEstoque) {
             const qtd = meuEstoque[item];
             const esgotado = qtd <= 0;
+            const desc = DETALHES_COMBOS[item] || "";
             container.innerHTML += `
-                <div class="estoque-item" style="${esgotado ? 'opacity: 0.5' : ''}">
-                    <div style="flex:1"><strong>${item}</strong><br><span style="font-size: 1.1rem; color: var(--cor-vinho); font-weight: bold;">${qtd} unidades</span></div>
-                    <button class="btn-baixa" onclick="darBaixa('${item}')" ${esgotado ? 'disabled' : ''}>${esgotado ? 'ZERADO' : 'VENDI -1'}</button>
+                <div class="estoque-item" style="${esgotado ? 'opacity: 0.6;' : ''}">
+                    <div style="flex:1">
+                        <div class="estoque-titulo">${item}</div>
+                        <small style="color:#666">${desc}</small>
+                        <span class="estoque-qtd">${qtd} unidades</span>
+                    </div>
+                    <button class="btn-baixa" onclick="darBaixa('${item}')" ${esgotado ? 'disabled' : ''}>
+                        ${esgotado ? 'ZERADO' : 'VENDI -1'}
+                    </button>
                 </div>`;
         }
     }
@@ -210,7 +233,7 @@
     }
 
     function resetarEstoqueManual() {
-        if (confirm("Deseja resetar as quantidades para o planejado de amanhã?")) {
+        if (confirm("Resetar quantidades para amanhã?")) {
             meuEstoque = { ...ESTOQUE_INICIAL };
             localStorage.setItem('amorECacauEstoque', JSON.stringify(meuEstoque));
             renderEstoqueManual();
@@ -221,14 +244,14 @@
     function renderCombosFixos() {
         document.getElementById('lista-combos-fixos').innerHTML = COMBOS_FIXOS.map((c, i) => {
             const jaNoCarrinho = carrinho.find(item => item.tipo === 'pronta' && item.index === i);
-            return `<div class="card-fixo ${jaNoCarrinho ? 'selected' : ''}" onclick="toggleComboFixo(${i})"><div class="bolinha-selecao"></div><div class="fixo-info">${c.n}</div></div>`;
+            return `<div class="card-fixo ${jaNoCarrinho ? 'selected' : ''}" onclick="toggleComboFixo(${i})"><div class="bolinha-selecao"></div><div class="fixo-info"><strong>${c.n}</strong><br><small>${c.desc}</small></div></div>`;
         }).join('');
     }
 
     function toggleComboFixo(i) {
         const idx = carrinho.findIndex(item => item.tipo === 'pronta' && item.index === i);
         if (idx > -1) carrinho.splice(idx, 1);
-        else carrinho.push({ tipo: 'pronta', index: i, nome: "Combo Pronto", desc: COMBOS_FIXOS[i].n, sabores: COMBOS_FIXOS[i].s, preco: 10 });
+        else carrinho.push({ tipo: 'pronta', index: i, nome: COMBOS_FIXOS[i].n, desc: COMBOS_FIXOS[i].desc, sabores: COMBOS_FIXOS[i].s, preco: 10 });
         renderCombosFixos(); renderCarrinho();
     }
 
