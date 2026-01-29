@@ -56,7 +56,6 @@
         .btn-wpp.liberado { opacity: 1; pointer-events: auto; }
         input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; margin-bottom: 10px; box-sizing: border-box; }
 
-        /* Estilo Estoque igual à imagem */
         .estoque-item { display: flex; align-items: center; justify-content: space-between; background: #fff; padding: 15px; border-radius: 15px; border: 1px solid #eee; margin-bottom: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
         .btn-baixa { background: var(--cor-vinho); color: white; border: none; padding: 10px 20px; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 0.9rem; }
         .btn-baixa:disabled { background: #ccc; }
@@ -72,7 +71,6 @@
 
     <div class="tabs-nav">
         <button class="tab-btn active" onclick="abrirAba(event, 'aba-cardapio')">Cardápio</button>
-        <button class="tab-btn" onclick="abrirAba(event, 'aba-pronta')">Pronta Entrega</button>
         <button class="tab-btn" onclick="abrirAba(event, 'aba-combo')">Monte seu Combo</button>
         <button class="tab-btn" style="background: #fdf2f5;" onclick="abrirAba(event, 'aba-admin')">👩‍🍳 Produção</button>
         <button class="tab-btn" style="background: #eef2ff;" onclick="abrirAba(event, 'aba-estoque')">📦 Estoque</button>
@@ -148,7 +146,6 @@
 
     const SABORES = ["Tradicional", "Beijinho", "Ferrero", "Limão", "Café", "Maracujá"];
 
-    // --- NOVA LISTA DE COMBOS E ESTOQUE ---
     const ESTOQUE_INICIAL = {
         "Combo Chocolatudo": 4,
         "Combo Turbo": 2,
@@ -181,7 +178,6 @@
 
     let meuEstoque = JSON.parse(localStorage.getItem('amorECacauEstoque')) || { ...ESTOQUE_INICIAL };
     
-    // Pequena correção: Se o estoque salvo no navegador for antigo (com nomes velhos), reseta para o novo
     if (!meuEstoque["Combo Chocolatudo"]) {
         meuEstoque = { ...ESTOQUE_INICIAL };
     }
@@ -202,7 +198,6 @@
         if(id === 'aba-estoque') renderEstoqueManual();
     }
 
-    // --- LÓGICA DE ESTOQUE IGUAL À IMAGEM ---
     function renderEstoqueManual() {
         const container = document.getElementById('lista-estoque-manual');
         container.innerHTML = "";
@@ -240,12 +235,15 @@
         }
     }
 
-    // --- FUNÇÕES DE PEDIDO ---
     function renderCombosFixos() {
-        document.getElementById('lista-combos-fixos').innerHTML = COMBOS_FIXOS.map((c, i) => {
-            const jaNoCarrinho = carrinho.find(item => item.tipo === 'pronta' && item.index === i);
-            return `<div class="card-fixo ${jaNoCarrinho ? 'selected' : ''}" onclick="toggleComboFixo(${i})"><div class="bolinha-selecao"></div><div class="fixo-info"><strong>${c.n}</strong><br><small>${c.desc}</small></div></div>`;
-        }).join('');
+        // Função mantida mas o container está oculto por padrão
+        const container = document.getElementById('lista-combos-fixos');
+        if(container) {
+            container.innerHTML = COMBOS_FIXOS.map((c, i) => {
+                const jaNoCarrinho = carrinho.find(item => item.tipo === 'pronta' && item.index === i);
+                return `<div class="card-fixo ${jaNoCarrinho ? 'selected' : ''}" onclick="toggleComboFixo(${i})"><div class="bolinha-selecao"></div><div class="fixo-info"><strong>${c.n}</strong><br><small>${c.desc}</small></div></div>`;
+            }).join('');
+        }
     }
 
     function toggleComboFixo(i) {
@@ -340,7 +338,6 @@
         }
     }
 
-    // Inicialização segura
     window.onload = function() {
         renderCombosFixos(); 
         renderEscala(); 
@@ -349,7 +346,6 @@
             return `<button class="btn-item" onclick="if(caixaAtual.length<4){caixaAtual.push('${s}');atualizarSlots();} ">+ ${s}</button>`;
         }).join('');
         
-        // Listener do Firebase (Admin)
         try {
             db.collection("pedidos").where("status", "==", "pendente").onSnapshot(snap => {
                 let totais = {}; SABORES.forEach(s => totais[s] = 0);
