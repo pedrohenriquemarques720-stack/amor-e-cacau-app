@@ -39,18 +39,13 @@
         
         .grid-botoes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
         .btn-item { background: white; border: 1.5px solid var(--cor-vinho); color: var(--cor-vinho); padding: 12px; border-radius: 12px; cursor: pointer; font-weight: bold; }
+        .btn-item:disabled { border-color: #ccc; color: #999; cursor: not-allowed; text-decoration: line-through; }
         
         .btn-add-caixa { background: var(--cor-vinho); color: white; border: none; width: 100%; padding: 12px; border-radius: 12px; margin-top: 10px; font-weight: bold; cursor: pointer; }
 
         .item-escala { display: flex; align-items: center; justify-content: space-between; padding: 10px; border: 1px solid #eee; border-radius: 12px; margin-bottom: 8px; background: #fff; }
         .btn-ctrl { background: var(--cor-vinho); color: white; border: none; width: 28px; height: 28px; border-radius: 50%; font-weight: bold; cursor: pointer; }
-
-        .card-fixo { display: flex; align-items: center; padding: 12px; border: 1px solid #eee; border-radius: 15px; margin-bottom: 10px; cursor: pointer; }
-        .card-fixo.selected { border: 2px solid var(--cor-vinho); background: #fff5f7; }
-        
-        .bolinha-selecao { width: 22px; height: 22px; border: 2px dashed var(--cor-vinho); border-radius: 50%; margin-right: 15px; flex-shrink: 0; }
-        .card-fixo.selected .bolinha-selecao { border-style: solid; background: var(--cor-vinho); position: relative; }
-        .card-fixo.selected .bolinha-selecao::after { content: '✓'; color: white; font-size: 12px; position: absolute; left: 5px; top: 1px; }
+        .btn-ctrl:disabled { background: #ccc; cursor: not-allowed; }
 
         .btn-wpp { width: 100%; background: var(--verde-wpp); color: white; border: none; padding: 15px; border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer; margin-top: 10px; opacity: 0.5; pointer-events: none; }
         .btn-wpp.liberado { opacity: 1; pointer-events: auto; }
@@ -86,11 +81,6 @@
                 <li>🎉 75 un: R$ 100 | 100 un: R$ 120</li>
             </ul>
         </div>
-    </div>
-
-    <div id="aba-pronta" class="tab-content">
-        <h3 style="color: var(--cor-vinho)">🚚 Combos Prontos (R$ 10,00)</h3>
-        <div id="lista-combos-fixos"></div>
     </div>
 
     <div id="aba-combo" class="tab-content">
@@ -145,42 +135,13 @@
     const db = firebase.firestore();
 
     const SABORES = ["Tradicional", "Beijinho", "Ferrero", "Limão", "Café", "Maracujá"];
+    const ESGOTADOS = ["Ferrero"]; // CONFIGURAÇÃO DE SABORES ESGOTADOS
 
-    const ESTOQUE_INICIAL = {
-        "Combo Chocolatudo": 4,
-        "Combo Turbo": 2,
-        "Combo Festa": 3,
-        "Combo Misto": 3,
-        "Combo Chocolima": 2,
-        "Combo Café Azedo": 4,
-        "Combo Maracublack": 2
-    };
-
-    const DETALHES_COMBOS = {
-        "Combo Chocolatudo": "4x Tradicional",
-        "Combo Turbo": "2x Tradicional, 2x Café",
-        "Combo Festa": "2x Tradicional, 2x Beijinho",
-        "Combo Misto": "Sabores Variados",
-        "Combo Chocolima": "2x Limão, 2x Tradicional",
-        "Combo Café Azedo": "2x Café, 2x Maracujá ou Limão",
-        "Combo Maracublack": "2x Tradicional, 2x Maracujá"
-    };
-
-    const COMBOS_FIXOS = [
-        { n: "Combo Chocolatudo", desc: "4x Tradicional", s: ["Tradicional","Tradicional","Tradicional","Tradicional"] },
-        { n: "Combo Turbo", desc: "2x Tradicional, 2x Café", s: ["Tradicional","Tradicional","Café","Café"] },
-        { n: "Combo Festa", desc: "2x Tradicional, 2x Beijinho", s: ["Tradicional","Tradicional","Beijinho","Beijinho"] },
-        { n: "Combo Misto", desc: "Sabores Variados", s: ["Tradicional","Beijinho","Limão","Maracujá"] },
-        { n: "Combo Chocolima", desc: "2x Limão, 2x Tradicional", s: ["Limão","Limão","Tradicional","Tradicional"] },
-        { n: "Combo Café Azedo", desc: "2x Café, 2x Maracujá ou Limão", s: ["Café","Café","Maracujá","Maracujá"] },
-        { n: "Combo Maracublack", desc: "2x Tradicional, 2x Maracujá", s: ["Tradicional","Tradicional","Maracujá","Maracujá"] }
-    ];
+    const ESTOQUE_INICIAL = { "Combo Chocolatudo": 4, "Combo Turbo": 2, "Combo Festa": 3, "Combo Misto": 3, "Combo Chocolima": 2, "Combo Café Azedo": 4, "Combo Maracublack": 2 };
+    const DETALHES_COMBOS = { "Combo Chocolatudo": "4x Tradicional", "Combo Turbo": "2x Tradicional, 2x Café", "Combo Festa": "2x Tradicional, 2x Beijinho", "Combo Misto": "Sabores Variados", "Combo Chocolima": "2x Limão, 2x Tradicional", "Combo Café Azedo": "2x Café, 2x Maracujá ou Limão", "Combo Maracublack": "2x Tradicional, 2x Maracujá" };
 
     let meuEstoque = JSON.parse(localStorage.getItem('amorECacauEstoque')) || { ...ESTOQUE_INICIAL };
-    
-    if (!meuEstoque["Combo Chocolatudo"]) {
-        meuEstoque = { ...ESTOQUE_INICIAL };
-    }
+    if (!meuEstoque["Combo Chocolatudo"]) meuEstoque = { ...ESTOQUE_INICIAL };
 
     let carrinho = []; let caixaAtual = [];
     let escalaCento = {}; SABORES.forEach(s => escalaCento[s] = 0);
@@ -205,53 +166,12 @@
             const qtd = meuEstoque[item];
             const esgotado = qtd <= 0;
             const desc = DETALHES_COMBOS[item] || "";
-            container.innerHTML += `
-                <div class="estoque-item" style="${esgotado ? 'opacity: 0.6;' : ''}">
-                    <div style="flex:1">
-                        <div class="estoque-titulo">${item}</div>
-                        <small style="color:#666">${desc}</small>
-                        <span class="estoque-qtd">${qtd} unidades</span>
-                    </div>
-                    <button class="btn-baixa" onclick="darBaixa('${item}')" ${esgotado ? 'disabled' : ''}>
-                        ${esgotado ? 'ZERADO' : 'VENDI -1'}
-                    </button>
-                </div>`;
+            container.innerHTML += `<div class="estoque-item" style="${esgotado ? 'opacity: 0.6;' : ''}"><div style="flex:1"><div class="estoque-titulo">${item}</div><small style="color:#666">${desc}</small><span class="estoque-qtd">${qtd} unidades</span></div><button class="btn-baixa" onclick="darBaixa('${item}')" ${esgotado ? 'disabled' : ''}>${esgotado ? 'ZERADO' : 'VENDI -1'}</button></div>`;
         }
     }
 
-    function darBaixa(item) {
-        if (meuEstoque[item] > 0) {
-            meuEstoque[item]--;
-            localStorage.setItem('amorECacauEstoque', JSON.stringify(meuEstoque));
-            renderEstoqueManual();
-        }
-    }
-
-    function resetarEstoqueManual() {
-        if (confirm("Resetar quantidades para amanhã?")) {
-            meuEstoque = { ...ESTOQUE_INICIAL };
-            localStorage.setItem('amorECacauEstoque', JSON.stringify(meuEstoque));
-            renderEstoqueManual();
-        }
-    }
-
-    function renderCombosFixos() {
-        // Função mantida mas o container está oculto por padrão
-        const container = document.getElementById('lista-combos-fixos');
-        if(container) {
-            container.innerHTML = COMBOS_FIXOS.map((c, i) => {
-                const jaNoCarrinho = carrinho.find(item => item.tipo === 'pronta' && item.index === i);
-                return `<div class="card-fixo ${jaNoCarrinho ? 'selected' : ''}" onclick="toggleComboFixo(${i})"><div class="bolinha-selecao"></div><div class="fixo-info"><strong>${c.n}</strong><br><small>${c.desc}</small></div></div>`;
-            }).join('');
-        }
-    }
-
-    function toggleComboFixo(i) {
-        const idx = carrinho.findIndex(item => item.tipo === 'pronta' && item.index === i);
-        if (idx > -1) carrinho.splice(idx, 1);
-        else carrinho.push({ tipo: 'pronta', index: i, nome: COMBOS_FIXOS[i].n, desc: COMBOS_FIXOS[i].desc, sabores: COMBOS_FIXOS[i].s, preco: 10 });
-        renderCombosFixos(); renderCarrinho();
-    }
+    function darBaixa(item) { if (meuEstoque[item] > 0) { meuEstoque[item]--; localStorage.setItem('amorECacauEstoque', JSON.stringify(meuEstoque)); renderEstoqueManual(); } }
+    function resetarEstoqueManual() { if (confirm("Resetar quantidades para amanhã?")) { meuEstoque = { ...ESTOQUE_INICIAL }; localStorage.setItem('amorECacauEstoque', JSON.stringify(meuEstoque)); renderEstoqueManual(); } }
 
     function atualizarSlots() {
         const area = document.getElementById('slots-area'); area.innerHTML = '';
@@ -274,15 +194,17 @@
     }
 
     function renderEscala() {
-        document.getElementById('lista-escala-cento').innerHTML = SABORES.map(s => `
-            <div class="item-escala">
-                <span><strong>25x ${s}</strong></span>
+        document.getElementById('lista-escala-cento').innerHTML = SABORES.map(s => {
+            const isEsgotado = ESGOTADOS.includes(s);
+            return `<div class="item-escala" style="${isEsgotado ? 'opacity:0.5' : ''}">
+                <span><strong style="${isEsgotado ? 'text-decoration:line-through' : ''}">25x ${s}</strong> ${isEsgotado ? '(Esgotado)' : ''}</span>
                 <div>
-                    <button class="btn-ctrl" onclick="mudarEscala('${s}', -1)">-</button>
+                    <button class="btn-ctrl" onclick="mudarEscala('${s}', -1)" ${isEsgotado ? 'disabled' : ''}>-</button>
                     <span style="margin: 0 8px;">${escalaCento[s]}</span>
-                    <button class="btn-ctrl" onclick="mudarEscala('${s}', 1)">+</button>
+                    <button class="btn-ctrl" onclick="mudarEscala('${s}', 1)" ${isEsgotado ? 'disabled' : ''}>+</button>
                 </div>
-            </div>`).join('');
+            </div>`;
+        }).join('');
         carrinho = carrinho.filter(item => item.tipo !== 'cento');
         const totalP = Object.values(escalaCento).reduce((a,b)=>a+b, 0);
         if (totalP > 0) {
@@ -314,7 +236,7 @@
     function removerItem(idx) {
         const item = carrinho[idx];
         if (item.tipo === 'cento') { SABORES.forEach(s => escalaCento[s] = 0); renderEscala(); }
-        else { carrinho.splice(idx, 1); renderCombosFixos(); }
+        else { carrinho.splice(idx, 1); }
         renderCarrinho();
     }
 
@@ -333,17 +255,15 @@
         try {
             await db.collection("pedidos").add({ cliente: nome, entrega: entrega, itens: carrinho, status: "pendente", data: new Date() });
             window.location.href = `https://api.whatsapp.com/send?phone=5519992483488&text=${encodeURIComponent(textoMsg)}`;
-        } catch (e) {
-            window.location.href = `https://api.whatsapp.com/send?phone=5519992483488&text=${encodeURIComponent(textoMsg)}`;
-        }
+        } catch (e) { window.location.href = `https://api.whatsapp.com/send?phone=5519992483488&text=${encodeURIComponent(textoMsg)}`; }
     }
 
     window.onload = function() {
-        renderCombosFixos(); 
         renderEscala(); 
         atualizarSlots();
         document.getElementById('botoes-sabores').innerHTML = SABORES.map(s => {
-            return `<button class="btn-item" onclick="if(caixaAtual.length<4){caixaAtual.push('${s}');atualizarSlots();} ">+ ${s}</button>`;
+            const isEsgotado = ESGOTADOS.includes(s);
+            return `<button class="btn-item" ${isEsgotado ? 'disabled' : ''} onclick="if(caixaAtual.length<4){caixaAtual.push('${s}');atualizarSlots();} ">+ ${s} ${isEsgotado ? '(OFF)' : ''}</button>`;
         }).join('');
         
         try {
@@ -357,7 +277,7 @@
                 document.getElementById('resumo-producao').innerHTML = `<div style="background:#fff5f7; padding:15px; border-radius:15px; margin-bottom:15px"><strong>Resumo Produção:</strong><br>${SABORES.map(s => `${s}: ${totais[s]}`).join(' | ')}</div>`;
                 document.getElementById('pedidos-lista-admin').innerHTML = html;
             });
-        } catch(e) { console.log("Firebase não carregou ou offline"); }
+        } catch(e) { console.log("Firebase offline"); }
     };
 </script>
 </body>
