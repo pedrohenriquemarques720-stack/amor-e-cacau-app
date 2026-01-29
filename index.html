@@ -59,7 +59,7 @@
         .btn-wpp.liberado { opacity: 1; pointer-events: auto; }
         input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; margin-bottom: 10px; box-sizing: border-box; }
 
-        /* Estilo para itens de estoque */
+        /* Estilo Estoque */
         .estoque-item { display: flex; align-items: center; justify-content: space-between; background: #fff; padding: 15px; border-radius: 15px; border: 1px solid #eee; margin-bottom: 10px; }
         .btn-baixa { background: var(--cor-vinho); color: white; border: none; padding: 10px 15px; border-radius: 10px; font-weight: bold; cursor: pointer; }
         .btn-baixa:disabled { background: #ccc; }
@@ -93,7 +93,7 @@
     </div>
 
     <div id="aba-pronta" class="tab-content">
-        <h3 style="color: var(--cor-vinho)">🚚 Combos Prontos (4 un - R$ 10,00)</h3>
+        <h3 style="color: var(--cor-vinho)">🚚 Combos Prontos (R$ 10,00)</h3>
         <div id="lista-combos-fixos"></div>
     </div>
 
@@ -102,10 +102,10 @@
         <div class="box-display">
             <span id="contador-texto" style="font-weight: bold; font-size: 0.9rem;">Caixinha (0/4):</span>
             <div class="slots-container" id="slots-area"></div>
-            <button id="btn-add-caixa" class="btn-add-caixa" style="display: none;" onclick="adicionarCaixaMontada()">Adicionar esta Caixinha ao Pedido</button>
+            <button id="btn-add-caixa" class="btn-add-caixa" style="display: none;" onclick="adicionarCaixaMontada()">Adicionar ao Pedido</button>
         </div>
         <div class="grid-botoes" id="botoes-sabores"></div>
-        <h4 style="color: var(--cor-vinho); margin-top: 30px;">🎉 Monte seu Cento (em partes de 25)</h4>
+        <h4 style="color: var(--cor-vinho); margin-top: 30px;">🎉 Monte seu Cento</h4>
         <div id="lista-escala-cento"></div>
     </div>
 
@@ -133,12 +133,12 @@
     </div>
 
     <div id="aba-estoque" class="tab-content">
-        <h3 style="color: var(--cor-vinho)">📦 Controle de Saída (Físico)</h3>
-        <p><small>Dê baixa aqui ao entregar uma caixa pronta no balcão.</small></p>
+        <h3 style="color: var(--cor-vinho)">📦 Baixa de Estoque</h3>
+        <p><small>Clique no botão ao entregar o combo físico.</small></p>
         <div id="lista-estoque-manual"></div>
         <hr style="margin: 20px 0; border: 0; border-top: 1px dashed #ccc;">
         <button onclick="resetarEstoqueManual()" style="width: 100%; padding: 10px; background: #eee; border: 1px solid #ddd; border-radius: 10px; font-size: 0.8rem; color: #666; cursor: pointer;">
-            🔄 Reiniciar Estoque do Dia
+            🔄 Reiniciar Estoque de Amanhã
         </button>
     </div>
 </div>
@@ -151,22 +151,29 @@
     const SABORES = ["Tradicional", "Beijinho", "Ferrero", "Limão", "Café", "Maracujá"];
     const SABOR_ESGOTADO = "Ferrero";
 
-    const COMBOS_FIXOS = [
-        { n: "4 Tradicionais", s: ["Tradicional","Tradicional","Tradicional","Tradicional"] },
-        { n: "4 Ferreros", s: ["Ferrero","Ferrero","Ferrero","Ferrero"] },
-        { n: "4 Beijinhos", s: ["Beijinho","Beijinho","Beijinho","Beijinho"] },
-        { n: "2 Beijinhos e 2 Tradicionais", s: ["Beijinho","Beijinho","Tradicional","Tradicional"] },
-        { n: "2 Ferreros e 2 Beijinhos", s: ["Ferrero","Ferrero","Beijinho","Beijinho"] },
-        { n: "2 Tradicionais e 2 Ferreros", s: ["Tradicional","Tradicional","Ferrero","Ferrero"] }
-    ];
-
-    // --- CONFIGURAÇÃO MANUAL DE ESTOQUE ---
+    // --- CONFIGURAÇÃO DOS COMBOS E ESTOQUE PARA AMANHÃ ---
     const ESTOQUE_INICIAL = {
-        "4 Tradicionais": 10,
-        "4 Beijinhos": 10,
-        "4 Ferreros": 5,
-        "Combos Mistos": 15
+        "Combo Tropical (Marac/Limão)": 4,
+        "Combo Chocolatudo (Tradicional)": 4,
+        "Combo Turbo (Trad/Café)": 2,
+        "Combo Festa (Trad/Beijinho)": 3,
+        "Combo Misto (Variados)": 3,
+        "Combo Chocolima (Limão/Trad)": 2,
+        "Combo Café Azedo": 4,
+        "Combo Maracublack (Trad/Marac)": 2
     };
+
+    // Mapeamento para a aba "Pronta Entrega" do cliente
+    const COMBOS_FIXOS = [
+        { n: "Combo Tropical (2x Marac, 2x Limão)", s: ["Maracujá","Maracujá","Limão","Limão"] },
+        { n: "Combo Chocolatudo (4x Tradicional)", s: ["Tradicional","Tradicional","Tradicional","Tradicional"] },
+        { n: "Combo Turbo (2x Trad, 2x Café)", s: ["Tradicional","Tradicional","Café","Café"] },
+        { n: "Combo Festa (2x Trad, 2x Beijinho)", s: ["Tradicional","Tradicional","Beijinho","Beijinho"] },
+        { n: "Combo Misto (Variados)", s: ["Tradicional","Beijinho","Limão","Maracujá"] },
+        { n: "Combo Chocolima (2x Limão, 2x Trad)", s: ["Limão","Limão","Tradicional","Tradicional"] },
+        { n: "Combo Café Azedo", s: ["Café","Café","Maracujá","Maracujá"] },
+        { n: "Combo Maracublack (2x Trad, 2x Marac)", s: ["Tradicional","Tradicional","Maracujá","Maracujá"] }
+    ];
 
     let meuEstoque = JSON.parse(localStorage.getItem('amorECacauEstoque')) || { ...ESTOQUE_INICIAL };
     let carrinho = []; let caixaAtual = [];
@@ -175,16 +182,17 @@
 
     function abrirAba(e, id) {
         if ((id === 'aba-admin' || id === 'aba-estoque') && !autenticado) {
-            if (prompt("PIN:") === "1808") { autenticado = true; } else return;
+            let p = prompt("PIN:");
+            if (p === "1808") { autenticado = true; } else return;
         }
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(id).classList.add('active');
-        e.currentTarget.classList.add('active');
+        if(e) e.currentTarget.classList.add('active');
         if(id === 'aba-estoque') renderEstoqueManual();
     }
 
-    // --- FUNÇÕES DE ESTOQUE ---
+    // --- LÓGICA DE ESTOQUE ---
     function renderEstoqueManual() {
         const container = document.getElementById('lista-estoque-manual');
         container.innerHTML = "";
@@ -193,8 +201,8 @@
             const esgotado = qtd <= 0;
             container.innerHTML += `
                 <div class="estoque-item" style="${esgotado ? 'opacity: 0.5' : ''}">
-                    <div><strong>${item}</strong><br><span style="font-size: 1.2rem; color: var(--cor-vinho); font-weight: bold;">${qtd} un</span></div>
-                    <button class="btn-baixa" onclick="darBaixa('${item}')" ${esgotado ? 'disabled' : ''}>${esgotado ? 'FIM' : 'VENDI -1'}</button>
+                    <div style="flex:1"><strong>${item}</strong><br><span style="font-size: 1.1rem; color: var(--cor-vinho); font-weight: bold;">${qtd} unidades</span></div>
+                    <button class="btn-baixa" onclick="darBaixa('${item}')" ${esgotado ? 'disabled' : ''}>${esgotado ? 'ZERADO' : 'VENDI -1'}</button>
                 </div>`;
         }
     }
@@ -208,27 +216,22 @@
     }
 
     function resetarEstoqueManual() {
-        if (confirm("Resetar para os valores iniciais?")) {
+        if (confirm("Deseja resetar as quantidades para o planejado de amanhã?")) {
             meuEstoque = { ...ESTOQUE_INICIAL };
             localStorage.setItem('amorECacauEstoque', JSON.stringify(meuEstoque));
             renderEstoqueManual();
         }
     }
 
-    // --- FUNÇÕES ORIGINAIS ---
+    // --- FUNÇÕES DE PEDIDO ---
     function renderCombosFixos() {
         document.getElementById('lista-combos-fixos').innerHTML = COMBOS_FIXOS.map((c, i) => {
             const jaNoCarrinho = carrinho.find(item => item.tipo === 'pronta' && item.index === i);
-            const possuiEsgotado = c.s.includes(SABOR_ESGOTADO);
-            if (possuiEsgotado) {
-                return `<div class="card-fixo esgotado-fixo"><div class="bolinha-selecao" style="border-color:#ccc;"></div><div class="fixo-info" style="color:#999;"><s>${c.n}</s> <br><small>(Sabor esgotado)</small></div></div>`;
-            }
             return `<div class="card-fixo ${jaNoCarrinho ? 'selected' : ''}" onclick="toggleComboFixo(${i})"><div class="bolinha-selecao"></div><div class="fixo-info">${c.n}</div></div>`;
         }).join('');
     }
 
     function toggleComboFixo(i) {
-        if (COMBOS_FIXOS[i].s.includes(SABOR_ESGOTADO)) return;
         const idx = carrinho.findIndex(item => item.tipo === 'pronta' && item.index === i);
         if (idx > -1) carrinho.splice(idx, 1);
         else carrinho.push({ tipo: 'pronta', index: i, nome: "Combo Pronto", desc: COMBOS_FIXOS[i].n, sabores: COMBOS_FIXOS[i].s, preco: 10 });
@@ -256,18 +259,15 @@
     }
 
     function renderEscala() {
-        document.getElementById('lista-escala-cento').innerHTML = SABORES.map(s => {
-            const isEsgotado = (s === SABOR_ESGOTADO);
-            return `
-            <div class="item-escala" style="${isEsgotado ? 'background: #fafafa; color: #999;' : ''}">
-                <span><strong>25x ${isEsgotado ? `<s>${s}</s>` : s}</strong></span>
+        document.getElementById('lista-escala-cento').innerHTML = SABORES.map(s => `
+            <div class="item-escala">
+                <span><strong>25x ${s}</strong></span>
                 <div>
                     <button class="btn-ctrl" onclick="mudarEscala('${s}', -1)">-</button>
                     <span style="margin: 0 8px;">${escalaCento[s]}</span>
-                    <button class="btn-ctrl" ${isEsgotado ? 'disabled' : ''} onclick="mudarEscala('${s}', 1)">+</button>
+                    <button class="btn-ctrl" onclick="mudarEscala('${s}', 1)">+</button>
                 </div>
-            </div>`}).join('');
-        
+            </div>`).join('');
         carrinho = carrinho.filter(item => item.tipo !== 'cento');
         const totalP = Object.values(escalaCento).reduce((a,b)=>a+b, 0);
         if (totalP > 0) {
@@ -336,7 +336,6 @@
 
     renderCombosFixos(); renderEscala(); atualizarSlots();
     document.getElementById('botoes-sabores').innerHTML = SABORES.map(s => {
-        if(s === SABOR_ESGOTADO) return `<button class="btn-item esgotado"><s>+ ${s}</s></button>`;
         return `<button class="btn-item" onclick="if(caixaAtual.length<4){caixaAtual.push('${s}');atualizarSlots();} ">+ ${s}</button>`;
     }).join('');
 </script>
